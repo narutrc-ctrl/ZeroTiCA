@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --border: 214.3 31.8% 91.4%;
+    --radius: 0.5rem;
+    --sidebar-background: 217 28% 15%;
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-border: 217 10% 40%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 14px;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-white font-sans text-slate-900 antialiased;
+  }
+}
+
+@layer components {
+  .zt-container {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .zt-container-wide {
+    @apply mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-10 xl:px-12;
+  }
+
+  .zt-section {
+    @apply py-16 sm:py-24;
+  }
+
+  .zt-card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .zt-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition;
+  }
+
+  .zt-btn-primary {
+    @apply zt-btn bg-blue-500 text-white shadow-sm hover:bg-blue-600;
+  }
+
+  .zt-btn-ghost {
+    @apply zt-btn border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+  }
+
+  .zt-gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 bg-clip-text text-transparent;
+  }
+
+  .runa-page {
+    @apply flex h-full min-h-0 w-full flex-col bg-gradient-to-b from-slate-100 to-white;
+  }
+
+  .runa-page-tabs {
+    @apply sticky top-0 z-10 flex shrink-0 border-b border-slate-200 bg-white/80 backdrop-blur;
+  }
+
+  .runa-tab-active {
+    @apply border-b-2 border-blue-500 text-blue-600;
+  }
+
+  .runa-tab-inactive {
+    @apply text-slate-500 hover:text-slate-800;
+  }
+
+  .runa-segment {
+    @apply flex rounded-2xl bg-slate-200/50 p-1;
+  }
+
+  .runa-segment-item {
+    @apply rounded-xl px-3 py-1.5 text-sm font-medium text-slate-600;
+  }
+
+  .runa-segment-item-active {
+    @apply bg-white text-blue-600 shadow-sm;
+  }
+
+  .runa-card {
+    @apply rounded-2xl border border-slate-100 bg-white shadow-md;
+  }
+
+  .runa-table {
+    @apply w-full text-left text-[13px];
+  }
+
+  .runa-table th {
+    @apply border-b border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-medium text-slate-500;
+  }
+
+  .runa-table td {
+    @apply border-b border-slate-100 px-4 py-2.5 text-slate-700;
+  }
+
+  @keyframes journey-preview-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes journey-chart-pulse {
+    0%,
+    100% {
+      filter: saturate(1);
+    }
+    50% {
+      filter: saturate(1.15) brightness(1.02);
+    }
+  }
+
+  .journey-preview-enter {
+    animation: journey-preview-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .journey-dashboard-active .journey-dashboard-highlight {
+    animation: journey-chart-pulse 2.5s ease-in-out infinite;
+  }
+
+  .journey-dashboard-frame {
+    will-change: transform, opacity;
+  }
+}
