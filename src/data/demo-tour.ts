@@ -6,7 +6,39 @@ export type TourStep = {
   title: string;
   body: string;
   placement?: "top" | "bottom" | "left" | "right";
+  /** 시트·뷰어 등 UI 전환 후 하이라이트 재측정 대기(ms) */
+  measureDelay?: number;
 };
+
+export type TourUiState = {
+  taskSheetOpen: boolean;
+  reportDialogOpen: boolean;
+};
+
+export function resolveTour(pathname: string, tour: string | null, tab: string | null): TourStep[] | null {
+  if (tour === "full") return fullDemoTour;
+  if (tour !== "1") return null;
+  if (pathname.startsWith("/demo/task")) return demoTours.task;
+  if (pathname.startsWith("/demo/event")) {
+    if (tab === "reports") return demoTours.report;
+    return demoTours.event;
+  }
+  return null;
+}
+
+export function resolveTourUiState(stepId: string | undefined): TourUiState {
+  if (!stepId) return { taskSheetOpen: false, reportDialogOpen: false };
+
+  switch (stepId) {
+    case "task-3":
+      return { taskSheetOpen: true, reportDialogOpen: false };
+    case "report-2":
+    case "report-3":
+      return { taskSheetOpen: false, reportDialogOpen: true };
+    default:
+      return { taskSheetOpen: false, reportDialogOpen: false };
+  }
+}
 
 export const demoTours: Record<string, TourStep[]> = {
   task: [
@@ -31,8 +63,9 @@ export const demoTours: Record<string, TourStep[]> = {
       route: "/demo/task",
       target: "[data-task-detail-sheet]",
       title: "업무 상세 Sheet",
-      body: "카드를 클릭하면 실제 RUNA와 같이 우측에서 Sheet가 열립니다. 요청일시·위협 내역·분석 본문·댓글을 한곳에서 확인합니다.",
+      body: "업무 카드를 선택하면 우측에서 Sheet가 열립니다. 요청일시·위협 내역·분석 본문·댓글을 한곳에서 확인합니다.",
       placement: "left",
+      measureDelay: 420,
     },
   ],
   event: [
@@ -77,8 +110,9 @@ export const demoTours: Record<string, TourStep[]> = {
       search: "tab=reports",
       target: "[data-tour='report-preview']",
       title: "보고서 미리보기",
-      body: "평가 개요·결과 요약·위협 분석 요약이 A4 형식으로 제공됩니다.",
+      body: "목록에서 보고서를 선택하면 전체 화면 뷰어가 열립니다. 평가 개요·결과 요약이 A4 형식으로 제공됩니다.",
       placement: "left",
+      measureDelay: 320,
     },
     {
       id: "report-3",

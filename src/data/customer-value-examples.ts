@@ -319,20 +319,20 @@ export const journeyStepExamples: JourneyStepExample[] = [
   {
     step: "02",
     focus: "detect",
-    headline: "규칙이 후보로 올린 탐지 근거 (아직 업무·고객 답변 없음)",
-    caseIds: ["unknown-mechanical", "forbidden-webshell", "forbidden-scan"],
+    headline: "규칙이 후보로 올린 탐지 근거",
+    caseIds: [],
   },
   {
     step: "03",
     focus: "ioc",
-    headline: "전 고객 IocIP와 conn 로그 일일 매칭 결과",
-    caseIds: ["forbidden-ioc-phishing", "forbidden-mining-adjacent"],
+    headline: "전 고객 IocIP와 conn 로그 일일 매칭",
+    caseIds: [],
   },
   {
     step: "04",
     focus: "whitelist",
     headline: "검증·등록 후 다음부터 제외되는 업무 통신",
-    caseIds: ["unknown-mechanical", "forbidden-ssh-flood", "cleanup-rcs"],
+    caseIds: [],
   },
   {
     step: "05",

@@ -32,23 +32,24 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
   }
 
   if (visual === "notify") {
+    const bodyText = large ? "text-sm" : "text-xs";
     return (
       <CaptureFrame title="RUNA · 업무 알림" large={large}>
-        <div className={cnWrap(scale)}>
+        <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
-            <p className="text-xs font-semibold text-blue-700">새 업무 확인 요청</p>
-            <p className="mt-2 text-sm font-bold text-slate-900">
+            <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 업무 확인 요청</p>
+            <p className={`mt-2 font-bold text-slate-900 ${large ? "text-base" : "text-sm"}`}>
               폐쇄망 IP (10.24.18.52) 기계적 통신 식별
             </p>
-            <p className="mt-2 text-xs text-slate-600">
+            <p className={`mt-2 text-slate-600 ${bodyText}`}>
               분석팀이 의심 통신을 검토했습니다. 업무 맥락 확인이 필요합니다.
             </p>
-            <span className="mt-3 inline-block rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white">
+            <span className={`mt-3 inline-block rounded-lg bg-blue-600 px-3 py-1.5 font-medium text-white ${bodyText}`}>
               업무 확인하기
             </span>
           </div>
           <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 opacity-60">
-            <p className="text-xs text-slate-500">다수의 내부 IP 대상 SSH 연결 시도 · 검증 중</p>
+            <p className={bodyText + " text-slate-500"}>다수의 내부 IP 대상 SSH 연결 시도 · 검증 중</p>
           </div>
         </div>
       </CaptureFrame>
@@ -56,24 +57,26 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
   }
 
   if (visual === "interact") {
+    const bodyText = large ? "text-sm" : "text-xs";
+    const titleText = large ? "text-base" : "text-sm";
     return (
       <CaptureFrame title="업무 Sheet · 고객 협업" large={large}>
-        <div className={cnWrap(scale)}>
+        <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-slate-200 bg-white shadow-lg">
-            <div className="border-b border-slate-100 px-4 py-3">
-              <p className="text-sm font-bold text-slate-900">폐쇄망 IP 기계적 통신 문의</p>
-              <span className="mt-1 inline-block rounded-lg border border-blue-300 bg-white px-2 py-0.5 text-[10px] font-semibold text-blue-600">
+            <div className="border-b border-slate-100 px-4 py-3.5">
+              <p className={`font-bold text-slate-900 ${titleText}`}>폐쇄망 IP 기계적 통신 문의</p>
+              <span className="mt-1.5 inline-block rounded-lg border border-blue-300 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-blue-600">
                 확인 요청
               </span>
             </div>
-            <div className="space-y-2 p-4 text-xs">
-              <div className="rounded-lg bg-slate-50 p-2.5">
+            <div className={`space-y-2.5 p-4 ${bodyText}`}>
+              <div className="rounded-lg bg-slate-50 p-3">
                 <p className="font-medium text-slate-700">분석팀 · 11:20</p>
-                <p className="mt-1 text-slate-600">정기 배포 통신인지 확인 부탁드립니다.</p>
+                <p className="mt-1 leading-relaxed text-slate-600">정기 배포 통신인지 확인 부탁드립니다.</p>
               </div>
-              <div className="rounded-lg bg-sky-50 p-2.5">
+              <div className="rounded-lg bg-sky-50 p-3">
                 <p className="font-medium text-slate-700">demo_admin · 09:40</p>
-                <p className="mt-1 text-slate-600">정기 패치 미러 서버 통신입니다.</p>
+                <p className="mt-1 leading-relaxed text-slate-600">정기 패치 미러 서버 통신입니다.</p>
               </div>
             </div>
           </div>
@@ -174,7 +177,7 @@ function CaptureFrame({
         <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-        <span className="ml-2 text-xs text-slate-400">{title}</span>
+        <span className={`ml-2 text-slate-400 ${large ? "text-sm" : "text-xs"}`}>{title}</span>
       </div>
       {children}
     </div>

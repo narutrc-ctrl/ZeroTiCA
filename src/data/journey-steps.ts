@@ -176,12 +176,11 @@ export const journeyFlowPills = unifiedJourneySteps.map((s) => ({
   label: journeyStepShortLabel[s.step] ?? s.title,
 }));
 
-/** 랜딩 3막 요약 — 8단계를 압축한 스크롤리텔링 */
+/** 랜딩 3단계 요약 — 8세부 단계를 압축한 스크롤리텔링 */
 export type JourneyAct = {
   id: string;
   act: number;
   title: string;
-  subtitle: string;
   stepRange: string[];
   summary: string;
   customerNote: string;
@@ -195,7 +194,6 @@ export const journeyActs: JourneyAct[] = [
     id: "collect-analyze",
     act: 1,
     title: "수집 · 탐지 · 정제",
-    subtitle: "STEP 01–04",
     stepRange: ["01", "02", "03", "04"],
     stepIndices: [0, 1, 2, 3],
     summary:
@@ -208,7 +206,6 @@ export const journeyActs: JourneyAct[] = [
     id: "collaborate",
     act: 2,
     title: "RUNA 협업 · 맥락 확인",
-    subtitle: "STEP 05–06",
     stepRange: ["05", "06"],
     stepIndices: [4, 5],
     summary:
@@ -221,7 +218,6 @@ export const journeyActs: JourneyAct[] = [
     id: "verify-report",
     act: 3,
     title: "검증 · 조치 · 보고",
-    subtitle: "STEP 07–08",
     stepRange: ["07", "08"],
     stepIndices: [6, 7],
     summary:
@@ -241,7 +237,5 @@ export function journeyStepAnchorId(step: string) {
 }
 
 export function formatActLabel(act: JourneyAct) {
-  const from = act.stepRange[0];
-  const to = act.stepRange[act.stepRange.length - 1];
-  return `${act.act}막 (STEP ${from}–${to})`;
+  return `STEP ${act.act}`;
 }

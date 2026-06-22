@@ -19,9 +19,6 @@ export function SiteFooter() {
             <div className="mt-3">
               <ContactInfo />
             </div>
-            <Link to="/contact" className="zt-btn-primary mt-4 text-xs">
-              도입 문의하기
-            </Link>
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-900">회사 정보</p>

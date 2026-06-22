@@ -2,18 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import { TourCompleteModal } from "@/components/DemoTourPrompt";
-import { demoTours, fullDemoTour } from "@/data/demo-tour";
-
-function resolveTour(pathname: string, tour: string | null, tab: string | null) {
-  if (tour === "full") return fullDemoTour;
-  if (tour !== "1") return null;
-  if (pathname.startsWith("/demo/task")) return demoTours.task;
-  if (pathname.startsWith("/demo/event")) {
-    if (tab === "reports") return demoTours.report;
-    return demoTours.event;
-  }
-  return null;
-}
+import { resolveTour } from "@/data/demo-tour";
 
 function buildSearch(tour: string, step: number, extra?: string) {
   const base = new URLSearchParams(extra ?? "");

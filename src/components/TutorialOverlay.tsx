@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { TourStep } from "@/data/demo-tour";
@@ -6,12 +6,66 @@ import { cn } from "@/lib/cn";
 import { paths } from "@/data/content";
 
 type Rect = { top: number; left: number; width: number; height: number };
+type Point = { top: number; left: number };
+
+const SPOTLIGHT_PAD = 8;
+const TOOLTIP_PAD = 12;
+const TOOLTIP_MARGIN = 12;
 
 function measureTarget(selector: string): Rect | null {
   const el = document.querySelector(selector);
   if (!el) return null;
+  const style = window.getComputedStyle(el);
+  if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") return null;
+
   const r = el.getBoundingClientRect();
+  if (r.width < 4 || r.height < 4) return null;
+  if (r.right < 8 || r.left > window.innerWidth - 8) return null;
+  if (r.bottom < 8 || r.top > window.innerHeight - 8) return null;
+
   return { top: r.top, left: r.left, width: r.width, height: r.height };
+}
+
+function toSpotlight(rect: Rect) {
+  return {
+    top: rect.top - SPOTLIGHT_PAD,
+    left: rect.left - SPOTLIGHT_PAD,
+    width: rect.width + SPOTLIGHT_PAD * 2,
+    height: rect.height + SPOTLIGHT_PAD * 2,
+  };
+}
+
+function computeTooltipPosition(
+  rect: Rect,
+  placement: TourStep["placement"],
+  size: { w: number; h: number },
+): Point {
+  const { w, h } = size;
+  switch (placement ?? "bottom") {
+    case "top":
+      return { top: rect.top - TOOLTIP_PAD - h, left: rect.left + rect.width / 2 - w / 2 };
+    case "left":
+      return { top: rect.top + rect.height / 2 - h / 2, left: rect.left - TOOLTIP_PAD - w };
+    case "right":
+      return { top: rect.top + rect.height / 2 - h / 2, left: rect.left + rect.width + TOOLTIP_PAD };
+    default:
+      return { top: rect.top + rect.height + TOOLTIP_PAD, left: rect.left + rect.width / 2 - w / 2 };
+  }
+}
+
+function clampTooltip(pos: Point, size: { w: number; h: number }): Point {
+  return {
+    top: Math.min(Math.max(TOOLTIP_MARGIN, pos.top), window.innerHeight - size.h - TOOLTIP_MARGIN),
+    left: Math.min(Math.max(TOOLTIP_MARGIN, pos.left), window.innerWidth - size.w - TOOLTIP_MARGIN),
+  };
+}
+
+function dimClipPathFromSpotlight(spotlight: { top: number; left: number; width: number; height: number }) {
+  const x1 = spotlight.left;
+  const y1 = spotlight.top;
+  const x2 = spotlight.left + spotlight.width;
+  const y2 = spotlight.top + spotlight.height;
+  return `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${x1}px ${y1}px, ${x2}px ${y1}px, ${x2}px ${y2}px, ${x1}px ${y2}px, ${x1}px ${y1}px)`;
 }
 
 type Props = {
@@ -24,64 +78,102 @@ type Props = {
 };
 
 export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, onComplete }: Props) {
-  const [rect, setRect] = useState<Rect | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const measureToken = useRef(0);
+
+  const [spotlightRect, setSpotlightRect] = useState<Rect | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<Point | null>(null);
 
   const step = steps[index];
   const isFirst = index === 0;
   const isLast = index === steps.length - 1;
 
+  const applyMeasure = (targetStep: TourStep) => {
+    const measured = measureTarget(targetStep.target);
+    if (!measured) return false;
+
+    const el = tooltipRef.current;
+    const size = { w: el?.offsetWidth ?? 380, h: el?.offsetHeight ?? 200 };
+    const nextPos = clampTooltip(computeTooltipPosition(measured, targetStep.placement, size), size);
+
+    setSpotlightRect(measured);
+    setTooltipPos(nextPos);
+    return true;
+  };
+
   useEffect(() => {
     if (!active || !step) return;
 
-    const update = () => setRect(measureTarget(step.target));
-    const t = window.setTimeout(update, 160);
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
+    const token = ++measureToken.current;
+    const delay = step.measureDelay ?? 180;
+
+    const run = () => {
+      if (token !== measureToken.current) return;
+      applyMeasure(step);
+    };
+
+    // 단계 전환 시 이전 위치 유지 → 새 타깃 측정 후 transition으로 이동
+    const t1 = window.setTimeout(run, delay);
+    const t2 = window.setTimeout(run, delay + 320);
+
+    window.addEventListener("resize", run);
+    window.addEventListener("scroll", run, true);
     return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener("resize", run);
+      window.removeEventListener("scroll", run, true);
     };
   }, [active, step, index]);
 
-  const tooltipStyle = useMemo(() => {
-    if (!rect) return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
-    const pad = 12;
-    const placement = step?.placement ?? "bottom";
-    if (placement === "top") {
-      return { top: rect.top - pad, left: rect.left + rect.width / 2, transform: "translate(-50%, -100%)" };
-    }
-    if (placement === "left") {
-      return { top: rect.top + rect.height / 2, left: rect.left - pad, transform: "translate(-100%, -50%)" };
-    }
-    if (placement === "right") {
-      return { top: rect.top + rect.height / 2, left: rect.left + rect.width + pad, transform: "translateY(-50%)" };
-    }
-    return { top: rect.top + rect.height + pad, left: rect.left + rect.width / 2, transform: "translateX(-50%)" };
-  }, [rect, step]);
-
   if (!active || !step) return null;
+
+  const spotlight = spotlightRect ? toSpotlight(spotlightRect) : null;
+  const dimClipPath = spotlight ? dimClipPathFromSpotlight(spotlight) : undefined;
 
   return (
     <div className="fixed inset-0 z-[100]">
-      <div className="absolute inset-0 bg-slate-900/40" onClick={onClose} aria-hidden />
+      <div
+        className="absolute inset-0 bg-slate-900/45 backdrop-blur-[2px] transition-[clip-path] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={dimClipPath ? { clipPath: dimClipPath, WebkitClipPath: dimClipPath } : undefined}
+        onClick={onClose}
+        aria-hidden
+      />
 
-      {rect && (
-        <div
-          className="pointer-events-none absolute rounded-xl ring-2 ring-blue-500 transition-all duration-300"
-          style={{
-            top: rect.top - 6,
-            left: rect.left - 6,
-            width: rect.width + 12,
-            height: rect.height + 12,
-            boxShadow: "0 0 0 9999px rgba(15, 23, 42, 0.45)",
-          }}
-        />
+      {spotlight && (
+        <>
+          <div
+            className="pointer-events-none absolute rounded-xl border-2 border-white/95 bg-white/[0.06] shadow-[0_0_0_1px_rgba(59,130,246,0.35),0_0_40px_rgba(255,255,255,0.35),0_0_64px_rgba(59,130,246,0.18)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              top: spotlight.top,
+              left: spotlight.left,
+              width: spotlight.width,
+              height: spotlight.height,
+            }}
+          />
+          <div
+            className="pointer-events-none absolute rounded-[14px] ring-2 ring-blue-400/90 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{
+              top: spotlight.top,
+              left: spotlight.left,
+              width: spotlight.width,
+              height: spotlight.height,
+            }}
+          />
+        </>
       )}
 
       <div
-        className="absolute z-[101] w-[min(92vw,380px)] rounded-2xl border border-slate-200 bg-white p-5 shadow-panel"
-        style={tooltipStyle}
+        ref={tooltipRef}
+        className={cn(
+          "absolute z-[101] w-[min(92vw,380px)] rounded-2xl border border-slate-200 bg-white p-5 shadow-panel",
+          tooltipPos && "transition-[top,left] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        )}
+        style={
+          tooltipPos
+            ? { top: tooltipPos.top, left: tooltipPos.left }
+            : { top: "50%", left: "50%", transform: "translate(-50%, -50%)" }
+        }
       >
         <div className="mb-2 flex items-start justify-between gap-3">
           <div>

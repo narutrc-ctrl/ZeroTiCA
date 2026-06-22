@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Calendar, LayoutGrid, List } from "lucide-react";
 import {
   KanbanColumn,
@@ -9,6 +9,7 @@ import {
 } from "@/components/MockRunaShell";
 import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { DEMO_DATE_RANGE, demoTasks, type DemoTask } from "@/data/demo-runa-data";
+import { useDemoTour } from "@/hooks/useDemoTour";
 
 const COLUMN_META = {
   pre_request: { title: "업무 요청", titleClass: "text-slate-600", headerClass: "bg-slate-100" },
@@ -17,9 +18,16 @@ const COLUMN_META = {
 } as const;
 
 export function DemoTaskPage() {
+  const { active: tourActive, ui: tourUi, step: tourStep } = useDemoTour();
   const [selectedId, setSelectedId] = useState("t3");
-  const [sheetOpen, setSheetOpen] = useState(true);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const selected = demoTasks.find((t) => t.id === selectedId) ?? demoTasks[2];
+
+  useEffect(() => {
+    if (!tourActive) return;
+    setSheetOpen(tourUi.taskSheetOpen);
+    if (tourUi.taskSheetOpen) setSelectedId("t3");
+  }, [tourActive, tourUi.taskSheetOpen]);
 
   const bySection = useMemo(() => {
     const map: Record<DemoTask["section"], DemoTask[]> = {
@@ -33,7 +41,7 @@ export function DemoTaskPage() {
 
   const openTask = (id: string) => {
     setSelectedId(id);
-    setSheetOpen(true);
+    if (!tourActive || tourUi.taskSheetOpen) setSheetOpen(true);
   };
 
   return (
@@ -101,7 +109,10 @@ export function DemoTaskPage() {
                       author={task.author}
                       status={task.statusLabel}
                       statusClass={taskStatusClass(task.status)}
-                      highlight={task.id === selectedId}
+                      highlight={
+                        task.id === selectedId &&
+                        (!tourActive || tourStep?.id === "task-2" || tourStep?.id === "task-3")
+                      }
                       onClick={() => openTask(task.id)}
                       dataTaskOpenSwitch
                     />
@@ -112,7 +123,12 @@ export function DemoTaskPage() {
           </div>
         </div>
 
-        <TaskDetailSheet task={selected} open={sheetOpen} onClose={() => setSheetOpen(false)} />
+        <TaskDetailSheet
+          task={selected}
+          open={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          hideBackdrop={tourActive}
+        />
       </div>
     </MockRunaShell>
   );

@@ -10,6 +10,7 @@ import {
   demoStageEventRows,
   demoStageSummaryRows,
 } from "@/data/demo-runa-data";
+import { useDemoTour } from "@/hooks/useDemoTour";
 
 const SIDEBAR_ITEMS = [
   { key: "overview", label: "현황", active: true },
@@ -20,18 +21,17 @@ const SIDEBAR_ITEMS = [
 
 export function DemoEventPage() {
   const [params, setParams] = useSearchParams();
+  const { active: tourActive, ui: tourUi } = useDemoTour();
   const [reportOpen, setReportOpen] = useState(false);
   const tab = params.get("tab") === "reports" ? "reports" : "stage-summary";
-  const tour = params.get("tour");
-  const step = Number(params.get("step") ?? 0);
 
   useEffect(() => {
-    if (tab === "reports" && tour && step >= 6) {
-      setReportOpen(true);
-    }
-  }, [tab, tour, step]);
+    if (!tourActive) return;
+    setReportOpen(tourUi.reportDialogOpen);
+  }, [tourActive, tourUi.reportDialogOpen]);
 
   const setTab = (id: string) => {
+    if (tourActive) return;
     setParams((prev) => {
       const next = new URLSearchParams(prev);
       if (id === "reports") next.set("tab", "reports");
@@ -157,7 +157,10 @@ export function DemoEventPage() {
                     <tr
                       key={r.period}
                       className="cursor-pointer hover:bg-sky-50"
-                      onClick={() => setReportOpen(true)}
+                      onClick={() => {
+                        if (tourActive && !tourUi.reportDialogOpen) return;
+                        setReportOpen(true);
+                      }}
                     >
                       <td className="font-medium">{r.period}</td>
                       <td className="text-blue-600">{r.title}</td>

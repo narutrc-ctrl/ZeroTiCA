@@ -30,10 +30,12 @@ export function TaskDetailSheet({
   task,
   open,
   onClose,
+  hideBackdrop = false,
 }: {
   task: DemoTask | null;
   open: boolean;
   onClose: () => void;
+  hideBackdrop?: boolean;
 }) {
   const [showContent, setShowContent] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -57,7 +59,7 @@ export function TaskDetailSheet({
 
   return (
     <>
-      {open && (
+      {open && !hideBackdrop && (
         <button
           type="button"
           className="fixed inset-0 z-40 bg-slate-900/20"

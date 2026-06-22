@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
 import { faqGroups, faqSection } from "@/data/faq";
-import { paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { cn } from "@/lib/cn";
 
@@ -97,11 +95,8 @@ export function FaqSection() {
           ))}
         </div>
 
-        <RevealOnScroll delay={80} className="mt-10 flex flex-wrap gap-3">
-          <Link to={paths.contact} className="zt-btn-primary">
-            도입·PoC 상담
-          </Link>
-          <a href="#experience" className="zt-btn-ghost">
+        <RevealOnScroll delay={80} className="mt-10">
+          <a href="#experience" className="zt-btn-ghost inline-flex items-center gap-2">
             RUNA 3분 데모 보기
           </a>
         </RevealOnScroll>

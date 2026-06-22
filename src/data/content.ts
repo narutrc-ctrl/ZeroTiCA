@@ -45,16 +45,22 @@ export const socialProof = [
   },
 ];
 
-export const industryBadges = ["금융", "게임·엔터", "제조", "공공·교육"];
-
-/** 익명 고객사 로고 (실제 로고 교체 가능) */
-export const clientLogos = [
-  { abbr: "G", label: "국내 AAA 게임사" },
-  { abbr: "F", label: "금융 그룹" },
-  { abbr: "M", label: "제조 대기업" },
-  { abbr: "E", label: "엔터·미디어" },
-  { abbr: "P", label: "공공·교육기관" },
+/** 함께하는 고객사 — 산업군 단일 표기 (익명) */
+export const partnerIndustries = [
+  { sector: "금융", detail: "금융 그룹" },
+  { sector: "게임·엔터", detail: "국내 AAA 게임사" },
+  { sector: "제조", detail: "제조 대기업" },
+  { sector: "공공·교육", detail: "공공·교육기관" },
 ];
+
+/** @deprecated partnerIndustries 사용 */
+export const industryBadges = partnerIndustries.map((p) => p.sector);
+
+/** @deprecated partnerIndustries 사용 */
+export const clientLogos = partnerIndustries.map((p) => ({
+  abbr: p.sector.charAt(0),
+  label: p.detail,
+}));
 
 export const hero = {
   headline: "수많은 의심 통신,",
@@ -180,6 +186,9 @@ export const trustBadges = [
   { value: stats.incidents2025Label, numeric: stats.incidents2025, suffix: "", label: "2025년 침해사고(보고)" },
   { value: stats.smeShareLabel, numeric: stats.smeShare, suffix: "%", label: "중소·중견 피해 비율" },
 ];
+
+/** 클로징 — 파트너 신뢰 수치 (함께하는 고객사 섹션과 분리) */
+export const partnerTrustStats = trustBadges.slice(0, 2);
 
 export const serviceDecision = {
   title: "어떤 서비스가 맞을까요?",

@@ -1,5 +1,6 @@
 import { X, ZoomIn, ZoomOut } from "lucide-react";
 import { useState } from "react";
+import { BrandMark } from "@/components/BrandLogo";
 import {
   demoReportOverview,
   demoReportThreatSummary,
@@ -61,7 +62,7 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
                 <h1 className="mt-2 text-3xl font-extrabold text-slate-900">{title}</h1>
                 <p className="mt-1 text-slate-500">{period}</p>
               </div>
-              <img src="/zerotica-logo.svg" alt="" className="h-10 w-10 opacity-80" />
+              <BrandMark size="lg" />
             </div>
             <div className="my-6 h-px bg-blue-500" />
 

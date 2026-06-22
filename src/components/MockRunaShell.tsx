@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { AppWindow, Bell, ChevronRight, ClipboardList, User } from "lucide-react";
+import { BrandMark } from "@/components/BrandLogo";
 import { cn } from "@/lib/cn";
 
 const sideNav = [
@@ -14,7 +15,7 @@ export function MockRunaShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-full min-h-0 overflow-hidden bg-white">
       <aside className="flex w-20 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
         <div className="flex h-16 shrink-0 items-center justify-center">
-          <img src="/zerotica-logo.svg" alt="제로티카 (ZeroTica)" className="h-9 w-9 object-contain" />
+          <BrandMark size="sm" inverted />
         </div>
         <nav className="flex flex-1 flex-col gap-1 px-2 py-3">
           {sideNav.map((item) => {

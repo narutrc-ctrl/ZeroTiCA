@@ -11,6 +11,7 @@ import {
   demoWhitelistTabs,
 } from "@/data/demo-runa-data";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
+import { BrandMark } from "@/components/BrandLogo";
 import { cn } from "@/lib/cn";
 
 export type MethodologyScreenId =
@@ -46,7 +47,7 @@ function RunaPreviewShell({
       <div className="flex min-h-[280px]">
         <aside className="flex w-14 shrink-0 flex-col border-r border-slate-200 bg-[hsl(217,28%,15%)] py-3">
           <div className="mb-3 flex justify-center">
-            <img src="/zerotica-logo.svg" alt="" className="h-7 w-7" />
+            <BrandMark size="sm" inverted />
           </div>
           <div className="flex flex-col items-center gap-2 px-1">
             <span

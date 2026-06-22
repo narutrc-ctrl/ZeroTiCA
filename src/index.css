@@ -23,6 +23,10 @@
     font-size: 14px;
   }
 
+  html.journey-snap-active {
+    scroll-snap-type: y mandatory;
+  }
+
   body {
     @apply m-0 min-h-screen bg-white font-sans text-slate-900 antialiased;
   }
@@ -35,6 +39,10 @@
 
   .zt-container-wide {
     @apply mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-10 xl:px-12;
+  }
+
+  .zt-container-journey {
+    @apply mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-12 xl:px-16;
   }
 
   .zt-section {
@@ -108,11 +116,11 @@
   @keyframes journey-preview-in {
     from {
       opacity: 0;
-      transform: translateY(14px) scale(0.97);
+      transform: translateY(10px);
     }
     to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
   }
 
@@ -130,11 +138,44 @@
     animation: journey-preview-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  .journey-step-slide-enter {
+    animation: journey-preview-in 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .journey-act-panel.snap-start {
+    scroll-snap-align: start;
+  }
+
+  .journey-act-panel.snap-always {
+    scroll-snap-stop: always;
+  }
+
+  /* STEP 1·3: 스냅 정렬은 유지, 위·아래로 빠져나갈 때는 snap-stop 없음 */
+  .journey-act-panel-first,
+  .journey-act-panel-last {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  .journey-act-panel.is-active h3 {
+    @apply text-blue-800;
+  }
+
+  .journey-preview-crisp {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  .journey-act-cell-active {
+    @apply ring-1 ring-inset ring-blue-100/80 lg:ring-0;
+  }
+
   .journey-dashboard-active .journey-dashboard-highlight {
     animation: journey-chart-pulse 2.5s ease-in-out infinite;
   }
 
   .journey-dashboard-frame {
-    will-change: transform, opacity;
+    will-change: opacity;
   }
 }

@@ -46,7 +46,7 @@ export function CustomerOutcomesSection() {
           ))}
         </div>
 
-        <div className="mt-16 space-y-12">
+        <div className="mt-24 space-y-12 border-t border-white/10 pt-20 sm:mt-28 sm:pt-24 lg:mt-32 lg:pt-28">
           {visibleBlocks.map((block, i) => (
             <RevealOnScroll key={block.title} delay={i * 60} variant="fade-left">
               <div>

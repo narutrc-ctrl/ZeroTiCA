@@ -1,14 +1,14 @@
-/** 랜딩 스크롤 — 3막 요약 / 8단계 심화 */
+/** 랜딩 스크롤 — 3단계 요약 / 8세부 단계 */
 
 import { journeyFlowPills } from "@/data/journey-steps";
 
 export const storyJourneyIntro = {
   eyebrow: "서비스가 돌아가는 순서",
   act: {
-    title: "3막으로 먼저 보는",
+    title: "3단계로 보는",
     titleAccent: "운영 흐름",
     lead:
-      "수집·탐지 → RUNA 협업 → 검증·보고. 흐름을 파악한 뒤, PoC·기술 검토가 필요하면 8단계 전체를 펼칠 수 있습니다.",
+      "수집·탐지·정제 → RUNA 협업 → 검증·보고. 각 STEP 요약을 먼저 읽고, Detail을 눌러 세부 단계를 확인하세요.",
   },
   deep: {
     title: "8단계 전체 —",
