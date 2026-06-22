@@ -17,15 +17,51 @@ export const paths = {
 };
 
 export const stats = {
-  responseCases: "4,000+",
-  years: "15+",
+  responseCases: 4000,
+  responseCasesLabel: "4,000+",
+  years: 15,
+  yearsLabel: "15+",
+  incidents2025: 2383,
+  incidents2025Label: "2,383",
+  smeShare: 83,
+  smeShareLabel: "83%",
 };
+
+export const statSources = [
+  { label: "2025년 침해사고", source: "KISA 개인정보 침해사고 통계·분석" },
+  { label: "중소·중견 피해 비율", source: "동일 자료 기준 중소·중견기업 피해 비중" },
+];
+
+export const socialProof = [
+  {
+    quote: "알람만 쌓이던 시절과 달리, 확인해야 할 업무만 RUNA에 정리되어 옵니다.",
+    role: "국내 게임사 · 보안팀장",
+    industry: "Watch 고객",
+  },
+  {
+    quote: "내부에서 몰랐던 통신이 Task로 올라오면서, 네트워크 가시성부터 확보됐습니다.",
+    role: "제조·IT 인프라 담당",
+    industry: "인사이트 → Watch",
+  },
+];
+
+export const industryBadges = ["금융", "게임·엔터", "제조", "공공·교육"];
+
+/** 익명 고객사 로고 (실제 로고 교체 가능) */
+export const clientLogos = [
+  { abbr: "G", label: "국내 AAA 게임사" },
+  { abbr: "F", label: "금융 그룹" },
+  { abbr: "M", label: "제조 대기업" },
+  { abbr: "E", label: "엔터·미디어" },
+  { abbr: "P", label: "공공·교육기관" },
+];
 
 export const hero = {
   headline: "수많은 의심 통신,",
   headlineAccent: "진짜 위협만 골라낼 수 있습니까?",
   sub:
     "탐지는 시작일 뿐입니다. 중요한 건 검증과 조치, 그리고 남는 기록입니다.",
+  runaOneLiner: "RUNA = 제로티카 고객 포털 — 업무·대시보드·침해 평가 보고를 웹에서 확인합니다.",
   lead:
     "네트워크 의심 통신을 발견하고, RUNA가 검증하고, 전문가가 조치까지 연결합니다.",
   description:
@@ -139,9 +175,22 @@ export const customerOutcomes = [
 ];
 
 export const trustBadges = [
-  { value: stats.responseCases, label: "침해사고 대응 경험" },
-  { value: `${stats.years}년`, label: "사이버보안 전문성" },
+  { value: stats.responseCasesLabel, numeric: stats.responseCases, suffix: "+", label: "침해사고 대응 경험" },
+  { value: `${stats.yearsLabel}년`, numeric: stats.years, suffix: "+", label: "사이버보안 전문성" },
+  { value: stats.incidents2025Label, numeric: stats.incidents2025, suffix: "", label: "2025년 침해사고(보고)" },
+  { value: stats.smeShareLabel, numeric: stats.smeShare, suffix: "%", label: "중소·중견 피해 비율" },
 ];
+
+export const serviceDecision = {
+  title: "어떤 서비스가 맞을까요?",
+  lead: "단기 진단이 필요한지, 지속 운영을 맡길지에 따라 선택하시면 됩니다.",
+  compare: [
+    { label: "기간", insight: "수 주 집중", watch: "연간·월간 구독" },
+    { label: "목적", insight: "현황 진단·우선순위", watch: "24/7 모니터링·대응" },
+    { label: "산출물", insight: "진단 요약·권고", watch: "침해 평가 보고서" },
+    { label: "적합 고객", insight: "보안 체계 수립 초기", watch: "전담 인력 부족·MDR 필요" },
+  ],
+};
 
 export const services = [
   {
@@ -179,7 +228,7 @@ export const storyAnchors = [
   { id: "problem", label: "문제" },
   { id: "journey", label: "작업 순서" },
   { id: "outcomes", label: "고객 가치" },
-  { id: "services", label: "서비스" },
+  { id: "faq", label: "FAQ" },
   { id: "experience", label: "체험" },
 ];
 

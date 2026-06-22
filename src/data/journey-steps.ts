@@ -175,3 +175,73 @@ export const journeyFlowPills = unifiedJourneySteps.map((s) => ({
   step: s.step,
   label: journeyStepShortLabel[s.step] ?? s.title,
 }));
+
+/** 랜딩 3막 요약 — 8단계를 압축한 스크롤리텔링 */
+export type JourneyAct = {
+  id: string;
+  act: number;
+  title: string;
+  subtitle: string;
+  stepRange: string[];
+  summary: string;
+  customerNote: string;
+  highlights: string[];
+  visual: JourneyVisualId;
+  stepIndices: number[];
+};
+
+export const journeyActs: JourneyAct[] = [
+  {
+    id: "collect-analyze",
+    act: 1,
+    title: "수집 · 탐지 · 정제",
+    subtitle: "STEP 01–04",
+    stepRange: ["01", "02", "03", "04"],
+    stepIndices: [0, 1, 2, 3],
+    summary:
+      "미러링으로 트래픽을 수집하고, 행동 기반 탐지·IOC 일괄 점검으로 후보를 고릅니다. 분석팀이 화이트리스트로 업무 통신을 정리해, 고객에게 넘길 이슈만 남깁니다.",
+    customerNote: "고객님이 하시는 일: 없음 — 백그라운드에서 전문가·엔진이 처리합니다.",
+    highlights: ["패시브 미러링 수집", "방향별 행동 탐지", "전 고객 IOC 매칭", "화이트리스트 정제"],
+    visual: "sensor",
+  },
+  {
+    id: "collaborate",
+    act: 2,
+    title: "RUNA 협업 · 맥락 확인",
+    subtitle: "STEP 05–06",
+    stepRange: ["05", "06"],
+    stepIndices: [4, 5],
+    summary:
+      "선별된 이슈만 RUNA 업무로 등록됩니다. 분석팀이 확인을 요청하면, 고객은 업무 Sheet·댓글로 「정기 배포 통신입니다」처럼 맥락을 답합니다.",
+    customerNote: "고객님이 하시는 일: RUNA 알림 확인 → 업무 댓글로 맥락 답변.",
+    highlights: ["선별 알림 (로그 폭탄 없음)", "업무 Sheet·칸반", "분석팀 ↔ 고객 댓글", "맥락이 검증 근거로 반영"],
+    visual: "interact",
+  },
+  {
+    id: "verify-report",
+    act: 3,
+    title: "검증 · 조치 · 보고",
+    subtitle: "STEP 07–08",
+    stepRange: ["07", "08"],
+    stepIndices: [6, 7],
+    summary:
+      "탐지 데이터 + 고객 답변 + 전문가 분석으로 정상·위협을 판단하고 조치를 안내합니다. 전 과정이 침해 평가 보고서로 남습니다.",
+    customerNote: "고객님이 하시는 일: 조치 권고 확인·실행 → 보고서로 기록 확인.",
+    highlights: ["전문가 검증", "차단·화이트리스트 권고", "재탐지 추적", "침해 평가 보고서"],
+    visual: "report",
+  },
+];
+
+export function journeyActAnchorId(act: JourneyAct) {
+  return `journey-act-${act.id}`;
+}
+
+export function journeyStepAnchorId(step: string) {
+  return `journey-step-${step}`;
+}
+
+export function formatActLabel(act: JourneyAct) {
+  const from = act.stepRange[0];
+  const to = act.stepRange[act.stepRange.length - 1];
+  return `${act.act}막 (STEP ${from}–${to})`;
+}

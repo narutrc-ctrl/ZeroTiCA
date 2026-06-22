@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { ContactCTA } from "@/components/ContactCTA";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { FloatingCTA } from "@/components/FloatingCTA";
 import { storyAnchors, paths } from "@/data/content";
 
 export function Layout() {
@@ -36,12 +37,12 @@ export function Layout() {
         <div className="zt-container flex h-16 items-center justify-between gap-4">
           <BrandLogo />
           {isHome && (
-            <nav className="hidden items-center gap-0.5 xl:flex">
-              {storyAnchors.slice(1, -1).map((a) => (
+            <nav className="hidden items-center gap-0.5 lg:flex">
+              {storyAnchors.slice(1).map((a) => (
                 <a
                   key={a.id}
                   href={`#${a.id}`}
-                  className="rounded-lg px-2.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 >
                   {a.label}
                 </a>
@@ -99,6 +100,8 @@ export function Layout() {
       <main>
         <Outlet />
       </main>
+
+      {isHome && <FloatingCTA />}
 
       <SiteFooter />
     </div>

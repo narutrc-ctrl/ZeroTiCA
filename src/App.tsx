@@ -15,7 +15,7 @@ export default function App() {
         <Route path="contact" element={<ContactPage />} />
         <Route path="legal/privacy" element={<PrivacyPage />} />
         <Route path="legal/terms" element={<TermsPage />} />
-        <Route path="services" element={<Navigate to="/#services" replace />} />
+        <Route path="services" element={<Navigate to="/#faq" replace />} />
         <Route path="process" element={<Navigate to="/#flow" replace />} />
         <Route path="screens" element={<Navigate to="/#experience" replace />} />
         <Route path="demo/task" element={<DemoTaskPage />} />
