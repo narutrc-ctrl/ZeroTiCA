@@ -45,6 +45,10 @@
     @apply mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-12 xl:px-16;
   }
 
+  .zt-container-hero {
+    @apply mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-10 xl:px-12;
+  }
+
   .zt-section {
     @apply py-16 sm:py-24;
   }
@@ -177,5 +181,19 @@
 
   .journey-dashboard-frame {
     will-change: opacity;
+  }
+
+  @keyframes hero-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .hero-dashboard-float {
+    animation: hero-float 7s ease-in-out infinite;
   }
 }
