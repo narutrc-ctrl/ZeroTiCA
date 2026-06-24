@@ -90,7 +90,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
             ) : null}
             <p className="mt-2 font-semibold text-slate-900">
               2) {threatIncident.title}{" "}
-              <span className="font-normal text-slate-400">(2026-05-06)</span>
+              <span className="font-normal text-slate-400">(2026-05-21)</span>
             </p>
             <ul className="mt-2 list-disc space-y-1 pl-4 text-slate-600">
               <li>이슈·원인: {threatIncident.reportCause}</li>

@@ -1,28 +1,19 @@
 import {
   Activity,
   AlertTriangle,
-  ArrowRight,
   Check,
   CheckCircle2,
   ChevronRight,
   Database,
   FileText,
-  Loader2,
-  Mail,
-  MessageSquare,
-  MousePointerClick,
   Radar,
   RotateCcw,
-  Send,
   Shield,
   Sparkles,
 } from "lucide-react";
-import {
-  chapterForPhase,
-  getCaseEmail,
-  storyChapters,
-} from "@/data/issue-story";
+import { chapterForPhase, storyChapters } from "@/data/issue-story";
 import { SimulationReport } from "@/components/interactive-journey/SimulationReport";
+import { SimulationRunaTaskView } from "@/components/interactive-journey/SimulationRunaTaskView";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
@@ -55,15 +46,6 @@ function MetricCard({
   );
 }
 
-function ClickCue({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="sim-click-cue mt-2 flex items-center justify-center gap-1.5 text-xs font-semibold text-blue-600">
-      <MousePointerClick className="h-3.5 w-3.5" />
-      {children}
-    </p>
-  );
-}
-
 export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   const {
     activeCase,
@@ -73,16 +55,10 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     eventCount,
     issueCount,
     riskLevel,
-    cardInColumn,
-    replyDraft,
-    replyTyping,
-    taskStatus,
-    comments,
     current,
     monitoringLogs,
     analystSteps,
   } = sim;
-  const email = getCaseEmail(activeCase);
   const isThreat = activeCase === "threat";
 
   // ── 모니터링 / 이상 징후 ──
@@ -170,6 +146,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             const Icon = icons[i] ?? Activity;
             const done = i < analystStep;
             const active = i === analystStep;
+            const isValidThreatStep = isThreat && i === 2;
             return (
               <div key={s.label} className="flex gap-3">
                 <div className="flex flex-col items-center">
@@ -177,9 +154,13 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                     className={cn(
                       "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-500",
                       done
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-600"
+                        ? isValidThreatStep
+                          ? "border-red-500 bg-red-50 text-red-600"
+                          : "border-emerald-500 bg-emerald-50 text-emerald-600"
                         : active
-                          ? "border-blue-500 bg-blue-50 text-blue-600 sim-step-active"
+                          ? isValidThreatStep
+                            ? "border-red-500 bg-red-50 text-red-600 sim-step-active"
+                            : "border-blue-500 bg-blue-50 text-blue-600 sim-step-active"
                           : "border-slate-200 bg-slate-50 text-slate-300",
                     )}
                   >
@@ -190,7 +171,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                   ) : null}
                 </div>
                 <div className={cn("pb-4 min-w-0 flex-1", active && "sim-expand-in")}>
-                  <p className={cn("text-xs font-bold", active ? "text-blue-700" : done ? "text-emerald-700" : "text-slate-400")}>
+                  <p className={cn("text-xs font-bold", active ? (isValidThreatStep ? "text-red-700" : "text-blue-700") : done ? "text-emerald-700" : "text-slate-400")}>
                     {s.title}
                   </p>
                   {active ? (
@@ -210,192 +191,16 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     );
   }
 
-  // ── 알림 전달 (메일 + 칸반 동시) ──
-  if (phase === "delivery" || phase === "kanban") {
-    const showCard = cardInColumn !== "hidden";
-    const cardReady = cardInColumn === "ready" || cardInColumn === "done";
-    const waitClick = phase === "kanban" && cardReady;
-
-    return (
-      <div className="space-y-3">
-        <div className={cn("sim-slide-in rounded-xl border border-slate-200 bg-white p-3 shadow-lg", phase === "delivery" && "sim-email-in")}>
-          <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-              <Mail className="h-4 w-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] text-slate-400">
-                {email.from} · {email.time}
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-slate-900">{email.subject}</p>
-              <p className="mt-1 text-[11px] text-slate-600">{email.preview}</p>
-            </div>
-            <span className="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">NEW</span>
-          </div>
-        </div>
-
-        <MiniRunaFrame activeNav="tasks" showNotification>
-          <p className="mb-2 text-xs font-semibold text-slate-700">RUNA · 업무 관리</p>
-          <div className="flex gap-2 overflow-x-auto">
-            <KanbanColumn title="업무 요청" titleClass="text-slate-600" headerClass="bg-slate-100" count={0}>
-              <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
-            </KanbanColumn>
-            <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={showCard ? 1 : 0} showArrow>
-              {showCard ? (
-                <div className={cn("transition-all duration-700", cardInColumn === "entering" && "sim-card-enter")}>
-                  <TaskCard
-                    title={current.title}
-                    code={current.code}
-                    author="제로티카 분석팀"
-                    status="확인 요청"
-                    statusClass={taskStatusClass("requested")}
-                    highlight={waitClick}
-                    onClick={waitClick ? sim.openTask : undefined}
-                  />
-                  {waitClick ? <ClickCue>이 업무 카드를 클릭하세요</ClickCue> : null}
-                </div>
-              ) : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">
-                  대기 중…
-                </div>
-              )}
-            </KanbanColumn>
-            <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={0}>
-              <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
-            </KanbanColumn>
-          </div>
-        </MiniRunaFrame>
-      </div>
-    );
-  }
-
-  // ── Task 상세 / 댓글 / 검증 ──
-  if (phase === "task" || phase === "reply" || phase === "verifying" || phase === "staff-reply") {
-    const statusKey =
-      phase === "verifying" ? "checking" : phase === "staff-reply" ? "completed" : "requested";
-
-    return (
-      <MiniRunaFrame activeNav="tasks">
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-100 px-4 py-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">확인 요청</span>
-              <span className="font-mono text-[10px] text-slate-400">{current.code}</span>
-            </div>
-            <h4 className="mt-2 text-sm font-bold leading-snug text-slate-900">{current.title}</h4>
-            <span className={cn("mt-2 inline-flex rounded-lg border px-2 py-0.5 text-[10px] font-semibold", taskStatusClass(statusKey))}>
-              {phase === "verifying" ? "확인 중" : phase === "staff-reply" ? "조치 완료" : taskStatus}
-            </span>
-          </div>
-
-          <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">의심 통신 개요</p>
-            <p className="mt-1 text-xs text-slate-700">{current.eventType}</p>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:grid-cols-3">
-              <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100">
-                <p className="text-slate-400">출발지</p>
-                <p className="font-mono font-semibold text-slate-800">{current.srcIp}</p>
-              </div>
-              <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100">
-                <p className="text-slate-400">목적지</p>
-                <p className="font-mono font-semibold text-slate-800">{current.dstIp}</p>
-              </div>
-              <div className="col-span-2 rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100 sm:col-span-1">
-                <p className="text-slate-400">탐지 시각</p>
-                <p className="font-semibold text-slate-800">{current.detectedAt}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold text-slate-500">
-              {isThreat ? "고객 확인·조치 항목" : "고객 확인 항목"}
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {current.customerChecks.map((item) => (
-                <li key={item} className="flex gap-2 text-[11px] text-slate-600 sm:text-xs">
-                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-blue-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="space-y-3 border-t border-slate-100 p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-800">
-              <MessageSquare className="h-3.5 w-3.5" />
-              댓글 · 협업
-            </div>
-            <ul className="max-h-40 space-y-2 overflow-y-auto">
-              {comments.map((c) => (
-                <li key={`${c.at}-${c.body.slice(0, 12)}`} className={cn("rounded-lg p-2.5 text-xs", c.role === "staff" ? "bg-slate-50" : "bg-sky-50")}>
-                  <p className="text-[10px] text-slate-500">{c.author} · {c.at}</p>
-                  <p className="mt-1 leading-relaxed text-slate-700">{c.body}</p>
-                </li>
-              ))}
-            </ul>
-
-            {phase === "verifying" ? (
-              <div className="flex flex-col items-center gap-2 rounded-xl bg-slate-50 py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                <p className="text-xs font-medium text-slate-600">
-                  {isThreat ? "분석팀이 고객 조치 결과를 검증 중…" : "분석팀이 업무 맥락을 검증 중…"}
-                </p>
-                <p className="text-[10px] text-slate-400">RUNA · 확인 중</p>
-              </div>
-            ) : null}
-
-            {phase === "reply" ? (
-              <div className="rounded-lg border border-blue-200 bg-blue-50/30 p-3">
-                <label className="text-[10px] font-medium text-slate-500">
-                  {isThreat ? "고객 조치 내용" : "고객 답변"}
-                </label>
-                <textarea
-                  readOnly
-                  value={replyDraft}
-                  rows={3}
-                  className="mt-2 w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs leading-relaxed text-slate-800"
-                />
-                {replyTyping ? (
-                  <p className="mt-1 text-[10px] text-slate-400">입력 중…</p>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={sim.submitReply}
-                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white hover:bg-blue-500"
-                  >
-                    <Send className="h-4 w-4" />
-                    답변 등록
-                  </button>
-                )}
-              </div>
-            ) : null}
-
-            {phase === "staff-reply" ? (
-              <button
-                type="button"
-                onClick={sim.viewResult}
-                className="sim-click-cue-target inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 hover:bg-blue-500"
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                검증 결과 확인하기
-              </button>
-            ) : null}
-
-            {phase === "task" ? (
-              <button
-                type="button"
-                onClick={sim.startReply}
-                className="sim-click-cue-target inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-500 bg-white px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
-              >
-                {isThreat ? "조치 내용 답변하기" : "맥락 답변하기"}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            ) : null}
-          </div>
-        </div>
-      </MiniRunaFrame>
-    );
+  // ── 알림 · 칸반 · Sheet 협업 ──
+  if (
+    phase === "delivery" ||
+    phase === "kanban" ||
+    phase === "task" ||
+    phase === "reply" ||
+    phase === "verifying" ||
+    phase === "staff-reply"
+  ) {
+    return <SimulationRunaTaskView sim={sim} showEmail={phase === "delivery"} />;
   }
 
   // ── 완료 (카드 이동) ──
@@ -412,6 +217,9 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           {isThreat ? "고객 조치 검증 완료" : "정상 업무 통신 검증 완료"} · {current.code}
         </div>
         <div className="flex gap-2 overflow-x-auto">
+          <KanbanColumn title="업무 요청" titleClass="text-slate-600" headerClass="bg-slate-100" count={0}>
+            <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
+          </KanbanColumn>
           <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={0}>
             <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
           </KanbanColumn>

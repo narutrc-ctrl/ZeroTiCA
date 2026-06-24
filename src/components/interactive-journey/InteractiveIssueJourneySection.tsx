@@ -147,7 +147,7 @@ export function InteractiveIssueJourneySection() {
                         {needsUserAction ? (
                           <div className="mt-5 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3">
                             <p className="text-sm font-semibold text-blue-800">
-                              {narrative.action === "click-card" && "오른쪽 칸반에서 업무 카드를 클릭하세요"}
+                              {narrative.action === "click-card" && "오른쪽 「업무 요청」 칸반 카드를 클릭하세요"}
                               {narrative.action === "click-reply" && replyHint}
                               {narrative.action === "click-submit" &&
                                 (activeCase === "threat"
@@ -190,7 +190,7 @@ export function InteractiveIssueJourneySection() {
                   </div>
 
                   <div className="min-w-0">
-                    <div key={`${activeCase}-${phase}-${sim.analystStep}`} className="sim-stage-in">
+                    <div key={`${activeCase}-${phase}-${sim.analystStep}-${sim.sheetOpen}`} className="sim-stage-in">
                       <SimulationStage sim={sim} />
                     </div>
                   </div>

@@ -15,13 +15,15 @@ type Comment = {
   body: string;
 };
 
+export type SimKanbanColumn = "hidden" | "pre_request" | "in_request" | "done";
+
 const initialComments = (activeCase: SimCase): Comment[] => {
   const current = getCaseIncident(activeCase);
   return [
     {
       author: "분석팀",
       role: "staff",
-      at: activeCase === "normal" ? "2026-05-12 11:20" : "2026-05-06 14:40",
+      at: activeCase === "normal" ? "2026-05-12 11:20" : "2026-05-21 09:10",
       body: current.staffQuestion,
     },
   ];
@@ -36,7 +38,9 @@ export function useIssueSimulation() {
   const [eventCount, setEventCount] = useState(getCaseIncident("normal").initialEventCount);
   const [issueCount, setIssueCount] = useState(getCaseIncident("normal").initialIssueCount);
   const [riskLevel, setRiskLevel] = useState(getCaseIncident("normal").riskBefore);
-  const [cardInColumn, setCardInColumn] = useState<"hidden" | "entering" | "ready" | "done">("hidden");
+  const [kanbanColumn, setKanbanColumn] = useState<SimKanbanColumn>("hidden");
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [eventDetailOpen, setEventDetailOpen] = useState(false);
   const [replyDraft, setReplyDraft] = useState("");
   const [replyTyping, setReplyTyping] = useState(false);
   const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "조치 완료">("확인 요청");
@@ -77,7 +81,9 @@ export function useIssueSimulation() {
     setEventCount(caseData.initialEventCount);
     setIssueCount(caseData.initialIssueCount);
     setRiskLevel(caseData.riskBefore);
-    setCardInColumn("hidden");
+    setKanbanColumn("hidden");
+    setSheetOpen(false);
+    setEventDetailOpen(false);
     setReplyDraft("");
     setReplyTyping(false);
     setTaskStatus("확인 요청");
@@ -112,13 +118,29 @@ export function useIssueSimulation() {
     setStarted(true);
     setActiveCase("threat");
     setTaskStatus("조치 완료");
-    setCardInColumn("done");
+    setKanbanColumn("done");
+    setSheetOpen(false);
+    setEventDetailOpen(false);
     setPhase("report");
   }, [clearTimers]);
 
-  const openTask = useCallback(() => goTo("task"), [goTo]);
+  const openTask = useCallback(() => {
+    setKanbanColumn("in_request");
+    setSheetOpen(true);
+    setEventDetailOpen(false);
+    goTo("task");
+  }, [goTo]);
+
+  const openEventDetail = useCallback(() => {
+    setEventDetailOpen(true);
+  }, []);
+
+  const closeEventDetail = useCallback(() => {
+    setEventDetailOpen(false);
+  }, []);
 
   const startReply = useCallback(() => {
+    setEventDetailOpen(false);
     goTo("reply");
     setReplyTyping(true);
     setReplyDraft("");
@@ -145,7 +167,7 @@ export function useIssueSimulation() {
         author: "demo_admin",
         role: "client",
         body: caseData.presetReply,
-        at: activeCase === "normal" ? "2026-05-13 09:40" : "2026-05-07 10:15",
+        at: activeCase === "normal" ? "2026-05-13 09:40" : "2026-05-22 10:15",
       },
     ]);
     setTaskStatus("확인 중");
@@ -156,20 +178,24 @@ export function useIssueSimulation() {
         {
           author: "분석팀",
           role: "staff",
-          at: activeCase === "normal" ? "2026-05-13 14:00" : "2026-05-07 15:30",
+          at: activeCase === "normal" ? "2026-05-13 14:00" : "2026-05-22 15:30",
           body: caseData.staffReply,
         },
       ]);
       setTaskStatus("조치 완료");
-      setCardInColumn("done");
       goTo("staff-reply");
     }, 2400);
   }, [goTo, schedule, replyDraft, replyTyping, activeCase]);
 
-  const viewResult = useCallback(() => goTo("complete"), [goTo]);
+  const viewResult = useCallback(() => {
+    setSheetOpen(false);
+    setEventDetailOpen(false);
+    setKanbanColumn("done");
+    goTo("complete");
+  }, [goTo]);
+
   const openReport = useCallback(() => goTo("report"), [goTo]);
 
-  // Auto phases — only when started
   useEffect(() => {
     if (!started || phase !== "monitoring") return;
     const logs = getCaseMonitoringLogs(activeCase);
@@ -208,11 +234,8 @@ export function useIssueSimulation() {
 
   useEffect(() => {
     if (!started || phase !== "delivery") return;
-    schedule(() => setCardInColumn("entering"), 500);
-    schedule(() => {
-      setCardInColumn("ready");
-      goTo("kanban");
-    }, 2200);
+    schedule(() => setKanbanColumn("pre_request"), 600);
+    schedule(() => goTo("kanban"), 2200);
   }, [started, phase, goTo, schedule]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
@@ -228,7 +251,9 @@ export function useIssueSimulation() {
     eventCount,
     issueCount,
     riskLevel,
-    cardInColumn,
+    kanbanColumn,
+    sheetOpen,
+    eventDetailOpen,
     replyDraft,
     replyTyping,
     taskStatus,
@@ -242,6 +267,8 @@ export function useIssueSimulation() {
     jumpToReport,
     goTo,
     openTask,
+    openEventDetail,
+    closeEventDetail,
     startReply,
     submitReply,
     viewResult,
