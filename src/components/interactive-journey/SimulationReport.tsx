@@ -1,15 +1,14 @@
 import { BrandMark } from "@/components/BrandLogo";
 import { demoStageSummaryRows } from "@/data/demo-runa-data";
-import { incident, reportMeta, threatMiniCase } from "@/data/issue-story";
+import { incident, reportMeta, threatIncident } from "@/data/issue-story";
 import { cn } from "@/lib/cn";
 
 type Props = {
   highlightNormal?: boolean;
   highlightThreat?: boolean;
-  threatStep?: number;
 };
 
-export function SimulationReport({ highlightNormal = true, highlightThreat = false, threatStep = 2 }: Props) {
+export function SimulationReport({ highlightNormal = true, highlightThreat = true }: Props) {
   return (
     <div className="max-h-[min(560px,70vh)] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl">
       <div className="sticky top-0 z-10 border-b border-slate-100 bg-white px-5 py-4">
@@ -86,19 +85,19 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = fal
               highlightThreat ? "sim-report-highlight border-red-200 bg-red-50/40" : "border-slate-100 bg-slate-50",
             )}
           >
-            {highlightThreat && threatStep >= 2 ? (
+            {highlightThreat ? (
               <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white">위험 통신 사례</span>
             ) : null}
             <p className="mt-2 font-semibold text-slate-900">
-              2) {threatMiniCase.title}{" "}
+              2) {threatIncident.title}{" "}
               <span className="font-normal text-slate-400">(2026-05-06)</span>
             </p>
             <ul className="mt-2 list-disc space-y-1 pl-4 text-slate-600">
-              <li>이슈·원인: {threatMiniCase.reportCause}</li>
-              <li>결과·상태: {threatMiniCase.reportOutcome}</li>
+              <li>이슈·원인: {threatIncident.reportCause}</li>
+              <li>결과·상태: {threatIncident.reportOutcome}</li>
             </ul>
             <span className="mt-2 inline-block rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-semibold text-red-700">
-              {threatMiniCase.reportVerdict}
+              {threatIncident.reportVerdict}
             </span>
           </div>
         </section>

@@ -18,14 +18,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
-  analystSteps,
   chapterForPhase,
-  emailNotification,
-  incident,
-  monitoringLogs,
+  getCaseEmail,
   storyChapters,
-  threatMiniCase,
-  threatMiniSteps,
 } from "@/data/issue-story";
 import { SimulationReport } from "@/components/interactive-journey/SimulationReport";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
@@ -70,7 +65,25 @@ function ClickCue({ children }: { children: React.ReactNode }) {
 }
 
 export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
-  const { phase, analystStep, logCount, eventCount, issueCount, riskLevel, cardInColumn, replyDraft, replyTyping, taskStatus, comments } = sim;
+  const {
+    activeCase,
+    phase,
+    analystStep,
+    logCount,
+    eventCount,
+    issueCount,
+    riskLevel,
+    cardInColumn,
+    replyDraft,
+    replyTyping,
+    taskStatus,
+    comments,
+    current,
+    monitoringLogs,
+    analystSteps,
+  } = sim;
+  const email = getCaseEmail(activeCase);
+  const isThreat = activeCase === "threat";
 
   // ── 모니터링 / 이상 징후 ──
   if (phase === "monitoring" || phase === "anomaly") {
@@ -78,10 +91,13 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     const logs = monitoringLogs.slice(0, isAnomaly ? monitoringLogs.length : logCount);
 
     return (
-      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-2xl">
+      <div className={cn("overflow-hidden rounded-xl border bg-slate-950 shadow-2xl", isThreat ? "border-red-900/60" : "border-slate-800")}>
         <div className="border-b border-slate-800 bg-slate-900/90 px-4 py-2.5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-slate-300">네트워크 모니터링 · 실시간</p>
+            <p className="text-xs font-semibold text-slate-300">
+              네트워크 모니터링 · 실시간
+              {isThreat ? <span className="ml-2 text-red-400">위험 통신 사례</span> : null}
+            </p>
             <span className="flex items-center gap-1.5 text-[10px] text-emerald-400">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               LIVE
@@ -96,10 +112,16 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           </div>
 
           {isAnomaly ? (
-            <div className="sim-slide-in mt-3 flex items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-400" />
-              <p className="text-xs font-medium text-amber-100">
-                <span className="font-mono text-amber-300">{incident.srcIp}</span> → {incident.dstIp} · 이상 패턴 감지
+            <div
+              className={cn(
+                "sim-slide-in mt-3 flex items-center gap-2 rounded-lg border px-3 py-2",
+                isThreat ? "border-red-500/40 bg-red-500/10" : "border-amber-500/40 bg-amber-500/10",
+              )}
+            >
+              <AlertTriangle className={cn("h-4 w-4 shrink-0", isThreat ? "text-red-400" : "text-amber-400")} />
+              <p className={cn("text-xs font-medium", isThreat ? "text-red-100" : "text-amber-100")}>
+                <span className={cn("font-mono", isThreat ? "text-red-300" : "text-amber-300")}>{current.srcIp}</span> →{" "}
+                {current.dstIp} · {current.monitoringAlertText}
               </p>
             </div>
           ) : null}
@@ -115,7 +137,9 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                   className={cn(
                     "rounded-md border px-2.5 py-2 font-mono text-[10px] transition-all duration-500 sm:text-[11px]",
                     ev.level === "alert"
-                      ? "border-amber-500/50 bg-amber-950/60 text-amber-100"
+                      ? isThreat
+                        ? "border-red-500/50 bg-red-950/60 text-red-100"
+                        : "border-amber-500/50 bg-amber-950/60 text-amber-100"
                       : ev.level === "warn"
                         ? "border-slate-700 bg-slate-900 text-slate-300"
                         : "border-slate-800 bg-slate-900/50 text-slate-400",
@@ -201,10 +225,10 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[10px] text-slate-400">
-                {emailNotification.from} · {emailNotification.time}
+                {email.from} · {email.time}
               </p>
-              <p className="mt-0.5 text-xs font-semibold text-slate-900">{emailNotification.subject}</p>
-              <p className="mt-1 text-[11px] text-slate-600">{emailNotification.preview}</p>
+              <p className="mt-0.5 text-xs font-semibold text-slate-900">{email.subject}</p>
+              <p className="mt-1 text-[11px] text-slate-600">{email.preview}</p>
             </div>
             <span className="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">NEW</span>
           </div>
@@ -220,8 +244,8 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
               {showCard ? (
                 <div className={cn("transition-all duration-700", cardInColumn === "entering" && "sim-card-enter")}>
                   <TaskCard
-                    title={incident.title}
-                    code={incident.code}
+                    title={current.title}
+                    code={current.code}
                     author="제로티카 분석팀"
                     status="확인 요청"
                     statusClass={taskStatusClass("requested")}
@@ -256,9 +280,9 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           <div className="border-b border-slate-100 px-4 py-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">확인 요청</span>
-              <span className="font-mono text-[10px] text-slate-400">{incident.code}</span>
+              <span className="font-mono text-[10px] text-slate-400">{current.code}</span>
             </div>
-            <h4 className="mt-2 text-sm font-bold leading-snug text-slate-900">{incident.title}</h4>
+            <h4 className="mt-2 text-sm font-bold leading-snug text-slate-900">{current.title}</h4>
             <span className={cn("mt-2 inline-flex rounded-lg border px-2 py-0.5 text-[10px] font-semibold", taskStatusClass(statusKey))}>
               {phase === "verifying" ? "확인 중" : phase === "staff-reply" ? "조치 완료" : taskStatus}
             </span>
@@ -266,27 +290,29 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
 
           <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">의심 통신 개요</p>
-            <p className="mt-1 text-xs text-slate-700">{incident.eventType}</p>
+            <p className="mt-1 text-xs text-slate-700">{current.eventType}</p>
             <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:grid-cols-3">
               <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100">
                 <p className="text-slate-400">출발지</p>
-                <p className="font-mono font-semibold text-slate-800">{incident.srcIp}</p>
+                <p className="font-mono font-semibold text-slate-800">{current.srcIp}</p>
               </div>
               <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100">
                 <p className="text-slate-400">목적지</p>
-                <p className="font-mono font-semibold text-slate-800">{incident.dstIp}</p>
+                <p className="font-mono font-semibold text-slate-800">{current.dstIp}</p>
               </div>
               <div className="col-span-2 rounded-lg bg-white px-2 py-1.5 ring-1 ring-slate-100 sm:col-span-1">
                 <p className="text-slate-400">탐지 시각</p>
-                <p className="font-semibold text-slate-800">{incident.detectedAt}</p>
+                <p className="font-semibold text-slate-800">{current.detectedAt}</p>
               </div>
             </div>
           </div>
 
           <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold text-slate-500">고객 확인 항목</p>
+            <p className="text-[10px] font-semibold text-slate-500">
+              {isThreat ? "고객 확인·조치 항목" : "고객 확인 항목"}
+            </p>
             <ul className="mt-2 space-y-1.5">
-              {incident.customerChecks.map((item) => (
+              {current.customerChecks.map((item) => (
                 <li key={item} className="flex gap-2 text-[11px] text-slate-600 sm:text-xs">
                   <Check className="mt-0.5 h-3 w-3 shrink-0 text-blue-500" />
                   {item}
@@ -312,14 +338,18 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             {phase === "verifying" ? (
               <div className="flex flex-col items-center gap-2 rounded-xl bg-slate-50 py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                <p className="text-xs font-medium text-slate-600">분석팀이 답변을 반영해 재검증 중…</p>
+                <p className="text-xs font-medium text-slate-600">
+                  {isThreat ? "분석팀이 고객 조치 결과를 검증 중…" : "분석팀이 업무 맥락을 검증 중…"}
+                </p>
                 <p className="text-[10px] text-slate-400">RUNA · 확인 중</p>
               </div>
             ) : null}
 
             {phase === "reply" ? (
               <div className="rounded-lg border border-blue-200 bg-blue-50/30 p-3">
-                <label className="text-[10px] font-medium text-slate-500">고객 답변</label>
+                <label className="text-[10px] font-medium text-slate-500">
+                  {isThreat ? "고객 조치 내용" : "고객 답변"}
+                </label>
                 <textarea
                   readOnly
                   value={replyDraft}
@@ -348,7 +378,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                 className="sim-click-cue-target inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 hover:bg-blue-500"
               >
                 <CheckCircle2 className="h-4 w-4" />
-                조치 내용 확인하기
+                검증 결과 확인하기
               </button>
             ) : null}
 
@@ -358,7 +388,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                 onClick={sim.startReply}
                 className="sim-click-cue-target inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-500 bg-white px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
               >
-                맥락 답변하기
+                {isThreat ? "조치 내용 답변하기" : "맥락 답변하기"}
                 <ArrowRight className="h-4 w-4" />
               </button>
             ) : null}
@@ -372,9 +402,14 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   if (phase === "complete") {
     return (
       <MiniRunaFrame activeNav="tasks">
-        <div className="mb-3 flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
+        <div
+          className={cn(
+            "mb-3 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold",
+            isThreat ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700",
+          )}
+        >
           <CheckCircle2 className="h-4 w-4" />
-          분석팀 조치 완료 · {incident.code}
+          {isThreat ? "고객 조치 검증 완료" : "정상 업무 통신 검증 완료"} · {current.code}
         </div>
         <div className="flex gap-2 overflow-x-auto">
           <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={0}>
@@ -383,8 +418,8 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={1}>
             <div className="sim-card-enter">
               <TaskCard
-                title={incident.title}
-                code={incident.code}
+                title={current.title}
+                code={current.code}
                 author="제로티카 분석팀"
                 status="조치 완료"
                 statusClass={taskStatusClass("completed")}
@@ -393,96 +428,44 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           </KanbanColumn>
         </div>
         <p className="mt-4 text-center text-[11px] text-slate-500">
-          고객 맥락 답변 → 분석팀 재검증 → 조치 완료
+          {isThreat
+            ? "고객 조치 → 분석팀 검증 → 완료 처리"
+            : "고객 맥락 답변 → 분석팀 검증 → 완료 처리"}
         </p>
-        <button
-          type="button"
-          onClick={sim.openReport}
-          className="sim-click-cue-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-500 bg-white px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
-        >
-          <FileText className="h-4 w-4" />
-          보고서에서 확인하기
-        </button>
+        {activeCase === "normal" ? (
+          <button
+            type="button"
+            onClick={sim.startThreatCase}
+            className="sim-click-cue-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-500"
+          >
+            <AlertTriangle className="h-4 w-4" />
+            위험 통신 사례 이어서 보기
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={sim.openReport}
+            className="sim-click-cue-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-500 bg-white px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
+          >
+            <FileText className="h-4 w-4" />
+            보고서에서 확인하기
+          </button>
+        )}
       </MiniRunaFrame>
     );
   }
 
-  // ── 월간 보고서 + 위협 미니 케이스 ──
-  const { threatStep } = sim;
-  const threatDone = threatStep >= 3;
-
+  // ── 월간 보고서 (두 사례 통합) ──
   return (
     <div className="space-y-4">
-      {threatStep < 3 ? (
-        <ThreatMiniPanel step={threatStep} onAdvance={sim.advanceThreatStep} />
-      ) : null}
-      <SimulationReport highlightNormal highlightThreat={threatDone} threatStep={threatStep} />
-      {threatDone ? (
-        <button
-          type="button"
-          onClick={sim.restart}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
-        >
-          <RotateCcw className="h-4 w-4" />
-          처음부터 다시 체험
-        </button>
-      ) : null}
-    </div>
-  );
-}
-
-function ThreatMiniPanel({ step, onAdvance }: { step: number; onAdvance: () => void }) {
-  const current = threatMiniSteps[step];
-  if (!current) return null;
-
-  return (
-    <div className="rounded-xl border border-red-200 bg-gradient-to-br from-red-50/80 to-white p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-red-600">
-          위험 통신 사례 · {step + 1}/3
-        </p>
-        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700">압축 데모</span>
-      </div>
-      <h4 className="mt-2 text-sm font-bold text-slate-900">{current.title}</h4>
-      <p className="mt-1 text-xs leading-relaxed text-slate-600">{current.body}</p>
-
-      {step === 0 ? (
-        <div className="sim-slide-in mt-3 rounded-lg border border-red-200 bg-white p-3">
-          <div className="flex items-start gap-2">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
-            <div>
-              <p className="text-[10px] font-mono text-slate-400">{threatMiniCase.code}</p>
-              <p className="text-xs font-semibold text-slate-900">{threatMiniCase.title}</p>
-              <p className="mt-1 text-[11px] text-slate-600">{threatMiniCase.alert}</p>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {step === 1 ? (
-        <div className="sim-slide-in mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
-          <p className="text-[10px] text-slate-500">고객 답변</p>
-          <p className="mt-1 text-xs text-slate-700">{threatMiniCase.customerReply}</p>
-        </div>
-      ) : null}
-
-      {step === 2 ? (
-        <div className="sim-slide-in mt-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-3">
-          <p className="text-[10px] text-slate-500">분석팀 조치</p>
-          <p className="mt-1 text-xs text-slate-700">{threatMiniCase.analystClose}</p>
-          <span className="mt-2 inline-block rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700">
-            {threatMiniCase.reportVerdict}
-          </span>
-        </div>
-      ) : null}
-
+      <SimulationReport highlightNormal highlightThreat />
       <button
         type="button"
-        onClick={onAdvance}
-        className="sim-click-cue-target mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500"
+        onClick={sim.restart}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
       >
-        {step < 2 ? "다음 단계" : "보고서에서 확인"}
-        <ArrowRight className="h-4 w-4" />
+        <RotateCcw className="h-4 w-4" />
+        처음부터 다시 체험
       </button>
     </div>
   );

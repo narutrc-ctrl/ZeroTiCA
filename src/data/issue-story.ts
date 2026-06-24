@@ -1,4 +1,4 @@
-/** 랜딩 미니 시뮬레이션 — 폐쇄망 기계적 통신 + 위협 통신 압축 사례 */
+/** 랜딩 미니 시뮬레이션 — 정상 검증 사례 + 위협 통신 사례 */
 
 export const simulationIntro = {
   eyebrow: "직접 따라가 보기",
@@ -19,6 +19,8 @@ export const storyChapters = [
   { id: "close", label: "완료" },
   { id: "report", label: "보고서" },
 ] as const;
+
+export type SimCase = "normal" | "threat";
 
 export type SimPhase =
   | "monitoring"
@@ -56,22 +58,30 @@ export function chapterForPhase(phase: SimPhase): number {
   return 5;
 }
 
-export const simulationNarrative: Record<
-  SimPhase,
-  {
-    title: string;
-    body: string;
-    action?: "wait" | "click-card" | "click-reply" | "click-submit" | "click-view-result" | "click-report";
-  }
-> = {
+export type NarrativeAction =
+  | "wait"
+  | "click-card"
+  | "click-reply"
+  | "click-submit"
+  | "click-view-result"
+  | "click-next-case"
+  | "click-report";
+
+export type SimulationNarrative = {
+  title: string;
+  body: string;
+  action?: NarrativeAction;
+};
+
+const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   monitoring: {
     title: "오늘도 네트워크를 모니터링하고 있습니다",
     body: "이벤트 스트림·이슈 현황·이상 통신 후보를 매일 확인합니다. 대부분은 정상 범주에서 처리됩니다.",
     action: "wait",
   },
   anomaly: {
-    title: "잠깐, 이 통신 패턴이 평소와 다릅니다",
-    body: "10.24.18.52 → 10.24.20.10 방향의 주기적 HTTP 통신이 강조되었습니다. 이벤트 카운트가 올라가고 위험도가 상승했습니다.",
+    title: "이상 징후가 감지되었습니다",
+    body: "의심 통신 후보가 강조되었습니다. 이벤트 카운트와 위험도를 확인합니다.",
     action: "wait",
   },
   analyst: {
@@ -91,33 +101,125 @@ export const simulationNarrative: Record<
   },
   task: {
     title: "업무 내용을 확인하세요",
-    body: "의심 통신 개요, 관련 IP·서버·시간, 분석팀 질문을 확인한 뒤 맥락을 답변합니다.",
+    body: "의심 통신 개요, 관련 IP·서버·시간, 분석팀 질문을 확인합니다.",
     action: "click-reply",
   },
   reply: {
-    title: "업무 맥락을 답변합니다",
-    body: "고객의 역할은 업무 맥락 확인·답변까지입니다. 이후 검증과 조치는 분석팀이 진행합니다.",
+    title: "답변을 등록합니다",
+    body: "고객이 확인·답변을 등록하면 분석팀이 검증합니다.",
     action: "click-submit",
   },
   verifying: {
-    title: "분석팀이 답변을 반영해 재검토 중입니다",
-    body: "RUNA에서 「확인 중」 상태로 전환됩니다. 탐지 데이터와 고객 맥락을 함께 판단합니다.",
+    title: "분석팀이 검증 중입니다",
+    body: "RUNA에서 「확인 중」 상태로 전환됩니다.",
     action: "wait",
   },
   "staff-reply": {
-    title: "분석팀이 검증을 마쳤습니다",
-    body: "고객 답변을 반영해 정상 업무 통신으로 판단했습니다. 상태가 「조치 완료」로 정리되었습니다.",
+    title: "분석팀 검증이 완료되었습니다",
+    body: "분석팀이 확인 결과를 회신하고 완료 처리했습니다.",
     action: "click-view-result",
   },
   complete: {
-    title: "분석팀이 검증과 조치 정리를 완료했습니다",
-    body: "고객 답변을 바탕으로 분석팀이 정상 업무 통신으로 검증했습니다. 관련 근거와 조치 내용은 월간 보고서에 자동 반영됩니다.",
+    title: "검증이 완료되었습니다",
+    body: "분석팀 검증이 마무리되었습니다.",
     action: "click-report",
   },
   report: {
     title: "이번 달 검증 결과가 보고서에 남습니다",
-    body: "정상으로 검증된 사례와 실제 위험 통신 사례가 각각 보고서에 기록됩니다.",
+    body: "정상으로 검증된 사례와 위험 통신·조치 사례가 함께 보고서에 기록됩니다.",
   },
+};
+
+const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, SimulationNarrative>>> = {
+  normal: {
+    anomaly: {
+      title: "잠깐, 이 통신 패턴이 평소와 다릅니다",
+      body: "10.24.18.52 → 10.24.20.10 방향의 주기적 HTTP 통신이 강조되었습니다. 이벤트 카운트가 올라가고 위험도가 상승했습니다.",
+      action: "wait",
+    },
+    reply: {
+      title: "업무 맥락을 답변합니다",
+      body: "고객은 업무 맥락 확인·답변을 합니다. 이후 정상 업무 통신 여부는 분석팀이 검증합니다.",
+      action: "click-submit",
+    },
+    verifying: {
+      title: "분석팀이 업무 맥락을 검증 중입니다",
+      body: "탐지 데이터와 고객 답변을 함께 검토해 정상 업무 통신인지 판단합니다.",
+      action: "wait",
+    },
+    "staff-reply": {
+      title: "정상 업무 통신으로 검증되었습니다",
+      body: "분석팀이 고객 맥락을 반영해 정상 업무 통신으로 판단했습니다. 이상 없음 — 완료 처리했습니다.",
+      action: "click-view-result",
+    },
+    complete: {
+      title: "사례 1 · 정상 검증 완료",
+      body: "고객 맥락 확인 후 정상 업무 통신으로 분류되었습니다. 이어서 실제 위험 통신 사례도 같은 흐름으로 체험해 보세요.",
+      action: "click-next-case",
+    },
+  },
+  threat: {
+    anomaly: {
+      title: "위험 신호가 교차 확인되었습니다",
+      body: "10.88.12.5 → 203.0.113.44 방향 장시간 아웃바운드와 IocIP 태그가 함께 감지되었습니다. 위험도가 급상승했습니다.",
+      action: "wait",
+    },
+    reply: {
+      title: "조치 내용을 답변합니다",
+      body: "업무와 무관한 위협으로 확인되었습니다. 조치(프로세스 중지·삭제 등)는 고객이 직접 수행하고, 분석팀은 조치 결과를 검증합니다.",
+      action: "click-submit",
+    },
+    verifying: {
+      title: "분석팀이 고객 조치를 검증 중입니다",
+      body: "고객이 수행한 조치가 올바른지, 재탐지가 없는지 확인합니다. 조치는 고객이, 검증·완료 처리는 분석팀이 담당합니다.",
+      action: "wait",
+    },
+    "staff-reply": {
+      title: "고객 조치 검증이 완료되었습니다",
+      body: "고객 조치(프로세스 중지·삭제)와 재탐지 없음을 확인했습니다. 이상 없음 — 분석팀이 완료 처리했습니다.",
+      action: "click-view-result",
+    },
+    complete: {
+      title: "사례 2 · 위협 통신 조치·검증 완료",
+      body: "고객 조치를 분석팀이 검증해 완료 처리했습니다. 두 사례 모두 월간 보고서에 반영됩니다.",
+      action: "click-report",
+    },
+  },
+};
+
+export function getSimulationNarrative(phase: SimPhase, activeCase: SimCase): SimulationNarrative {
+  return caseNarrativeOverrides[activeCase][phase] ?? sharedNarrative[phase];
+}
+
+export function getCaseLabel(activeCase: SimCase): string {
+  return activeCase === "normal" ? "사례 1 · 정상 검증" : "사례 2 · 위험 통신";
+}
+
+/** @deprecated getSimulationNarrative(activeCase) 사용 */
+export const simulationNarrative = sharedNarrative;
+
+export type CaseIncident = {
+  code: string;
+  title: string;
+  srcIp: string;
+  dstIp: string;
+  dstLabel: string;
+  detectedAt: string;
+  eventType: string;
+  riskBefore: string;
+  riskAfter: string;
+  staffQuestion: string;
+  customerChecks: string[];
+  presetReply: string;
+  staffReply: string;
+  reportSummary: string;
+  reportVerdict: string;
+  reportCause: string;
+  reportOutcome: string;
+  emailPreview: string;
+  monitoringAlertText: string;
+  initialEventCount: number;
+  initialIssueCount: number;
 };
 
 export const analystSteps = [
@@ -148,6 +250,34 @@ export const analystSteps = [
   },
 ];
 
+export const threatAnalystSteps = [
+  {
+    label: "로그 수집",
+    title: "네트워크 미러링 · 로그 수집",
+    detail: "SPAN/TAP 미러링 → Zeek conn 로그. 10.88.12.5 장시간 아웃바운드 세션 확인.",
+  },
+  {
+    label: "행동 탐지",
+    title: "행위 기반 탐지",
+    detail: "long session + proxy residual 규칙 매칭 — 프록시웨어 잔류 통신 후보 등록.",
+  },
+  {
+    label: "IOC 점검",
+    title: "악성 패턴 · IOC 점검",
+    detail: "IocIP 태그 교차 확인 — 프록시·C2 성격 IP와 매칭 신호.",
+  },
+  {
+    label: "정제",
+    title: "후보 정제",
+    detail: "업무 통신 후보에서 제외 — 위험 통신 가능성으로 고객 확인·조치 요청.",
+  },
+  {
+    label: "등록",
+    title: "고객 확인 이슈로 등록",
+    detail: "RUNA Task 생성 · 메일 알림 발송.",
+  },
+];
+
 export const monitoringLogs = [
   { time: "10:41:02", level: "info" as const, text: "conn · 10.88.12.5 → 203.0.113.44 :443 · 정상" },
   { time: "10:41:44", level: "info" as const, text: "dns · patch-mirror.internal · 응답 OK" },
@@ -156,8 +286,16 @@ export const monitoringLogs = [
   { time: "10:55:12", level: "alert" as const, text: "agent comm · 10.24.18.52 → 10.24.20.10 :80", ip: "10.24.18.52" },
 ];
 
-/** 사례 1 — 정상 가능성 의심 통신 (고객 맥락 검증) */
-export const incident = {
+export const threatMonitoringLogs = [
+  { time: "14:18:02", level: "info" as const, text: "conn · 10.200.10.8 → CDN · 업무 범주" },
+  { time: "14:19:44", level: "info" as const, text: "dns · internal-mirror · 응답 OK" },
+  { time: "14:20:18", level: "warn" as const, text: "long session · 10.88.12.5 → 203.0.113.44 · 검토" },
+  { time: "14:21:05", level: "warn" as const, text: "ioc match · 203.0.113.44 · IocIP 태그" },
+  { time: "14:22:31", level: "alert" as const, text: "proxy residual · 10.88.12.5 → 203.0.113.44", ip: "10.88.12.5" },
+];
+
+/** 사례 1 — 정상 가능성 의심 통신 (고객 맥락 → 분석팀 검증) */
+export const incident: CaseIncident = {
   code: "DEMO-2026-05-003",
   title: "폐쇄망 IP (10.24.18.52) 기계적 통신 (80/tcp) 식별 문의",
   srcIp: "10.24.18.52",
@@ -183,47 +321,74 @@ export const incident = {
   reportVerdict: "정상 (업무 통신)",
   reportCause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",
   reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 화이트리스트 검토",
+  emailPreview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
+  monitoringAlertText: "이상 패턴 감지",
+  initialEventCount: 1184,
+  initialIssueCount: 2,
 };
 
-/** 사례 2 — 실제 위험 통신 (demo t1 프록시웨어 잔류 통신 변형) */
-export const threatMiniCase = {
+/** 사례 2 — 실제 위험 통신 (고객 조치 → 분석팀 검증) */
+export const threatIncident: CaseIncident = {
   code: "DEMO-2026-05-001",
   title: "프록시웨어 잔류 통신 문의",
   srcIp: "10.88.12.5",
   dstIp: "203.0.113.44",
-  alert:
-    "장시간 아웃바운드 세션 + 프록시 성격 잔류 통신 탐지. IocIP 태그 교차 확인.",
-  customerReply:
-    "레거시 에이전트 잔여 프로세스였습니다. 서비스 중지 및 프로세스 삭제 조치 완료했습니다.",
-  analystClose:
-    "고객 확인 결과 업무 통신과 무관한 잔류 프로세스로 판단. 격리·삭제 조치 확인 후 재탐지 모니터링 완료.",
-  reportSummary: "비인가 통신 가능성 — 고객 조치 후 재탐지 없음, 위협 종결",
+  dstLabel: "외부 호스트",
+  detectedAt: "2026-05-06 14:22",
+  eventType: "long session outbound proxy residual",
+  riskBefore: "낮음",
+  riskAfter: "높음",
+  staffQuestion:
+    "내부 호스트에서 프록시웨어 관련 잔류 통신이 확인되었습니다. 업무 통신 여부와 필요한 조치(프로세스 중지·삭제 등)를 확인해 주세요.",
+  customerChecks: [
+    "의심 통신 개요 — 장시간 아웃바운드·프록시 성격 잔류 통신",
+    "관련 IP — 10.88.12.5 → 203.0.113.44",
+    "IocIP 교차 — 태그 매칭 확인",
+    "분석팀 요청 — 업무 여부 확인 및 조치 내용 회신",
+  ],
+  presetReply:
+    "레거시 에이전트 잔여 프로세스였습니다. 업무와 무관하며, 서비스 중지 및 프로세스 삭제 조치를 완료했습니다.",
+  staffReply:
+    "고객 조치(프로세스 중지·삭제)를 확인했습니다. 이후 재탐지 없음을 검증하여 완료 처리합니다. 관련 통신은 침해 평가 보고서에 위협·조치 완료로 기록합니다.",
+  reportSummary: "비인가 통신 가능성 — 고객 조치 후 재탐지 없음, 분석팀 검증 완료",
   reportVerdict: "위협 (조치 완료)",
   reportCause: "종료되지 않은 프록시 프로세스로 인한 외부 통신 지속",
-  reportOutcome: "고객 조치 후 재탐지 없음, 분석팀 조치 완료",
+  reportOutcome: "고객 조치 후 재탐지 없음 확인, 분석팀 검증 완료",
+  emailPreview: "프록시웨어 잔류 통신 — 업무 확인 및 조치 회신이 필요합니다.",
+  monitoringAlertText: "위험 통신 감지",
+  initialEventCount: 1204,
+  initialIssueCount: 3,
 };
 
-export const threatMiniSteps = [
-  {
-    title: "실제 위험 통신 알림",
-    body: "RUNA에 「프록시웨어 잔류 통신」 확인 요청이 등록됩니다. 장시간 아웃바운드와 Ioc 교차 신호가 함께 표시됩니다.",
-  },
-  {
-    title: "고객 확인 — 업무와 무관",
-    body: "고객 답변: 레거시 에이전트 잔여 프로세스, 이미 중지·삭제 조치 완료. 정상 업무 통신이 아님을 확인합니다.",
-  },
-  {
-    title: "분석팀 조치 완료 · 보고서 반영",
-    body: "분석팀이 위협으로 판단·조치를 정리하고, 침해 평가 보고서 「위협 분석 결과」에 기록합니다.",
-  },
-];
+export function getCaseIncident(activeCase: SimCase): CaseIncident {
+  return activeCase === "normal" ? incident : threatIncident;
+}
+
+export function getCaseAnalystSteps(activeCase: SimCase) {
+  return activeCase === "normal" ? analystSteps : threatAnalystSteps;
+}
+
+export function getCaseMonitoringLogs(activeCase: SimCase) {
+  return activeCase === "normal" ? monitoringLogs : threatMonitoringLogs;
+}
 
 export const emailNotification = {
   from: "noreply@zerotica.app",
   subject: "[ZeroTica Watch] RUNA 업무 확인 요청",
-  preview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
   time: "2026-05-12 11:05",
 };
+
+export const threatEmailNotification = {
+  from: "noreply@zerotica.app",
+  subject: "[ZeroTica Watch] RUNA 업무 확인 요청",
+  time: "2026-05-06 14:35",
+};
+
+export function getCaseEmail(activeCase: SimCase) {
+  const base = activeCase === "normal" ? emailNotification : threatEmailNotification;
+  const current = getCaseIncident(activeCase);
+  return { ...base, preview: current.emailPreview };
+}
 
 export const reportMeta = {
   title: "ZeroTica Watch",

@@ -1,44 +1,55 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  analystSteps,
-  incident,
-  monitoringLogs,
+  getCaseAnalystSteps,
+  getCaseIncident,
+  getCaseMonitoringLogs,
   simPhaseOrder,
+  type SimCase,
   type SimPhase,
 } from "@/data/issue-story";
 
-const initialComments = (): Array<{
+type Comment = {
   author: string;
   role: "staff" | "client";
   at: string;
   body: string;
-}> => [
-  {
-    author: "분석팀",
-    role: "staff" as const,
-    at: "2026-05-12 11:20",
-    body: incident.staffQuestion,
-  },
-];
+};
+
+const initialComments = (activeCase: SimCase): Comment[] => {
+  const current = getCaseIncident(activeCase);
+  return [
+    {
+      author: "분석팀",
+      role: "staff",
+      at: activeCase === "normal" ? "2026-05-12 11:20" : "2026-05-06 14:40",
+      body: current.staffQuestion,
+    },
+  ];
+};
 
 export function useIssueSimulation() {
   const [started, setStarted] = useState(false);
+  const [activeCase, setActiveCase] = useState<SimCase>("normal");
   const [phase, setPhase] = useState<SimPhase>("monitoring");
   const [analystStep, setAnalystStep] = useState(0);
   const [logCount, setLogCount] = useState(2);
-  const [eventCount, setEventCount] = useState(1184);
-  const [issueCount, setIssueCount] = useState(2);
-  const [riskLevel, setRiskLevel] = useState(incident.riskBefore);
+  const [eventCount, setEventCount] = useState(getCaseIncident("normal").initialEventCount);
+  const [issueCount, setIssueCount] = useState(getCaseIncident("normal").initialIssueCount);
+  const [riskLevel, setRiskLevel] = useState(getCaseIncident("normal").riskBefore);
   const [cardInColumn, setCardInColumn] = useState<"hidden" | "entering" | "ready" | "done">("hidden");
   const [replyDraft, setReplyDraft] = useState("");
   const [replyTyping, setReplyTyping] = useState(false);
   const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "조치 완료">("확인 요청");
-  const [comments, setComments] = useState(initialComments);
-  const [threatStep, setThreatStep] = useState(0);
+  const [comments, setComments] = useState<Comment[]>(() => initialComments("normal"));
   const timersRef = useRef<number[]>([]);
 
-  const chapterIndex = started ? simPhaseOrder.indexOf(phase) : -1;
-  const progress = started ? Math.round(((chapterIndex + 1) / simPhaseOrder.length) * 100) : 0;
+  const current = getCaseIncident(activeCase);
+  const monitoringLogs = getCaseMonitoringLogs(activeCase);
+  const analystSteps = getCaseAnalystSteps(activeCase);
+
+  const caseOffset = activeCase === "normal" ? 0 : simPhaseOrder.length;
+  const chapterIndex = started ? caseOffset + simPhaseOrder.indexOf(phase) : -1;
+  const progress = started ? Math.round(((chapterIndex + 1) / (simPhaseOrder.length * 2)) * 100) : 0;
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((t) => window.clearTimeout(t));
@@ -58,40 +69,50 @@ export function useIssueSimulation() {
     [clearTimers],
   );
 
-  const resetState = useCallback(() => {
+  const resetCaseState = useCallback((nextCase: SimCase) => {
+    const caseData = getCaseIncident(nextCase);
+    setActiveCase(nextCase);
     setAnalystStep(0);
     setLogCount(2);
-    setEventCount(1184);
-    setIssueCount(2);
-    setRiskLevel(incident.riskBefore);
+    setEventCount(caseData.initialEventCount);
+    setIssueCount(caseData.initialIssueCount);
+    setRiskLevel(caseData.riskBefore);
     setCardInColumn("hidden");
     setReplyDraft("");
     setReplyTyping(false);
     setTaskStatus("확인 요청");
-    setComments(initialComments());
-    setThreatStep(0);
+    setComments(initialComments(nextCase));
+    setPhase("monitoring");
   }, []);
+
+  const resetAll = useCallback(() => {
+    resetCaseState("normal");
+    setStarted(false);
+  }, [resetCaseState]);
 
   const startSimulation = useCallback(() => {
     clearTimers();
-    resetState();
+    resetCaseState("normal");
     setStarted(true);
-    setPhase("monitoring");
-  }, [clearTimers, resetState]);
+  }, [clearTimers, resetCaseState]);
 
   const restart = useCallback(() => {
     clearTimers();
-    resetState();
-    setStarted(false);
-    setPhase("monitoring");
-  }, [clearTimers, resetState]);
+    resetAll();
+  }, [clearTimers, resetAll]);
+
+  const startThreatCase = useCallback(() => {
+    clearTimers();
+    resetCaseState("threat");
+    setStarted(true);
+  }, [clearTimers, resetCaseState]);
 
   const jumpToReport = useCallback(() => {
     clearTimers();
     setStarted(true);
+    setActiveCase("threat");
     setTaskStatus("조치 완료");
     setCardInColumn("done");
-    setThreatStep(0);
     setPhase("report");
   }, [clearTimers]);
 
@@ -101,7 +122,7 @@ export function useIssueSimulation() {
     goTo("reply");
     setReplyTyping(true);
     setReplyDraft("");
-    const text = incident.presetReply;
+    const text = getCaseIncident(activeCase).presetReply;
     let i = 0;
     const type = () => {
       if (i <= text.length) {
@@ -113,53 +134,59 @@ export function useIssueSimulation() {
       }
     };
     schedule(type, 400);
-  }, [goTo, schedule]);
+  }, [goTo, schedule, activeCase]);
 
   const submitReply = useCallback(() => {
     if (replyTyping || !replyDraft) return;
+    const caseData = getCaseIncident(activeCase);
     setComments((prev) => [
       ...prev,
-      { author: "demo_admin", role: "client", body: incident.presetReply, at: "2026-05-13 09:40" },
+      {
+        author: "demo_admin",
+        role: "client",
+        body: caseData.presetReply,
+        at: activeCase === "normal" ? "2026-05-13 09:40" : "2026-05-07 10:15",
+      },
     ]);
     setTaskStatus("확인 중");
     goTo("verifying");
     schedule(() => {
       setComments((prev) => [
         ...prev,
-        { author: "분석팀", role: "staff", at: "2026-05-13 14:00", body: incident.staffReply },
+        {
+          author: "분석팀",
+          role: "staff",
+          at: activeCase === "normal" ? "2026-05-13 14:00" : "2026-05-07 15:30",
+          body: caseData.staffReply,
+        },
       ]);
       setTaskStatus("조치 완료");
       setCardInColumn("done");
       goTo("staff-reply");
     }, 2400);
-  }, [goTo, schedule, replyDraft, replyTyping]);
+  }, [goTo, schedule, replyDraft, replyTyping, activeCase]);
 
   const viewResult = useCallback(() => goTo("complete"), [goTo]);
-  const openReport = useCallback(() => {
-    setThreatStep(0);
-    goTo("report");
-  }, [goTo]);
-
-  const advanceThreatStep = useCallback(() => {
-    setThreatStep((s) => Math.min(s + 1, 3));
-  }, []);
+  const openReport = useCallback(() => goTo("report"), [goTo]);
 
   // Auto phases — only when started
   useEffect(() => {
     if (!started || phase !== "monitoring") return;
+    const logs = getCaseMonitoringLogs(activeCase);
+    const caseData = getCaseIncident(activeCase);
     const logInterval = window.setInterval(() => {
-      setLogCount((c) => Math.min(c + 1, monitoringLogs.length - 1));
+      setLogCount((c) => Math.min(c + 1, logs.length - 1));
       setEventCount((c) => c + 2);
     }, 750);
     schedule(() => {
-      setLogCount(monitoringLogs.length);
-      setEventCount(1196);
-      setIssueCount(3);
-      setRiskLevel(incident.riskAfter);
+      setLogCount(logs.length);
+      setEventCount(caseData.initialEventCount + 12);
+      setIssueCount(caseData.initialIssueCount + 1);
+      setRiskLevel(caseData.riskAfter);
       goTo("anomaly");
     }, 4800);
     return () => window.clearInterval(logInterval);
-  }, [started, phase, goTo, schedule]);
+  }, [started, phase, activeCase, goTo, schedule]);
 
   useEffect(() => {
     if (!started || phase !== "anomaly") return;
@@ -171,12 +198,13 @@ export function useIssueSimulation() {
 
   useEffect(() => {
     if (!started || phase !== "analyst") return;
-    if (analystStep >= analystSteps.length - 1) {
+    const steps = getCaseAnalystSteps(activeCase);
+    if (analystStep >= steps.length - 1) {
       schedule(() => goTo("delivery"), 1600);
       return;
     }
     schedule(() => setAnalystStep((s) => s + 1), 2000);
-  }, [started, phase, analystStep, goTo, schedule]);
+  }, [started, phase, analystStep, activeCase, goTo, schedule]);
 
   useEffect(() => {
     if (!started || phase !== "delivery") return;
@@ -191,6 +219,7 @@ export function useIssueSimulation() {
 
   return {
     started,
+    activeCase,
     phase,
     chapterIndex,
     progress,
@@ -204,9 +233,12 @@ export function useIssueSimulation() {
     replyTyping,
     taskStatus,
     comments,
-    threatStep,
+    current,
+    monitoringLogs,
+    analystSteps,
     startSimulation,
     restart,
+    startThreatCase,
     jumpToReport,
     goTo,
     openTask,
@@ -214,7 +246,6 @@ export function useIssueSimulation() {
     submitReply,
     viewResult,
     openReport,
-    advanceThreatStep,
   };
 }
 
