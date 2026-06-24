@@ -409,4 +409,14 @@
   .sim-report-highlight {
     animation: sim-alert-glow-keyframes 2.5s ease-in-out infinite;
   }
+
+  .sim-journey-sticky {
+    position: relative;
+  }
+
+  .sim-journey-panel {
+    position: sticky;
+    top: 5rem;
+    z-index: 10;
+  }
 }

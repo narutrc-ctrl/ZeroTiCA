@@ -7,7 +7,22 @@ import {
   type SimPhase,
 } from "@/data/issue-story";
 
+const initialComments = (): Array<{
+  author: string;
+  role: "staff" | "client";
+  at: string;
+  body: string;
+}> => [
+  {
+    author: "분석팀",
+    role: "staff" as const,
+    at: "2026-05-12 11:20",
+    body: incident.staffQuestion,
+  },
+];
+
 export function useIssueSimulation() {
+  const [started, setStarted] = useState(false);
   const [phase, setPhase] = useState<SimPhase>("monitoring");
   const [analystStep, setAnalystStep] = useState(0);
   const [logCount, setLogCount] = useState(2);
@@ -17,21 +32,13 @@ export function useIssueSimulation() {
   const [cardInColumn, setCardInColumn] = useState<"hidden" | "entering" | "ready" | "done">("hidden");
   const [replyDraft, setReplyDraft] = useState("");
   const [replyTyping, setReplyTyping] = useState(false);
-  const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "업무 완료">("확인 요청");
-  const [comments, setComments] = useState<
-    { author: string; role: "staff" | "client"; body: string; at: string }[]
-  >([
-    {
-      author: "분석팀",
-      role: "staff",
-      at: "2026-05-12 11:20",
-      body: incident.staffQuestion,
-    },
-  ]);
+  const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "조치 완료">("확인 요청");
+  const [comments, setComments] = useState(initialComments);
+  const [threatStep, setThreatStep] = useState(0);
   const timersRef = useRef<number[]>([]);
 
-  const phaseIndex = simPhaseOrder.indexOf(phase);
-  const progress = Math.round(((phaseIndex + 1) / simPhaseOrder.length) * 100);
+  const chapterIndex = started ? simPhaseOrder.indexOf(phase) : -1;
+  const progress = started ? Math.round(((chapterIndex + 1) / simPhaseOrder.length) * 100) : 0;
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((t) => window.clearTimeout(t));
@@ -51,9 +58,7 @@ export function useIssueSimulation() {
     [clearTimers],
   );
 
-  const restart = useCallback(() => {
-    clearTimers();
-    setPhase("monitoring");
+  const resetState = useCallback(() => {
     setAnalystStep(0);
     setLogCount(2);
     setEventCount(1184);
@@ -63,9 +68,31 @@ export function useIssueSimulation() {
     setReplyDraft("");
     setReplyTyping(false);
     setTaskStatus("확인 요청");
-    setComments([
-      { author: "분석팀", role: "staff", at: "2026-05-12 11:20", body: incident.staffQuestion },
-    ]);
+    setComments(initialComments());
+    setThreatStep(0);
+  }, []);
+
+  const startSimulation = useCallback(() => {
+    clearTimers();
+    resetState();
+    setStarted(true);
+    setPhase("monitoring");
+  }, [clearTimers, resetState]);
+
+  const restart = useCallback(() => {
+    clearTimers();
+    resetState();
+    setStarted(false);
+    setPhase("monitoring");
+  }, [clearTimers, resetState]);
+
+  const jumpToReport = useCallback(() => {
+    clearTimers();
+    setStarted(true);
+    setTaskStatus("조치 완료");
+    setCardInColumn("done");
+    setThreatStep(0);
+    setPhase("report");
   }, [clearTimers]);
 
   const openTask = useCallback(() => goTo("task"), [goTo]);
@@ -101,28 +128,25 @@ export function useIssueSimulation() {
         ...prev,
         { author: "분석팀", role: "staff", at: "2026-05-13 14:00", body: incident.staffReply },
       ]);
+      setTaskStatus("조치 완료");
+      setCardInColumn("done");
       goTo("staff-reply");
-    }, 2200);
+    }, 2400);
   }, [goTo, schedule, replyDraft, replyTyping]);
 
-  const completeTask = useCallback(() => {
-    setTaskStatus("업무 완료");
-    setCardInColumn("done");
-    goTo("complete");
-    schedule(() => goTo("report"), 2800);
-  }, [goTo, schedule]);
-
-  const skipToAnalyst = useCallback(() => {
-    setLogCount(monitoringLogs.length);
-    setEventCount(1196);
-    setIssueCount(3);
-    setRiskLevel(incident.riskAfter);
-    setAnalystStep(0);
-    goTo("analyst");
+  const viewResult = useCallback(() => goTo("complete"), [goTo]);
+  const openReport = useCallback(() => {
+    setThreatStep(0);
+    goTo("report");
   }, [goTo]);
 
+  const advanceThreatStep = useCallback(() => {
+    setThreatStep((s) => Math.min(s + 1, 3));
+  }, []);
+
+  // Auto phases — only when started
   useEffect(() => {
-    if (phase !== "monitoring") return;
+    if (!started || phase !== "monitoring") return;
     const logInterval = window.setInterval(() => {
       setLogCount((c) => Math.min(c + 1, monitoringLogs.length - 1));
       setEventCount((c) => c + 2);
@@ -135,39 +159,40 @@ export function useIssueSimulation() {
       goTo("anomaly");
     }, 4800);
     return () => window.clearInterval(logInterval);
-  }, [phase, goTo, schedule]);
+  }, [started, phase, goTo, schedule]);
 
   useEffect(() => {
-    if (phase !== "anomaly") return;
+    if (!started || phase !== "anomaly") return;
     schedule(() => {
       setAnalystStep(0);
       goTo("analyst");
     }, 3200);
-  }, [phase, goTo, schedule]);
+  }, [started, phase, goTo, schedule]);
 
   useEffect(() => {
-    if (phase !== "analyst") return;
+    if (!started || phase !== "analyst") return;
     if (analystStep >= analystSteps.length - 1) {
       schedule(() => goTo("delivery"), 1600);
       return;
     }
     schedule(() => setAnalystStep((s) => s + 1), 2000);
-  }, [phase, analystStep, goTo, schedule]);
+  }, [started, phase, analystStep, goTo, schedule]);
 
   useEffect(() => {
-    if (phase !== "delivery") return;
+    if (!started || phase !== "delivery") return;
     schedule(() => setCardInColumn("entering"), 500);
     schedule(() => {
       setCardInColumn("ready");
       goTo("kanban");
     }, 2200);
-  }, [phase, goTo, schedule]);
+  }, [started, phase, goTo, schedule]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
   return {
+    started,
     phase,
-    phaseIndex,
+    chapterIndex,
     progress,
     analystStep,
     logCount,
@@ -179,13 +204,17 @@ export function useIssueSimulation() {
     replyTyping,
     taskStatus,
     comments,
-    goTo,
+    threatStep,
+    startSimulation,
     restart,
+    jumpToReport,
+    goTo,
     openTask,
     startReply,
     submitReply,
-    completeTask,
-    skipToAnalyst,
+    viewResult,
+    openReport,
+    advanceThreatStep,
   };
 }
 
