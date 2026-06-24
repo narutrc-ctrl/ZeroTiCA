@@ -5,13 +5,13 @@ import { ContactCTA } from "@/components/ContactCTA";
 import { ProductCapture } from "@/components/ProductCapture";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { CustomerOutcomesSection } from "@/components/CustomerOutcomesSection";
-import { UnifiedJourneySection } from "@/components/UnifiedJourneySection";
 import { TourCTA } from "@/components/TourCTA";
 import { TrustStrip } from "@/components/TrustStrip";
 import { ClosingSection } from "@/components/ClosingSection";
 import { ServiceDecisionSection } from "@/components/ServiceDecisionSection";
 import { FaqSection } from "@/components/FaqSection";
 import { ProblemDifferentiatorSection } from "@/components/ProblemDifferentiatorSection";
+import { InteractiveIssueJourneySection } from "@/components/interactive-journey/InteractiveIssueJourneySection";
 import { HeroSection } from "@/components/HeroSection";
 
 export function LandingPage() {
@@ -21,7 +21,7 @@ export function LandingPage() {
 
       <ProblemDifferentiatorSection />
 
-      <UnifiedJourneySection />
+      <InteractiveIssueJourneySection />
 
       <CustomerOutcomesSection />
 

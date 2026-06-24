@@ -1,0 +1,195 @@
+/** 랜딩 미니 시뮬레이션 — 폐쇄망 기계적 통신 1건 처리 */
+
+export const simulationIntro = {
+  eyebrow: "직접 따라가 보기",
+  title: "의심 통신 한 건이",
+  titleAccent: "발생하면 어떻게 될까요?",
+  lead: "아래에서 실제와 같은 흐름을 체험해 보세요. 탐지부터 RUNA 확인 요청, 고객 답변, 조치 완료, 월간 보고서 반영까지 한 사건을 끝까지 처리합니다.",
+};
+
+/** 스토리 챕터 — STEP 라벨 없음 */
+export const storyChapters = [
+  { id: "discover", label: "발견" },
+  { id: "analyze", label: "분석" },
+  { id: "deliver", label: "알림" },
+  { id: "collaborate", label: "협업" },
+  { id: "close", label: "완료" },
+  { id: "report", label: "보고서" },
+] as const;
+
+export type SimPhase =
+  | "monitoring"
+  | "anomaly"
+  | "analyst"
+  | "delivery"
+  | "kanban"
+  | "task"
+  | "reply"
+  | "verifying"
+  | "staff-reply"
+  | "complete"
+  | "report";
+
+export const simPhaseOrder: SimPhase[] = [
+  "monitoring",
+  "anomaly",
+  "analyst",
+  "delivery",
+  "kanban",
+  "task",
+  "reply",
+  "verifying",
+  "staff-reply",
+  "complete",
+  "report",
+];
+
+export function chapterForPhase(phase: SimPhase): number {
+  if (phase === "monitoring" || phase === "anomaly") return 0;
+  if (phase === "analyst") return 1;
+  if (phase === "delivery" || phase === "kanban") return 2;
+  if (phase === "task" || phase === "reply" || phase === "verifying" || phase === "staff-reply") return 3;
+  if (phase === "complete") return 4;
+  return 5;
+}
+
+export const simulationNarrative: Record<
+  SimPhase,
+  { title: string; body: string; action?: "wait" | "click-card" | "click-reply" | "click-submit" | "click-complete" | "optional" }
+> = {
+  monitoring: {
+    title: "오늘도 네트워크를 모니터링하고 있습니다",
+    body: "이벤트 스트림·이슈 현황·이상 통신 후보를 매일 확인합니다. 대부분은 정상 범주에서 처리됩니다.",
+    action: "wait",
+  },
+  anomaly: {
+    title: "잠깐, 이 통신 패턴이 평소와 다릅니다",
+    body: "10.24.18.52 → 10.24.20.10 방향의 주기적 HTTP 통신이 강조되었습니다. 이벤트 카운트가 올라가고 위험도가 상승했습니다.",
+    action: "wait",
+  },
+  analyst: {
+    title: "분석팀이 후보를 단계별로 검증합니다",
+    body: "미러링 로그 수집부터 탐지·IOC·화이트리스트 정제까지 진행한 뒤, 고객 확인이 필요한 이슈로 등록합니다.",
+    action: "wait",
+  },
+  delivery: {
+    title: "분석이 끝났습니다 — RUNA와 메일로 동시에 전달됩니다",
+    body: "선별된 업무 한 건이 이메일 알림과 RUNA 칸반 「업무 확인」 컬럼에 등록됩니다.",
+    action: "wait",
+  },
+  kanban: {
+    title: "확인이 필요한 업무가 도착했습니다",
+    body: "쏟아지는 로그가 아니라, 분석팀이 검토를 마친 확인 요청 한 건만 올라옵니다.",
+    action: "click-card",
+  },
+  task: {
+    title: "업무 내용을 확인하세요",
+    body: "의심 통신 개요, 관련 IP·서버·시간, 분석팀 질문을 확인한 뒤 맥락을 답변합니다.",
+    action: "click-reply",
+  },
+  reply: {
+    title: "업무 맥락을 답변합니다",
+    body: "고객 답변은 검증 근거에 포함됩니다. 아래 문구를 확인하고 등록하세요.",
+    action: "click-submit",
+  },
+  verifying: {
+    title: "분석팀이 답변을 반영해 재검토 중입니다",
+    body: "RUNA에서 「확인 중」 상태로 전환됩니다. 탐지 데이터와 고객 맥락을 함께 판단합니다.",
+    action: "wait",
+  },
+  "staff-reply": {
+    title: "분석팀 회신이 도착했습니다",
+    body: "화이트리스트 반영을 권고합니다. 확인 후 업무를 완료 처리하세요.",
+    action: "click-complete",
+  },
+  complete: {
+    title: "조치가 완료되었습니다",
+    body: "업무 카드가 「업무 완료」 컬럼으로 이동했습니다. 이 기록은 월간 보고서에 반영됩니다.",
+    action: "optional",
+  },
+  report: {
+    title: "이번 달 검증 결과가 보고서에 남습니다",
+    body: "방금 처리한 이슈가 「주요 확인 요청」 항목에 포함됩니다.",
+    action: "optional",
+  },
+};
+
+export const analystSteps = [
+  {
+    label: "로그 수집",
+    title: "네트워크 미러링 · 로그 수집",
+    detail: "SPAN/TAP 미러링 → Zeek conn·HTTP 로그. 10.24.18.52 ↔ 10.24.20.10 패턴 확인.",
+    visual: "collect" as const,
+  },
+  {
+    label: "행동 탐지",
+    title: "행위 기반 탐지",
+    detail: "agent communication 규칙 매칭 — 주기적 HTTP 기계적 통신 후보 등록.",
+    visual: "detect" as const,
+  },
+  {
+    label: "IOC 점검",
+    title: "악성 패턴 · IOC 점검",
+    detail: "전 고객 IocIP 일일 매칭 — 해당 통신 IOC 미매칭.",
+    visual: "ioc" as const,
+  },
+  {
+    label: "정제",
+    title: "후보 정제 · 화이트리스트",
+    detail: "알려진 업무 통신 후보 분리 — 고객 확인 필요로 판단.",
+    visual: "refine" as const,
+  },
+  {
+    label: "등록",
+    title: "고객 확인 이슈로 등록",
+    detail: "RUNA Task 생성 · 메일 알림 발송 대기.",
+    visual: "register" as const,
+  },
+];
+
+export const monitoringLogs = [
+  { time: "10:41:02", level: "info" as const, text: "conn · 10.88.12.5 → 203.0.113.44 :443 · 정상" },
+  { time: "10:41:44", level: "info" as const, text: "dns · patch-mirror.internal · 응답 OK" },
+  { time: "10:42:18", level: "info" as const, text: "http · 10.200.10.8 → CDN · 업무 범주" },
+  { time: "10:43:05", level: "warn" as const, text: "long session · 10.200.10.15 · 검토 대기열" },
+  { time: "10:55:12", level: "alert" as const, text: "agent comm · 10.24.18.52 → 10.24.20.10 :80", ip: "10.24.18.52" },
+];
+
+export const incident = {
+  code: "DEMO-2026-05-003",
+  title: "폐쇄망 IP (10.24.18.52) 기계적 통신 (80/tcp) 식별 문의",
+  srcIp: "10.24.18.52",
+  dstIp: "10.24.20.10",
+  dstLabel: "내부 패치 미러 서버",
+  detectedAt: "2026-05-12 10:55",
+  eventType: "agent communication pkts bytes lateral",
+  riskBefore: "낮음",
+  riskAfter: "주의",
+  staffQuestion:
+    "폐쇄망 호스트에서 주기적 HTTP 기계적 통신이 확인되었습니다. 정기 배포·외부 연동 테스트 등 업무 통신인지 확인 부탁드립니다.",
+  customerChecks: [
+    "의심 통신 개요 — 주기적 HTTP 기계적 패턴",
+    "관련 IP — 10.24.18.52 → 10.24.20.10 (내부 미러)",
+    "발생 시간 — 2026-05-12 10:55 전후",
+    "분석팀 질문 — 업무 통신 여부 확인",
+  ],
+  presetReply:
+    "해당 서버는 최근 정기 배포 작업이 있었고, 외부 연동 테스트가 진행 중이었습니다.",
+  staffReply:
+    "확인 감사합니다. 정기 배포·연동 테스트 맥락을 반영해 「주의→정상」으로 판단합니다. 해당 IP·시간대 화이트리스트 반영을 권고드립니다.",
+  reportSummary: "정기 배포·연동 테스트 확인 — 화이트리스트 반영 권고, 재탐지 없음",
+  reportVerdict: "정상 (업무 통신)",
+};
+
+export const emailNotification = {
+  from: "noreply@zerotica.app",
+  subject: "[ZeroTica Watch] RUNA 업무 확인 요청",
+  preview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
+  time: "2026-05-12 11:05",
+};
+
+export const reportSections = {
+  period: "2026-05-01 ~ 2026-05-31",
+  title: "이번 달 의심 통신 검증 결과",
+  stats: { verified: 12, normal: 9, caution: 2, threat: 1, completed: 11 },
+};

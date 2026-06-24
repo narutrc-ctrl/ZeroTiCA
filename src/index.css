@@ -196,4 +196,217 @@
   .hero-dashboard-float {
     animation: hero-float 7s ease-in-out infinite;
   }
+
+  @keyframes issue-journey-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes issue-journey-scene-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes issue-journey-slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes issue-journey-pulse-ring {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(251, 191, 36, 0);
+    }
+  }
+
+  .issue-journey-fade-in {
+    animation: issue-journey-fade-in 0.45s ease-out both;
+  }
+
+  .issue-journey-scene-enter {
+    animation: issue-journey-scene-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .issue-journey-slide-down {
+    animation: issue-journey-slide-down 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .issue-journey-pulse {
+    animation: issue-journey-pulse-ring 2s ease-in-out infinite;
+  }
+
+  .issue-journey-narrative {
+    animation: issue-journey-fade-in 0.4s ease-out both;
+  }
+
+  @keyframes sim-log-in {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes sim-alert-glow-keyframes {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 20px 4px rgba(251, 191, 36, 0.25);
+    }
+  }
+
+  @keyframes sim-risk-pulse-keyframes {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+  }
+
+  @keyframes sim-card-enter-keyframes {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes sim-slide-in-keyframes {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes sim-progress {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes sim-stage-in-keyframes {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes sim-narrative-in-keyframes {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes sim-click-cue-keyframes {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .sim-log-in {
+    animation: sim-log-in 0.4s ease-out both;
+  }
+
+  .sim-alert-glow {
+    animation: sim-alert-glow-keyframes 1.5s ease-in-out infinite;
+  }
+
+  .sim-risk-pulse {
+    animation: sim-risk-pulse-keyframes 1.2s ease-in-out infinite;
+  }
+
+  .sim-card-enter {
+    animation: sim-card-enter-keyframes 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .sim-slide-in {
+    animation: sim-slide-in-keyframes 0.5s ease-out both;
+  }
+
+  .sim-email-in {
+    animation: sim-slide-in-keyframes 0.45s ease-out both;
+  }
+
+  .sim-progress-bar {
+    animation: sim-progress 1.8s ease-in-out infinite;
+  }
+
+  .sim-stage-in {
+    animation: sim-stage-in-keyframes 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .sim-narrative-in {
+    animation: sim-narrative-in-keyframes 0.4s ease-out both;
+  }
+
+  .sim-click-cue {
+    animation: sim-click-cue-keyframes 1.2s ease-in-out infinite;
+  }
+
+  .sim-click-cue-target {
+    animation: sim-click-cue-keyframes 1.5s ease-in-out infinite;
+  }
+
+  .sim-step-active {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  }
+
+  .sim-expand-in {
+    animation: sim-stage-in-keyframes 0.35s ease-out both;
+  }
+
+  .sim-report-highlight {
+    animation: sim-alert-glow-keyframes 2.5s ease-in-out infinite;
+  }
 }
