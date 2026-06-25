@@ -5,11 +5,48 @@ import {
   getSimulationNarrative,
   simulationIntro,
   storyChapters,
+  type NarrativeAction,
+  type SimCase,
 } from "@/data/issue-story";
+import {
+  SimulationCtaBar,
+  SimulationNarrativeCard,
+  SimulationStartPreview,
+  getWaitingLabel,
+} from "@/components/interactive-journey/SimulationConsole";
 import { SimulationChapterIndex, SimulationStage } from "@/components/interactive-journey/SimulationStage";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { useIssueSimulation } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
+
+const USER_ACTIONS: NarrativeAction[] = [
+  "click-card",
+  "click-reply",
+  "click-submit",
+  "click-next-case",
+  "click-report",
+];
+
+function getCtaLabel(actionType: NarrativeAction | undefined, activeCase: SimCase): string | null {
+  switch (actionType) {
+    case "click-card":
+      return "오른쪽 강조된 「업무 확인」 카드를 클릭하세요";
+    case "click-reply":
+      return activeCase === "threat"
+        ? "Sheet 하단 「조치 내용 답변하기」를 누르세요"
+        : "Sheet 하단 「맥락 답변하기」를 누르세요";
+    case "click-submit":
+      return activeCase === "threat"
+        ? "조치 내용 입력 후 「답변 등록」을 누르세요"
+        : "답변 입력 후 「답변 등록」을 누르세요";
+    case "click-next-case":
+      return "오른쪽 「위험 통신 사례 이어서 보기」를 누르세요";
+    case "click-report":
+      return "오른쪽 「보고서에서 확인하기」를 누르세요";
+    default:
+      return null;
+  }
+}
 
 export function InteractiveIssueJourneySection() {
   const sim = useIssueSimulation();
@@ -17,14 +54,10 @@ export function InteractiveIssueJourneySection() {
   const chapterIdx = started ? chapterForPhase(phase) : -1;
   const chapterLabel = chapterIdx >= 0 ? storyChapters[chapterIdx]?.label : null;
   const narrative = started ? getSimulationNarrative(phase, activeCase) : null;
-  const needsUserAction =
-    narrative?.action &&
-    ["click-card", "click-reply", "click-submit", "click-next-case", "click-report"].includes(
-      narrative.action,
-    );
-
-  const replyHint =
-    activeCase === "threat" ? "업무 내용 확인 후 「조치 내용 답변하기」를 누르세요" : "업무 내용 확인 후 「맥락 답변하기」를 누르세요";
+  const actionType = narrative?.actionType;
+  const needsUserAction = actionType && USER_ACTIONS.includes(actionType);
+  const isAutoPhase = started && !needsUserAction && phase !== "report";
+  const ctaLabel = needsUserAction ? getCtaLabel(actionType, activeCase) : null;
 
   return (
     <section
@@ -44,19 +77,18 @@ export function InteractiveIssueJourneySection() {
         </RevealOnScroll>
 
         <div className="sim-journey-sticky mt-10">
-          <div className="sim-journey-panel rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-lg shadow-slate-200/50 backdrop-blur-sm sm:p-6 lg:p-8">
+          <div className="sim-journey-panel rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-lg shadow-slate-200/50 backdrop-blur-sm sm:p-6">
             {!started ? (
-              <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)] lg:gap-10">
-                <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">미니 시뮬레이션</p>
-                  <h3 className="mt-3 text-xl font-bold leading-snug text-slate-900 sm:text-2xl [word-break:keep-all]">
-                    {simulationIntro.title}
-                    {simulationIntro.titleAccent}
-                  </h3>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">
-                    {simulationIntro.description}
-                  </p>
-                  <p className="mt-2 text-xs text-slate-500">정상 검증 사례와 위험 통신 사례를 순서대로 체험합니다.</p>
+              <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-8">
+                <div className="flex min-w-0 flex-col justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">미니 시뮬레이션</p>
+                    <h3 className="mt-3 text-xl font-bold leading-snug text-slate-900 sm:text-2xl [word-break:keep-all]">
+                      {simulationIntro.title}
+                      {simulationIntro.titleAccent}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600">{simulationIntro.description}</p>
+                  </div>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <button
                       type="button"
@@ -77,16 +109,11 @@ export function InteractiveIssueJourneySection() {
                   </div>
                 </div>
                 <div className="min-w-0">
-                  <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/80 p-8 text-center">
-                    <p className="text-sm font-medium text-slate-500">
-                      탐지 · 분석 · 알림 · 협업 · 완료를 두 가지 사례로 체험합니다
-                    </p>
-                    <p className="mt-2 text-xs text-slate-400">사례 1 정상 검증 → 사례 2 위험 통신·조치 검증 → 보고서</p>
-                  </div>
+                  <SimulationStartPreview />
                 </div>
               </div>
             ) : (
-              <>
+              <div className="flex min-h-[520px] flex-col">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-3">
                     {chapterLabel ? (
@@ -116,6 +143,7 @@ export function InteractiveIssueJourneySection() {
                     </button>
                   ) : null}
                 </div>
+
                 <div className="h-1 overflow-hidden rounded-full bg-slate-200">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-[width] duration-700 ease-out"
@@ -123,77 +151,46 @@ export function InteractiveIssueJourneySection() {
                   />
                 </div>
 
-                <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-10 xl:gap-12">
-                  <div className="min-w-0">
+                <div className="mt-6 grid min-h-0 flex-1 items-stretch gap-6 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-8">
+                  <div className="flex min-w-0 flex-col gap-3">
                     {narrative ? (
-                      <div
+                      <SimulationNarrativeCard
                         key={`${activeCase}-${phase}`}
-                        className="sim-narrative-in rounded-2xl border border-slate-200/80 bg-slate-50/50 p-6 sm:p-7"
-                      >
-                        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
-                          {phase !== "report" ? getCaseLabel(activeCase) : "월간 보고서"}
-                          {chapterLabel ? ` · ${chapterLabel}` : ""}
-                        </p>
-                        <h3 className="mt-3 text-xl font-bold leading-snug text-slate-900 sm:text-2xl [word-break:keep-all]">
-                          {narrative.title}
-                        </h3>
-                        <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">{narrative.body}</p>
-
-                        {needsUserAction ? (
-                          <div className="mt-5 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3">
-                            <p className="text-sm font-semibold text-blue-800">
-                              {narrative.action === "click-card" && "오른쪽 「업무 확인」 칸반 카드를 클릭하세요"}
-                              {narrative.action === "click-reply" && replyHint}
-                              {narrative.action === "click-submit" &&
-                                (activeCase === "threat"
-                                  ? "조치 내용이 입력되면 「답변 등록」을 누르세요"
-                                  : "답변이 입력되면 「답변 등록」을 누르세요")}
-                              {narrative.action === "click-next-case" &&
-                                "이어서 위험 통신 사례를 체험하려면 「위험 통신 사례 이어서 보기」를 누르세요"}
-                              {narrative.action === "click-report" &&
-                                "두 사례 결과를 보고서에서 확인하려면 「보고서에서 확인하기」를 누르세요"}
-                            </p>
-                          </div>
-                        ) : (
-                          <p className={cn("mt-5 text-sm text-slate-400", phase === "analyst" && "flex items-center gap-2")}>
-                            {phase === "analyst" ? (
-                              <>
-                                <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
-                                분석이 진행 중입니다…
-                              </>
-                            ) : phase === "verifying" || phase === "staff-reply" ? (
-                              activeCase === "threat"
-                                ? phase === "staff-reply"
-                                  ? "Sheet를 닫고 칸반 「업무 완료」로 이동 중…"
-                                  : "분석팀이 고객 조치 결과를 검증 중입니다…"
-                                : phase === "staff-reply"
-                                  ? "Sheet를 닫고 칸반 「업무 완료」로 이동 중…"
-                                  : "분석팀이 업무 맥락을 검증 중입니다…"
-                            ) : phase === "report" ? (
-                              <button
-                                type="button"
-                                onClick={sim.restart}
-                                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
-                              >
-                                <RotateCcw className="h-4 w-4" />
-                                처음부터 다시 체험
-                              </button>
-                            ) : (
-                              "잠시만 기다려 주세요…"
-                            )}
-                          </p>
-                        )}
-                      </div>
+                        caseLabel={phase !== "report" ? getCaseLabel(activeCase) : "월간 보고서"}
+                        chapterLabel={chapterLabel ?? undefined}
+                        situation={narrative.situation}
+                        why={narrative.why}
+                        action={narrative.action}
+                        note={narrative.note}
+                      />
                     ) : null}
+
+                    {phase === "report" ? (
+                      <button
+                        type="button"
+                        onClick={sim.restart}
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        처음부터 다시 체험
+                      </button>
+                    ) : (
+                      <SimulationCtaBar
+                        waiting={isAutoPhase}
+                        waitingLabel={getWaitingLabel(phase, activeCase)}
+                      >
+                        {ctaLabel}
+                      </SimulationCtaBar>
+                    )}
                   </div>
 
                   <div className="min-w-0">
-                    <div key={`${activeCase}-${phase}-${sim.analystStep}-${sim.sheetOpen}`} className="sim-stage-in">
+                    <div key={`${activeCase}-${phase}-${sim.analystStep}-${sim.sheetOpen}`} className="sim-stage-in h-full">
                       <SimulationStage sim={sim} />
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>

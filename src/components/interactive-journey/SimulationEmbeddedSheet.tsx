@@ -154,17 +154,24 @@ export function SimulationEmbeddedSheet({
                 <h3 className="text-[11px] font-semibold text-slate-800">댓글</h3>
               </div>
               <ul className="space-y-2">
-                {comments.map((c) => (
+                {comments.map((c, idx) => {
+                  const isLatestStaff = phase === "staff-reply" && c.role === "staff" && idx === comments.length - 1;
+                  return (
                   <li
                     key={`${c.at}-${c.body.slice(0, 12)}`}
-                    className={cn("rounded-lg p-2 text-[11px]", c.role === "staff" ? "bg-slate-50" : "bg-sky-50")}
+                    className={cn(
+                      "rounded-lg p-2 text-[11px]",
+                      c.role === "staff" ? "bg-slate-50" : "bg-sky-50",
+                      isLatestStaff && "sim-spotlight-glow border border-emerald-200",
+                    )}
                   >
                     <p className="text-[10px] text-slate-500">
                       {c.author} · {c.at}
                     </p>
                     <p className="mt-1 leading-relaxed text-slate-700">{c.body}</p>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
           </div>
@@ -181,7 +188,7 @@ export function SimulationEmbeddedSheet({
           ) : null}
 
           {phase === "reply" ? (
-            <div className="rounded-lg border border-blue-200 bg-blue-50/30 p-3">
+            <div className="sim-spotlight-ring rounded-lg border border-blue-200 bg-blue-50/30 p-3">
               <label className="text-[10px] font-medium text-slate-500">{isThreat ? "고객 조치 내용" : "고객 답변"}</label>
               <textarea
                 readOnly

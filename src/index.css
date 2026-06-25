@@ -429,6 +429,24 @@
     animation: sim-alert-glow-keyframes 2.5s ease-in-out infinite;
   }
 
+  @keyframes sim-spotlight-glow-keyframes {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+    }
+  }
+
+  .sim-spotlight-glow {
+    animation: sim-spotlight-glow-keyframes 2s ease-in-out infinite;
+  }
+
+  .sim-spotlight-ring {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), 0 4px 14px rgba(59, 130, 246, 0.12);
+  }
+
   .sim-journey-sticky {
     position: relative;
   }

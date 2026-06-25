@@ -1,4 +1,4 @@
-import { Calendar, LayoutGrid, List, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { getCaseEmail } from "@/data/issue-story";
 import { SimulationEmbeddedSheet } from "@/components/interactive-journey/SimulationEmbeddedSheet";
 import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
@@ -6,14 +6,6 @@ import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
-
-function ClickCue({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="sim-click-cue mt-2 flex items-center justify-center gap-1.5 text-[11px] font-semibold text-blue-600">
-      {children}
-    </p>
-  );
-}
 
 export function SimulationRunaTaskView({
   sim,
@@ -37,91 +29,79 @@ export function SimulationRunaTaskView({
   const showCard = kanbanColumn !== "hidden";
   const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
   const cardInConfirmColumn = kanbanColumn === "pre_request" || kanbanColumn === "in_request";
+  const highlightNewCard = phase === "delivery" || waitCardClick;
   const cardStatus =
     phase === "verifying" ? "확인 중" : kanbanColumn === "done" || phase === "staff-reply" ? "조치 완료" : "확인 요청";
   const cardStatusKey =
     phase === "verifying" ? "checking" : kanbanColumn === "done" || phase === "staff-reply" ? "completed" : "requested";
 
   const card = showCard ? (
-    <div className={cn(kanbanColumn === "pre_request" && phase === "delivery" && "sim-card-enter")}>
+    <div
+      className={cn(
+        kanbanColumn === "pre_request" && phase === "delivery" && "sim-card-enter",
+        highlightNewCard && "sim-spotlight-ring rounded-xl",
+      )}
+    >
       <TaskCard
         title={current.title}
         code={current.code}
         author="제로티카 분석팀"
         status={cardStatus}
         statusClass={taskStatusClass(cardStatusKey)}
-        highlight={waitCardClick}
+        highlight={waitCardClick || highlightNewCard}
         onClick={waitCardClick ? openTask : undefined}
         dataTaskOpenSwitch
       />
-      {waitCardClick ? <ClickCue>업무 확인 칸반 카드를 클릭하세요</ClickCue> : null}
     </div>
   ) : (
-    <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
+    <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
   );
 
   return (
-    <div className="space-y-3">
+    <div className="relative h-full">
       {showEmail ? (
-        <div className="sim-email-in overflow-hidden rounded-xl border border-slate-200 bg-white p-3 shadow-lg shadow-slate-200/60">
-          <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-              <Mail className="h-4 w-4" />
+        <div className="sim-email-in absolute right-2 top-2 z-10 max-w-[220px] overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-lg">
+          <div className="flex items-start gap-2">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+              <Mail className="h-3.5 w-3.5" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] text-slate-400">
-                {email.from} · {email.time}
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-slate-900">{email.subject}</p>
-              <p className="mt-1 text-[11px] text-slate-600">{email.preview}</p>
+            <div className="min-w-0">
+              <p className="text-[9px] text-slate-400">메일 알림</p>
+              <p className="truncate text-[10px] font-semibold text-slate-900">{email.subject}</p>
             </div>
-            <span className="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">NEW</span>
           </div>
         </div>
       ) : null}
 
-      <div className="relative overflow-hidden rounded-xl">
-        <MiniRunaFrame activeNav="tasks" showNotification className="min-h-[460px]">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <p className="text-xs font-semibold text-slate-800">업무 관리</p>
-              <p className="text-[10px] text-slate-500">2026-05-01 ~ 2026-05-31</p>
-            </div>
-            <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-0.5 text-[10px]">
-              <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 font-medium text-blue-700">
-                <LayoutGrid className="h-3 w-3" />
-                칸반
-              </span>
-              <span className="inline-flex items-center gap-1 px-2 py-1 text-slate-400">
-                <List className="h-3 w-3" />
-                목록
-              </span>
-              <span className="inline-flex items-center gap-1 px-2 py-1 text-slate-400">
-                <Calendar className="h-3 w-3" />
-                기간
-              </span>
-            </div>
-          </div>
-
-          <div className="flex gap-2 pb-1">
-            <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={cardInConfirmColumn ? 1 : 0} showArrow>
+      <MiniRunaFrame activeNav="tasks" showNotification variant="cropped" className="h-full border-0 shadow-none">
+        <div className="flex h-full flex-col">
+          <p className="mb-2 text-[10px] font-semibold text-slate-500">업무 확인 · 칸반</p>
+          <div className="flex min-h-0 flex-1 gap-2">
+            <KanbanColumn
+              title="업무 확인"
+              titleClass="text-blue-600"
+              headerClass="bg-sky-50"
+              count={cardInConfirmColumn ? 1 : 0}
+              showArrow
+              compact
+            >
               {cardInConfirmColumn ? card : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
+                <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
               )}
             </KanbanColumn>
-            <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={kanbanColumn === "done" ? 1 : 0}>
+            <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={kanbanColumn === "done" ? 1 : 0} compact>
               {kanbanColumn === "done" ? card : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
+                <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
               )}
             </KanbanColumn>
           </div>
-        </MiniRunaFrame>
+        </div>
+      </MiniRunaFrame>
 
-        <SimulationEmbeddedSheet sim={sim} open={sheetOpen} onEventClick={openEventDetail} />
-        {eventDetailOpen ? (
-          <SimulationEventDetailPanel detail={current.eventDetail} onClose={closeEventDetail} />
-        ) : null}
-      </div>
+      <SimulationEmbeddedSheet sim={sim} open={sheetOpen} onEventClick={openEventDetail} />
+      {eventDetailOpen ? (
+        <SimulationEventDetailPanel detail={current.eventDetail} onClose={closeEventDetail} />
+      ) : null}
     </div>
   );
 }

@@ -118,6 +118,7 @@ export function KanbanColumn({
   count,
   children,
   showArrow,
+  compact,
 }: {
   title: string;
   titleClass: string;
@@ -125,10 +126,11 @@ export function KanbanColumn({
   count: number;
   children: React.ReactNode;
   showArrow?: boolean;
+  compact?: boolean;
 }) {
   return (
     <>
-      <div className="flex min-w-[300px] flex-1 flex-col">
+      <div className={cn("flex flex-1 flex-col", compact ? "min-w-0" : "min-w-[300px]")}>
         <div className={cn("mb-3 flex items-center gap-2 rounded-xl px-4 py-2.5", headerClass)}>
           <span className={cn("text-sm font-semibold", titleClass)}>{title}</span>
           <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-slate-600">
