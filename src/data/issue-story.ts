@@ -63,7 +63,6 @@ export type NarrativeAction =
   | "click-card"
   | "click-reply"
   | "click-submit"
-  | "click-view-result"
   | "click-next-case"
   | "click-report";
 
@@ -91,12 +90,12 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   },
   delivery: {
     title: "분석이 끝났습니다 — RUNA와 메일로 동시에 전달됩니다",
-    body: "선별된 업무 한 건이 이메일 알림과 RUNA 칸반 「업무 요청」 컬럼에 등록됩니다.",
+    body: "선별된 업무 한 건이 이메일 알림과 RUNA 칸반 「업무 확인」 컬럼에 등록됩니다.",
     action: "wait",
   },
   kanban: {
     title: "확인이 필요한 업무가 도착했습니다",
-    body: "「업무 요청」에 올라온 카드를 열면 「업무 확인」으로 이동합니다. Sheet에서 위협 내역·분석 본문을 확인하세요.",
+    body: "「업무 확인」에 올라온 카드를 열어 Sheet에서 위협 내역·분석 본문을 확인하세요.",
     action: "click-card",
   },
   task: {
@@ -116,12 +115,12 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   },
   "staff-reply": {
     title: "분석팀 검증이 완료되었습니다",
-    body: "분석팀이 확인 결과를 회신하고 완료 처리했습니다.",
-    action: "click-view-result",
+    body: "분석팀이 확인 결과를 회신했습니다. Sheet가 닫히고 완료 처리된 업무는 칸반 「업무 완료」로 이동합니다.",
+    action: "wait",
   },
   complete: {
     title: "검증이 완료되었습니다",
-    body: "분석팀 검증이 마무리되었습니다.",
+    body: "완료 처리된 업무는 칸반보드 「업무 완료」 컬럼에서 이력으로 관리됩니다.",
     action: "click-report",
   },
   report: {
@@ -149,12 +148,12 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     },
     "staff-reply": {
       title: "정상 업무 통신으로 검증되었습니다",
-      body: "분석팀이 고객 맥락을 반영해 정상 업무 통신으로 판단했습니다. 이상 없음 — 완료 처리했습니다.",
-      action: "click-view-result",
+      body: "분석팀이 고객 맥락을 반영해 정상 업무 통신으로 판단했습니다. Sheet가 자동으로 닫히고 칸반 「업무 완료」로 이동합니다.",
+      action: "wait",
     },
     complete: {
       title: "사례 1 · 정상 검증 완료",
-      body: "고객 맥락 확인 후 정상 업무 통신으로 분류되었습니다. 이어서 실제 위험 통신 사례도 같은 흐름으로 체험해 보세요.",
+      body: "완료 처리된 업무는 칸반보드 「업무 완료」 컬럼에서 관리됩니다. 이어서 실제 위험 통신 사례도 같은 흐름으로 체험해 보세요.",
       action: "click-next-case",
     },
   },
@@ -181,12 +180,12 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     },
     "staff-reply": {
       title: "고객 조치 검증이 완료되었습니다",
-      body: "유효 위협으로 확정된 이벤트에 대해 고객 조치·재탐지 없음을 확인했습니다. 분석팀이 완료 처리했습니다.",
-      action: "click-view-result",
+      body: "유효 위협 이벤트에 대한 고객 조치·재탐지 없음을 확인했습니다. Sheet가 자동으로 닫히고 칸반 「업무 완료」로 이동합니다.",
+      action: "wait",
     },
     complete: {
       title: "사례 2 · 위협 통신 조치·검증 완료",
-      body: "고객 조치를 분석팀이 검증해 완료 처리했습니다. 두 사례 모두 월간 보고서에 반영됩니다.",
+      body: "완료 처리된 업무는 칸반보드 「업무 완료」 컬럼에서 관리됩니다. 두 사례 모두 월간 보고서에 반영됩니다.",
       action: "click-report",
     },
   },

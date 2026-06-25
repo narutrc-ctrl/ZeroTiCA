@@ -17,6 +17,21 @@ type Comment = {
 
 export type SimKanbanColumn = "hidden" | "pre_request" | "in_request" | "done";
 
+/** 단계 전환·타이핑 속도(ms) — 시뮬레이션 페이스는 여기서 조절 */
+export const SIM_TIMING = {
+  monitoringToAnomaly: 4800,
+  logTick: 750,
+  anomalyToAnalyst: 3200,
+  analystStep: 2000,
+  analystToDelivery: 1600,
+  deliveryKanbanCard: 600,
+  deliveryToKanban: 2200,
+  verifyToStaffReply: 2400,
+  staffReplyToComplete: 1800,
+  replyTypeChar: 28,
+  replyTypeStart: 400,
+} as const;
+
 const initialComments = (activeCase: SimCase): Comment[] => {
   const current = getCaseIncident(activeCase);
   return [
@@ -150,12 +165,12 @@ export function useIssueSimulation() {
       if (i <= text.length) {
         setReplyDraft(text.slice(0, i));
         i += 1;
-        schedule(type, 28);
+        schedule(type, SIM_TIMING.replyTypeChar);
       } else {
         setReplyTyping(false);
       }
     };
-    schedule(type, 400);
+    schedule(type, SIM_TIMING.replyTypeStart);
   }, [goTo, schedule, activeCase]);
 
   const submitReply = useCallback(() => {
@@ -184,15 +199,14 @@ export function useIssueSimulation() {
       ]);
       setTaskStatus("조치 완료");
       goTo("staff-reply");
-    }, 2400);
+      schedule(() => {
+        setSheetOpen(false);
+        setEventDetailOpen(false);
+        setKanbanColumn("done");
+        goTo("complete");
+      }, SIM_TIMING.staffReplyToComplete);
+    }, SIM_TIMING.verifyToStaffReply);
   }, [goTo, schedule, replyDraft, replyTyping, activeCase]);
-
-  const viewResult = useCallback(() => {
-    setSheetOpen(false);
-    setEventDetailOpen(false);
-    setKanbanColumn("done");
-    goTo("complete");
-  }, [goTo]);
 
   const openReport = useCallback(() => goTo("report"), [goTo]);
 
@@ -203,14 +217,14 @@ export function useIssueSimulation() {
     const logInterval = window.setInterval(() => {
       setLogCount((c) => Math.min(c + 1, logs.length - 1));
       setEventCount((c) => c + 2);
-    }, 750);
+    }, SIM_TIMING.logTick);
     schedule(() => {
       setLogCount(logs.length);
       setEventCount(caseData.initialEventCount + 12);
       setIssueCount(caseData.initialIssueCount + 1);
       setRiskLevel(caseData.riskAfter);
       goTo("anomaly");
-    }, 4800);
+    }, SIM_TIMING.monitoringToAnomaly);
     return () => window.clearInterval(logInterval);
   }, [started, phase, activeCase, goTo, schedule]);
 
@@ -219,23 +233,23 @@ export function useIssueSimulation() {
     schedule(() => {
       setAnalystStep(0);
       goTo("analyst");
-    }, 3200);
+    }, SIM_TIMING.anomalyToAnalyst);
   }, [started, phase, goTo, schedule]);
 
   useEffect(() => {
     if (!started || phase !== "analyst") return;
     const steps = getCaseAnalystSteps(activeCase);
     if (analystStep >= steps.length - 1) {
-      schedule(() => goTo("delivery"), 1600);
+      schedule(() => goTo("delivery"), SIM_TIMING.analystToDelivery);
       return;
     }
-    schedule(() => setAnalystStep((s) => s + 1), 2000);
+    schedule(() => setAnalystStep((s) => s + 1), SIM_TIMING.analystStep);
   }, [started, phase, analystStep, activeCase, goTo, schedule]);
 
   useEffect(() => {
     if (!started || phase !== "delivery") return;
-    schedule(() => setKanbanColumn("pre_request"), 600);
-    schedule(() => goTo("kanban"), 2200);
+    schedule(() => setKanbanColumn("pre_request"), SIM_TIMING.deliveryKanbanCard);
+    schedule(() => goTo("kanban"), SIM_TIMING.deliveryToKanban);
   }, [started, phase, goTo, schedule]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
@@ -271,7 +285,6 @@ export function useIssueSimulation() {
     closeEventDetail,
     startReply,
     submitReply,
-    viewResult,
     openReport,
   };
 }

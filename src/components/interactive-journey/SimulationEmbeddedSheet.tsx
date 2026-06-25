@@ -1,7 +1,6 @@
 import {
   ArrowRight,
   Calendar,
-  CheckCircle2,
   Hash,
   Loader2,
   MessageSquare,
@@ -154,7 +153,7 @@ export function SimulationEmbeddedSheet({
                 <MessageSquare className="h-3.5 w-3.5 text-slate-400" />
                 <h3 className="text-[11px] font-semibold text-slate-800">댓글</h3>
               </div>
-              <ul className="max-h-36 space-y-2 overflow-y-auto">
+              <ul className="space-y-2">
                 {comments.map((c) => (
                   <li
                     key={`${c.at}-${c.body.slice(0, 12)}`}
@@ -201,17 +200,6 @@ export function SimulationEmbeddedSheet({
                 </button>
               ) : null}
             </div>
-          ) : null}
-
-          {phase === "staff-reply" ? (
-            <button
-              type="button"
-              onClick={sim.viewResult}
-              className="sim-click-cue-target inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white"
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              검증 결과 확인하기
-            </button>
           ) : null}
 
           {phase === "task" ? (

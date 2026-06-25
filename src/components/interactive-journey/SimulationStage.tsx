@@ -216,10 +216,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
           <CheckCircle2 className="h-4 w-4" />
           {isThreat ? "고객 조치 검증 완료" : "정상 업무 통신 검증 완료"} · {current.code}
         </div>
-        <div className="flex gap-2 overflow-x-auto">
-          <KanbanColumn title="업무 요청" titleClass="text-slate-600" headerClass="bg-slate-100" count={0}>
-            <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
-          </KanbanColumn>
+        <div className="flex gap-2">
           <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={0}>
             <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
           </KanbanColumn>
@@ -235,7 +232,9 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             </div>
           </KanbanColumn>
         </div>
-        <p className="mt-4 text-center text-[11px] text-slate-500">
+        <p className="mt-4 text-center text-[11px] leading-relaxed text-slate-500">
+          완료 처리된 업무는 칸반보드 「업무 완료」 컬럼으로 이동하여 관리됩니다.
+          <br />
           {isThreat
             ? "고객 조치 → 분석팀 검증 → 완료 처리"
             : "고객 맥락 답변 → 분석팀 검증 → 완료 처리"}

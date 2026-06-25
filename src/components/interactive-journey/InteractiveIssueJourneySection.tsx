@@ -19,17 +19,12 @@ export function InteractiveIssueJourneySection() {
   const narrative = started ? getSimulationNarrative(phase, activeCase) : null;
   const needsUserAction =
     narrative?.action &&
-    ["click-card", "click-reply", "click-submit", "click-view-result", "click-next-case", "click-report"].includes(
+    ["click-card", "click-reply", "click-submit", "click-next-case", "click-report"].includes(
       narrative.action,
     );
 
   const replyHint =
     activeCase === "threat" ? "업무 내용 확인 후 「조치 내용 답변하기」를 누르세요" : "업무 내용 확인 후 「맥락 답변하기」를 누르세요";
-
-  const viewResultHint =
-    activeCase === "threat"
-      ? "분석팀의 조치 검증 결과를 확인하려면 「검증 결과 확인하기」를 누르세요"
-      : "분석팀의 검증 결과를 확인하려면 「검증 결과 확인하기」를 누르세요";
 
   return (
     <section
@@ -147,13 +142,12 @@ export function InteractiveIssueJourneySection() {
                         {needsUserAction ? (
                           <div className="mt-5 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3">
                             <p className="text-sm font-semibold text-blue-800">
-                              {narrative.action === "click-card" && "오른쪽 「업무 요청」 칸반 카드를 클릭하세요"}
+                              {narrative.action === "click-card" && "오른쪽 「업무 확인」 칸반 카드를 클릭하세요"}
                               {narrative.action === "click-reply" && replyHint}
                               {narrative.action === "click-submit" &&
                                 (activeCase === "threat"
                                   ? "조치 내용이 입력되면 「답변 등록」을 누르세요"
                                   : "답변이 입력되면 「답변 등록」을 누르세요")}
-                              {narrative.action === "click-view-result" && viewResultHint}
                               {narrative.action === "click-next-case" &&
                                 "이어서 위험 통신 사례를 체험하려면 「위험 통신 사례 이어서 보기」를 누르세요"}
                               {narrative.action === "click-report" &&
@@ -167,10 +161,14 @@ export function InteractiveIssueJourneySection() {
                                 <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
                                 분석이 진행 중입니다…
                               </>
-                            ) : phase === "verifying" ? (
+                            ) : phase === "verifying" || phase === "staff-reply" ? (
                               activeCase === "threat"
-                                ? "분석팀이 고객 조치 결과를 검증 중입니다…"
-                                : "분석팀이 업무 맥락을 검증 중입니다…"
+                                ? phase === "staff-reply"
+                                  ? "Sheet를 닫고 칸반 「업무 완료」로 이동 중…"
+                                  : "분석팀이 고객 조치 결과를 검증 중입니다…"
+                                : phase === "staff-reply"
+                                  ? "Sheet를 닫고 칸반 「업무 완료」로 이동 중…"
+                                  : "분석팀이 업무 맥락을 검증 중입니다…"
                             ) : phase === "report" ? (
                               <button
                                 type="button"

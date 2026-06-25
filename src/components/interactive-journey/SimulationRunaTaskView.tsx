@@ -36,6 +36,7 @@ export function SimulationRunaTaskView({
   const email = getCaseEmail(activeCase);
   const showCard = kanbanColumn !== "hidden";
   const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
+  const cardInConfirmColumn = kanbanColumn === "pre_request" || kanbanColumn === "in_request";
   const cardStatus =
     phase === "verifying" ? "확인 중" : kanbanColumn === "done" || phase === "staff-reply" ? "조치 완료" : "확인 요청";
   const cardStatusKey =
@@ -53,7 +54,7 @@ export function SimulationRunaTaskView({
         onClick={waitCardClick ? openTask : undefined}
         dataTaskOpenSwitch
       />
-      {waitCardClick ? <ClickCue>업무 요청 카드를 클릭하세요</ClickCue> : null}
+      {waitCardClick ? <ClickCue>업무 확인 칸반 카드를 클릭하세요</ClickCue> : null}
     </div>
   ) : (
     <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
@@ -62,7 +63,7 @@ export function SimulationRunaTaskView({
   return (
     <div className="space-y-3">
       {showEmail ? (
-        <div className={cn("sim-slide-in rounded-xl border border-slate-200 bg-white p-3 shadow-lg", "sim-email-in")}>
+        <div className="sim-email-in overflow-hidden rounded-xl border border-slate-200 bg-white p-3 shadow-lg shadow-slate-200/60">
           <div className="flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
               <Mail className="h-4 w-4" />
@@ -102,14 +103,9 @@ export function SimulationRunaTaskView({
             </div>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            <KanbanColumn title="업무 요청" titleClass="text-slate-600" headerClass="bg-slate-100" count={kanbanColumn === "pre_request" ? 1 : 0} showArrow>
-              {kanbanColumn === "pre_request" ? card : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
-              )}
-            </KanbanColumn>
-            <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={kanbanColumn === "in_request" ? 1 : 0} showArrow>
-              {kanbanColumn === "in_request" ? card : (
+          <div className="flex gap-2 pb-1">
+            <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={cardInConfirmColumn ? 1 : 0} showArrow>
+              {cardInConfirmColumn ? card : (
                 <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center text-[10px] text-slate-400">—</div>
               )}
             </KanbanColumn>
