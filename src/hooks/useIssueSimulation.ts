@@ -20,7 +20,7 @@ export type SimKanbanColumn = "hidden" | "pre_request" | "in_request" | "done";
 /** 단계 전환·타이핑 속도(ms) — 시뮬레이션 페이스는 여기서 조절 */
 export const SIM_TIMING = {
   monitoringToAnomaly: 4800,
-  logTick: 750,
+  logTick: 1750,
   anomalyToAnalyst: 3200,
   analystStep: 2000,
   analystToDelivery: 1600,
@@ -88,7 +88,7 @@ export function useIssueSimulation() {
     [clearTimers],
   );
 
-  const resetCaseState = useCallback((nextCase: SimCase) => {
+  const resetCaseState = useCallback((nextCase: SimCase, options?: { startAtKanban?: boolean }) => {
     const caseData = getCaseIncident(nextCase);
     setActiveCase(nextCase);
     setAnalystStep(0);
@@ -96,14 +96,14 @@ export function useIssueSimulation() {
     setEventCount(caseData.initialEventCount);
     setIssueCount(caseData.initialIssueCount);
     setRiskLevel(caseData.riskBefore);
-    setKanbanColumn("hidden");
+    setKanbanColumn(options?.startAtKanban ? "pre_request" : "hidden");
     setSheetOpen(false);
     setEventDetailOpen(false);
     setReplyDraft("");
     setReplyTyping(false);
     setTaskStatus("확인 요청");
     setComments(initialComments(nextCase));
-    setPhase("monitoring");
+    setPhase(options?.startAtKanban ? "kanban" : "monitoring");
   }, []);
 
   const resetAll = useCallback(() => {
@@ -124,7 +124,7 @@ export function useIssueSimulation() {
 
   const startThreatCase = useCallback(() => {
     clearTimers();
-    resetCaseState("threat");
+    resetCaseState("threat", { startAtKanban: true });
     setStarted(true);
   }, [clearTimers, resetCaseState]);
 

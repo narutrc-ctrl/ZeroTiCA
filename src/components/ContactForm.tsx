@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { site } from "@/data/content";
 
-export function ContactForm() {
+export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
   const [company, setCompany] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,6 +22,7 @@ export function ContactForm() {
     ].join("\n");
     const url = `mailto:${site.contactEmail}?subject=${encodeURIComponent("[제로티카] 도입 문의")}&body=${encodeURIComponent(body)}`;
     window.location.href = url;
+    onSubmitted?.();
   };
 
   const fieldClass =

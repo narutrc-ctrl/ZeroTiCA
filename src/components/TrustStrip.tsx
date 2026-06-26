@@ -1,21 +1,23 @@
+import { closing, partnerIndustries, partnerTrustStats, socialProof } from "@/data/content";
+import { CountUp } from "@/components/CountUp";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
-import { partnerIndustries, socialProof } from "@/data/content";
 
 export function TrustStrip() {
   return (
-    <section className="border-b border-slate-200 bg-slate-50">
-      <div className="zt-container py-12 sm:py-16">
-        <RevealOnScroll variant="fade-up" className="mb-10 max-w-3xl">
+    <section className="bg-slate-50">
+      <div className="zt-container zt-section">
+        <RevealOnScroll variant="fade-up" className="max-w-3xl">
           <p className="text-sm font-semibold text-blue-600">함께하는 고객사</p>
-          <h2 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl [word-break:keep-all]">
-            금융·게임·제조·공공까지, 실제 망을 분석해 운영하고 있습니다
+          <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl [word-break:keep-all]">
+            {closing.title}
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-slate-600">
-            아래 산업군 고객사 네트워크에서 의심 통신을 탐지·검증·조치해 왔습니다. 고객사명은 익명으로 표기합니다.
+          <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+            금융·게임·제조·공공까지, 실제 망을 분석해 운영하고 있습니다. 아래 산업군 고객사 네트워크에서
+            의심 통신을 탐지·검증·조치해 왔습니다.
           </p>
         </RevealOnScroll>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-12">
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-12">
           <RevealOnScroll variant="fade-left">
             <div className="grid gap-3 sm:grid-cols-2">
               {partnerIndustries.map((item) => (
@@ -46,6 +48,27 @@ export function TrustStrip() {
             </div>
           </RevealOnScroll>
         </div>
+
+        <RevealOnScroll variant="scale" delay={100} className="mt-14 sm:mt-16">
+          <div className="mx-auto grid max-w-2xl gap-5 sm:grid-cols-2">
+            {partnerTrustStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-2xl border border-slate-200 bg-white px-6 py-8 text-center shadow-sm"
+              >
+                <p className="text-4xl font-bold tabular-nums text-blue-700 sm:text-5xl">
+                  <CountUp value={stat.numeric} suffix={stat.suffix} />
+                </p>
+                <p className="mt-2 text-sm font-medium text-slate-600 [word-break:keep-all]">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll variant="fade-up" delay={140} className="mt-10 text-center">
+          <p className="text-lg text-slate-600">{closing.lines[0]}</p>
+          <p className="mt-2 text-lg font-semibold text-slate-900">{closing.lines[1]}</p>
+        </RevealOnScroll>
       </div>
     </section>
   );

@@ -113,7 +113,7 @@ export function InteractiveIssueJourneySection() {
                 </div>
               </div>
             ) : (
-              <div className="flex min-h-[520px] flex-col">
+              <div className="flex min-h-[520px] flex-col lg:min-h-40vh">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-3">
                     {chapterLabel ? (

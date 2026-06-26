@@ -1,11 +1,42 @@
 import { Mail } from "lucide-react";
-import { getCaseEmail } from "@/data/issue-story";
+import { getCaseEmail, getCaseIncident, type CaseIncident } from "@/data/issue-story";
 import { SimulationEmbeddedSheet } from "@/components/interactive-journey/SimulationEmbeddedSheet";
 import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
+
+function KanbanTaskCard({
+  incident,
+  status,
+  statusKey,
+  highlight,
+  onClick,
+  className,
+}: {
+  incident: CaseIncident;
+  status: string;
+  statusKey: string;
+  highlight?: boolean;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <TaskCard
+        title={incident.title}
+        code={incident.code}
+        author="제로티카 분석팀"
+        status={status}
+        statusClass={taskStatusClass(statusKey)}
+        highlight={highlight}
+        onClick={onClick}
+        dataTaskOpenSwitch={Boolean(onClick)}
+      />
+    </div>
+  );
+}
 
 export function SimulationRunaTaskView({
   sim,
@@ -26,34 +57,47 @@ export function SimulationRunaTaskView({
     closeEventDetail,
   } = sim;
   const email = getCaseEmail(activeCase);
-  const showCard = kanbanColumn !== "hidden";
-  const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
-  const cardInConfirmColumn = kanbanColumn === "pre_request" || kanbanColumn === "in_request";
-  const highlightNewCard = phase === "delivery" || waitCardClick;
-  const cardStatus =
-    phase === "verifying" ? "확인 중" : kanbanColumn === "done" || phase === "staff-reply" ? "조치 완료" : "확인 요청";
-  const cardStatusKey =
-    phase === "verifying" ? "checking" : kanbanColumn === "done" || phase === "staff-reply" ? "completed" : "requested";
+  const previousIncident = activeCase === "threat" ? getCaseIncident("normal") : null;
 
-  const card = showCard ? (
-    <div
+  const showActiveCard = kanbanColumn !== "hidden";
+  const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
+  const activeInConfirm = kanbanColumn === "pre_request" || kanbanColumn === "in_request";
+  const activeInDone = kanbanColumn === "done";
+  const highlightNewCard = phase === "delivery" || waitCardClick;
+
+  const activeStatus =
+    phase === "verifying" ? "확인 중" : activeInDone || phase === "staff-reply" ? "조치 완료" : "확인 요청";
+  const activeStatusKey =
+    phase === "verifying" ? "checking" : activeInDone || phase === "staff-reply" ? "completed" : "requested";
+
+  const confirmCount = activeInConfirm ? 1 : 0;
+  const doneCount = previousIncident ? (activeInDone ? 2 : 1) : activeInDone ? 1 : 0;
+
+  const activeCard = showActiveCard ? (
+    <KanbanTaskCard
+      incident={current}
+      status={activeStatus}
+      statusKey={activeStatusKey}
+      highlight={waitCardClick || highlightNewCard}
+      onClick={waitCardClick ? openTask : undefined}
       className={cn(
-        kanbanColumn === "pre_request" && phase === "delivery" && "sim-card-enter",
+        kanbanColumn === "pre_request" && (phase === "delivery" || phase === "kanban") && "sim-card-enter",
         highlightNewCard && "sim-spotlight-ring rounded-xl",
+        activeInDone && "sim-card-enter",
       )}
-    >
-      <TaskCard
-        title={current.title}
-        code={current.code}
-        author="제로티카 분석팀"
-        status={cardStatus}
-        statusClass={taskStatusClass(cardStatusKey)}
-        highlight={waitCardClick || highlightNewCard}
-        onClick={waitCardClick ? openTask : undefined}
-        dataTaskOpenSwitch
-      />
-    </div>
-  ) : (
+    />
+  ) : null;
+
+  const previousDoneCard = previousIncident ? (
+    <KanbanTaskCard
+      incident={previousIncident}
+      status="조치 완료"
+      statusKey="completed"
+      className="opacity-90"
+    />
+  ) : null;
+
+  const emptySlot = (
     <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
   );
 
@@ -81,17 +125,26 @@ export function SimulationRunaTaskView({
               title="업무 확인"
               titleClass="text-blue-600"
               headerClass="bg-sky-50"
-              count={cardInConfirmColumn ? 1 : 0}
+              count={confirmCount}
               showArrow
               compact
             >
-              {cardInConfirmColumn ? card : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
-              )}
+              {activeInConfirm ? activeCard : emptySlot}
             </KanbanColumn>
-            <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={kanbanColumn === "done" ? 1 : 0} compact>
-              {kanbanColumn === "done" ? card : (
-                <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
+            <KanbanColumn
+              title="업무 완료"
+              titleClass="text-green-600"
+              headerClass="bg-emerald-50"
+              count={doneCount}
+              compact
+            >
+              {doneCount > 0 ? (
+                <div className="space-y-2">
+                  {previousDoneCard}
+                  {activeInDone ? activeCard : null}
+                </div>
+              ) : (
+                emptySlot
               )}
             </KanbanColumn>
           </div>

@@ -13,7 +13,7 @@ export const site = {
 
 export const paths = {
   fullTour: "/demo/task?tour=full&step=0",
-  contact: "/contact",
+  contact: "/contact", // 북마크 호환 — 방문 시 모달을 연 뒤 소개 페이지로 이동
 };
 
 export const stats = {
@@ -64,13 +64,11 @@ export const clientLogos = partnerIndustries.map((p) => ({
 
 export const hero = {
   eyebrow: "Network Detection · Verification · Response",
-  headline: "수많은 의심 통신,",
-  headlineAccent: "진짜 위협만 골라낼 수 있습니까?",
-  sub: "탐지는 시작일 뿐입니다. 검증·조치·기록까지 한 흐름으로 연결합니다.",
-  runaLine: "RUNA가 의심 통신을 고객 업무 맥락과 연결해 검증 요청으로 전환합니다.",
-  lead:
-    "제로티카는 단순 탐지 서비스가 아닙니다. 의심 통신을 RUNA와 고객 상호작용으로 검증하고, 전문가 조치·보고서까지 이어지는 침입탐지 평가·조치 서비스입니다.",
-  ctaFlow: { label: "서비스 흐름 보기", href: "#journey" },
+  headline: "보안 알림은 시작일 뿐,",
+  headlineAccent: "중요한 건 '조치'까지 끝내는 것.",
+  sub:
+    "보안 전문가의 정밀 검증으로, 탐지부터 실제 조치까지의 모든 보안 공백을 완벽하게 메웁니다.",
+  ctaFlow: { label: "서비스 흐름 체험하기", href: "#journey" },
   ctaReport: { label: "샘플 보고서 보기", href: "/demo/event?tab=reports" },
 };
 
@@ -86,6 +84,7 @@ export const heroDashboardPreview = {
   staffMessage:
     "폐쇄망 IP에서 기계적 통신 패턴이 감지되었습니다. 정기 배포·패치 미러 서버 등 업무 통신인지 확인 부탁드립니다.",
   replyCta: "업무 맥락 답변하기",
+  caption: "RUNA가 의심 통신을 고객 업무 맥락과 연결해 확인 요청으로 전환합니다.",
 };
 
 export const problemSection = {
@@ -94,7 +93,7 @@ export const problemSection = {
   cards: [
     { q: "이 통신이 정상인가?" },
     { q: "지금 조치해야 하는 위협인가?" },
-    { q: "보고서로 남길 만큼 중요한 사건인가?" },
+    { q: "담당자에게 무엇을 확인해야 하나?" },
   ],
 };
 

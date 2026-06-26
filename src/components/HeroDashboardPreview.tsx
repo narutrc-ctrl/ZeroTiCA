@@ -119,6 +119,9 @@ export function HeroDashboardPreview({ className }: { className?: string }) {
           </div>
         </div>
       </div>
+      <p className="mt-3 text-center text-[11px] leading-relaxed text-slate-400 sm:text-xs [word-break:keep-all]">
+        {d.caption}
+      </p>
     </div>
   );
 }

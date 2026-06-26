@@ -6,14 +6,16 @@ import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ContactCTA } from "@/components/ContactCTA";
+import { useContactModal } from "@/components/ContactModal";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
-import { storyAnchors, paths } from "@/data/content";
+import { storyAnchors } from "@/data/content";
 
 export function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { openContactModal } = useContactModal();
   const isDemo = location.pathname.startsWith("/demo");
   const isHome = location.pathname === "/";
 
@@ -79,13 +81,16 @@ export function Layout() {
                   {a.label}
                 </a>
               ))}
-            <Link
-              to={paths.contact}
+            <button
+              type="button"
               className="zt-btn-primary mt-3 w-full text-sm"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                openContactModal();
+              }}
             >
               도입 문의
-            </Link>
+            </button>
             <Link
               to="/#experience"
               className="zt-btn-ghost mt-2 w-full text-sm"

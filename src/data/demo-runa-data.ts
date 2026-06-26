@@ -133,7 +133,7 @@ export const demoTasks: DemoTask[] = [
     content: [
       "10.24.18.52 → 내부 미러(10.24.20.10) 간 HTTP 반복 연결이 확인됩니다.",
       "정기 패치 배포용 내부 미러 서버 통신인지 고객 확인을 요청드립니다.",
-      "확인 후 화이트리스트 반영 여부를 함께 검토하겠습니다.",
+      "회신 주시면 분석팀이 맥락을 검증하고 완료 처리합니다.",
     ],
     relatedThreats: [
       {
@@ -155,7 +155,7 @@ export const demoTasks: DemoTask[] = [
         author: "demo_admin",
         role: "client",
         at: "2026-05-13 09:40",
-        body: "정기 패치 배포용 내부 미러 서버 통신입니다. 화이트리스트 등록 검토 부탁드립니다.",
+        body: "해당 서버는 최근 정기 배포 작업이 있었고, 외부 연동 테스트가 진행 중이었습니다.",
       },
     ],
   },
@@ -263,7 +263,7 @@ export const demoReportThreatSummary = [
     date: "2026-05-12",
     status: "requested",
     cause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",
-    outcome: "정기 패치 미러 통신으로 확인, 화이트리스트 검토 중",
+    outcome: "정기 패치 미러 통신으로 확인, 업무 완료",
   },
   {
     title: "다수의 내부 IP 대상 SSH 연결 시도",

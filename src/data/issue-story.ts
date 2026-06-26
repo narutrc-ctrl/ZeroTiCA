@@ -198,6 +198,12 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
       action: "분석 완료 후 RUNA 업무로 등록됩니다.",
       actionType: "wait",
     },
+    kanban: {
+      situation: "유효 위협 업무가 RUNA 업무 확인에 등록되었습니다.",
+      why: "내부망 스캔 정황 분석이 끝났고, 고객 조치 확인이 필요합니다.",
+      action: "강조된 카드를 클릭해 업무 Sheet를 여세요.",
+      actionType: "click-card",
+    },
     task: {
       situation: "유효 위협 업무 Sheet가 열렸습니다.",
       why: "고객 조치가 필요한 위협 통신 사례입니다.",
@@ -382,11 +388,11 @@ export const incident: CaseIncident = {
   presetReply:
     "해당 서버는 최근 정기 배포 작업이 있었고, 외부 연동 테스트가 진행 중이었습니다.",
   staffReply:
-    "확인 감사합니다. 정기 배포·연동 테스트 맥락을 반영해 「정상 업무 통신」으로 판단합니다. 해당 IP·시간대 화이트리스트 반영을 권고드립니다.",
-  reportSummary: "업무 맥락 확인 후 정상 통신으로 분류 — 화이트리스트 반영 권고",
+    "맥락 확인 감사합니다. 정기 배포·연동 테스트 통신으로 판단하여 「정상 업무 통신」으로 완료 처리했습니다.",
+  reportSummary: "업무 맥락 확인 후 정상 통신으로 분류·완료",
   reportVerdict: "정상 (업무 통신)",
   reportCause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",
-  reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 화이트리스트 검토",
+  reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 업무 완료",
   emailPreview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
   monitoringAlertText: "이상 패턴 감지",
   initialEventCount: 1184,
@@ -395,7 +401,7 @@ export const incident: CaseIncident = {
   content: [
     "10.24.18.52 → 내부 미러(10.24.20.10) 간 HTTP 반복 연결이 확인됩니다.",
     "정기 패치 배포용 내부 미러 서버 통신인지 고객 확인을 요청드립니다.",
-    "확인 후 화이트리스트 반영 여부를 함께 검토하겠습니다.",
+    "회신 주시면 분석팀이 맥락을 검증하고 완료 처리합니다.",
   ],
   assignee: "김분석",
   requestedAt: "2026-05-12 11:00",

@@ -10,7 +10,7 @@ type Props = {
 
 export function SimulationReport({ highlightNormal = true, highlightThreat = true }: Props) {
   return (
-    <div className="max-h-[min(560px,70vh)] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl">
+    <div className="rounded-xl border border-slate-200 bg-white shadow-xl">
       <div className="sticky top-0 z-10 border-b border-slate-100 bg-white px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>

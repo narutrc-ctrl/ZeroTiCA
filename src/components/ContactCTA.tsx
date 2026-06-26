@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { Mail, Phone } from "lucide-react";
 import { site } from "@/data/content";
+import { useContactModal } from "@/components/ContactModal";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -9,6 +9,8 @@ type Props = {
 };
 
 export function ContactCTA({ variant = "primary", className }: Props) {
+  const { openContactModal } = useContactModal();
+
   if (variant === "banner") {
     return (
       <section
@@ -23,9 +25,13 @@ export function ContactCTA({ variant = "primary", className }: Props) {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link to="/contact" className="zt-btn bg-white text-blue-700 hover:bg-blue-50">
+            <button
+              type="button"
+              onClick={openContactModal}
+              className="zt-btn bg-white text-blue-700 hover:bg-blue-50"
+            >
               도입 문의하기
-            </Link>
+            </button>
             <a href={`mailto:${site.contactEmail}`} className="zt-btn border border-white/40 text-white hover:bg-white/10">
               <Mail className="h-4 w-4" /> {site.contactEmail}
             </a>
@@ -38,9 +44,9 @@ export function ContactCTA({ variant = "primary", className }: Props) {
   if (variant === "inline") {
     return (
       <div className={cn("flex flex-wrap gap-3", className)}>
-        <Link to="/contact" className="zt-btn-primary">
+        <button type="button" onClick={openContactModal} className="zt-btn-primary">
           도입 문의
-        </Link>
+        </button>
         <a href={`mailto:${site.contactEmail}`} className="zt-btn-ghost">
           <Mail className="h-4 w-4" /> 이메일 문의
         </a>
@@ -49,9 +55,9 @@ export function ContactCTA({ variant = "primary", className }: Props) {
   }
 
   return (
-    <Link to="/contact" className={cn("zt-btn-primary", className)}>
+    <button type="button" onClick={openContactModal} className={cn("zt-btn-primary", className)}>
       도입 문의
-    </Link>
+    </button>
   );
 }
 

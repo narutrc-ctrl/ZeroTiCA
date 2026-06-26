@@ -26,11 +26,11 @@ export function HeroSection() {
                 {hero.headlineAccent}
               </span>
             </h1>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-300 sm:text-lg">{hero.sub}</p>
-            <p className="mt-4 max-w-lg text-sm leading-relaxed text-cyan-100/80 sm:text-[15px]">{hero.runaLine}</p>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-400 sm:text-base">{hero.lead}</p>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-slate-300 sm:text-lg [word-break:keep-all]">
+              {hero.sub}
+            </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <a href={hero.ctaFlow.href} className="zt-btn-primary shadow-lg shadow-blue-500/20">
                 {hero.ctaFlow.label}
                 <ArrowRight className="h-4 w-4" />

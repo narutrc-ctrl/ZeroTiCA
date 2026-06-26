@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
+import { useContactModal } from "@/components/ContactModal";
 const STORAGE_KEY = "zerotica-demo-prompt-dismissed";
 
 export function DemoTourPrompt() {
@@ -59,6 +60,8 @@ export function DemoTourPrompt() {
 }
 
 export function TourCompleteModal({ onClose }: { onClose: () => void }) {
+  const { openContactModal } = useContactModal();
+
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/50 p-4">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
@@ -68,9 +71,16 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
           도입·PoC·견적 상담이 필요하시면 문의를 남겨 주세요. 담당자가 연락드립니다.
         </p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-          <Link to="/contact?from=tour" className="zt-btn-primary flex-1 text-center" onClick={onClose}>
+          <button
+            type="button"
+            className="zt-btn-primary flex-1"
+            onClick={() => {
+              onClose();
+              openContactModal();
+            }}
+          >
             도입 문의하기
-          </Link>
+          </button>
           <Link to="/" className="zt-btn-ghost flex-1 text-center" onClick={onClose}>
             소개 페이지로
           </Link>

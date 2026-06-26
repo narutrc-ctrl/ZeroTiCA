@@ -183,6 +183,29 @@
     will-change: opacity;
   }
 
+  @keyframes case-slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(var(--case-slide-offset, 0));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .case-slide-enter {
+    animation: case-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .case-slide-from-right {
+    --case-slide-offset: 24px;
+  }
+
+  .case-slide-from-left {
+    --case-slide-offset: -24px;
+  }
+
   @keyframes hero-float {
     0%,
     100% {

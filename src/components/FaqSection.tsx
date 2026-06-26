@@ -95,11 +95,6 @@ export function FaqSection() {
           ))}
         </div>
 
-        <RevealOnScroll delay={80} className="mt-10">
-          <a href="#experience" className="zt-btn-ghost inline-flex items-center gap-2">
-            RUNA 3분 데모 보기
-          </a>
-        </RevealOnScroll>
       </div>
     </section>
   );

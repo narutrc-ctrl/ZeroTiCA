@@ -3,22 +3,30 @@ import type { SimCase, SimPhase } from "@/data/issue-story";
 import { cn } from "@/lib/cn";
 
 export const SIM_STAGE_HEIGHT_PX = 400;
+export const SIM_STAGE_HEIGHT_VH = 60;
 
 export function SimulationStageShell({
   children,
   className,
+  scrollable = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  scrollable?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "sim-stage-shell relative h-[400px] overflow-hidden rounded-xl border border-slate-200/90 bg-slate-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
+        "sim-stage-shell relative rounded-xl border border-slate-200/90 bg-slate-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
+        scrollable ? "overflow-y-auto" : "overflow-hidden",
         className,
       )}
+      style={{
+        height: `${SIM_STAGE_HEIGHT_VH}vh`,
+        minHeight: SIM_STAGE_HEIGHT_PX,
+      }}
     >
-      <div className="h-full overflow-hidden">{children}</div>
+      <div className={cn(!scrollable && "h-full overflow-hidden")}>{children}</div>
     </div>
   );
 }

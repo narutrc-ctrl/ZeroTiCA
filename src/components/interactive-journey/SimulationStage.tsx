@@ -10,7 +10,7 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
-import { chapterForPhase, storyChapters } from "@/data/issue-story";
+import { chapterForPhase, getCaseIncident, storyChapters } from "@/data/issue-story";
 import { SimulationStageShell } from "@/components/interactive-journey/SimulationConsole";
 import { SimulationReport } from "@/components/interactive-journey/SimulationReport";
 import { SimulationRunaTaskView } from "@/components/interactive-journey/SimulationRunaTaskView";
@@ -58,7 +58,6 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     current,
     monitoringLogs,
     analystSteps,
-    comments,
   } = sim;
   const isThreat = activeCase === "threat";
 
@@ -212,7 +211,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   }
 
   if (phase === "complete") {
-    const lastStaffComment = [...comments].reverse().find((c) => c.role === "staff");
+    const previousIncident = isThreat ? getCaseIncident("normal") : null;
 
     return (
       <SimulationStageShell>
@@ -230,25 +229,37 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={0} compact>
               <div className="rounded-lg border border-dashed border-slate-200 py-4 text-center text-[10px] text-slate-400">—</div>
             </KanbanColumn>
-            <KanbanColumn title="업무 완료" titleClass="text-green-600" headerClass="bg-emerald-50" count={1} compact>
-              <div className="sim-card-enter sim-spotlight-ring rounded-xl">
-                <TaskCard
-                  title={current.title}
-                  code={current.code}
-                  author="제로티카 분석팀"
-                  status="조치 완료"
-                  statusClass={taskStatusClass("completed")}
-                  highlight
-                />
+            <KanbanColumn
+              title="업무 완료"
+              titleClass="text-green-600"
+              headerClass="bg-emerald-50"
+              count={previousIncident ? 2 : 1}
+              compact
+            >
+              <div className="space-y-2">
+                {previousIncident ? (
+                  <TaskCard
+                    title={previousIncident.title}
+                    code={previousIncident.code}
+                    author="제로티카 분석팀"
+                    status="조치 완료"
+                    statusClass={taskStatusClass("completed")}
+                  />
+                ) : null}
+                <div className="sim-card-enter sim-spotlight-ring rounded-xl">
+                  <TaskCard
+                    title={current.title}
+                    code={current.code}
+                    author="제로티카 분석팀"
+                    status="조치 완료"
+                    statusClass={taskStatusClass("completed")}
+                    highlight={!previousIncident}
+                  />
+                </div>
               </div>
             </KanbanColumn>
           </div>
-          {lastStaffComment ? (
-            <div className="sim-spotlight-glow mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-[10px]">
-              <p className="font-semibold text-slate-600">분석팀 회신</p>
-              <p className="mt-1 leading-relaxed text-slate-700">{lastStaffComment.body}</p>
-            </div>
-          ) : null}
+          <div className="h-10" />
           {activeCase === "normal" ? (
             <button
               type="button"
@@ -274,10 +285,8 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   }
 
   return (
-    <SimulationStageShell>
-      <div className="h-full overflow-y-auto p-2">
-        <SimulationReport highlightNormal highlightThreat />
-      </div>
+    <SimulationStageShell scrollable>
+      <SimulationReport highlightNormal highlightThreat />
     </SimulationStageShell>
   );
 }

@@ -7,7 +7,6 @@ import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { CustomerOutcomesSection } from "@/components/CustomerOutcomesSection";
 import { TourCTA } from "@/components/TourCTA";
 import { TrustStrip } from "@/components/TrustStrip";
-import { ClosingSection } from "@/components/ClosingSection";
 import { ServiceDecisionSection } from "@/components/ServiceDecisionSection";
 import { FaqSection } from "@/components/FaqSection";
 import { ProblemDifferentiatorSection } from "@/components/ProblemDifferentiatorSection";
@@ -58,8 +57,6 @@ export function LandingPage() {
       <ContactCTA variant="banner" />
 
       <TrustStrip />
-
-      <ClosingSection />
     </div>
   );
 }
