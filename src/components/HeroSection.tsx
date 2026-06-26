@@ -1,5 +1,4 @@
-import { ArrowDown, ArrowRight, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import { hero } from "@/data/content";
 import { HeroBackground } from "@/components/HeroBackground";
 import { HeroDashboardPreview } from "@/components/HeroDashboardPreview";
@@ -35,13 +34,6 @@ export function HeroSection() {
                 {hero.ctaFlow.label}
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <Link
-                to={hero.ctaReport.href}
-                className="zt-btn inline-flex items-center gap-2 border border-white/15 bg-white/5 text-white hover:bg-white/10"
-              >
-                <FileText className="h-4 w-4" />
-                {hero.ctaReport.label}
-              </Link>
             </div>
           </RevealOnScroll>
 

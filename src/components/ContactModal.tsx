@@ -57,7 +57,7 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
 function ContactModalDialog({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4"
+      className="contact-modal-backdrop fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4"
       role="presentation"
       onClick={onClose}
     >
@@ -65,7 +65,7 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-modal-title"
-        className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
+        className="contact-modal-dialog flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
@@ -75,7 +75,7 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
               도입·상담 문의
             </h2>
             <p className="mt-1 text-sm text-slate-600">
-              인사이트·와치 도입, PoC, 견적 문의를 남겨 주시면 담당자가 연락드립니다.
+              Insight·Watch 도입, PoC, 견적 문의를 남겨 주시면 담당자가 연락드립니다.
             </p>
           </div>
           <button

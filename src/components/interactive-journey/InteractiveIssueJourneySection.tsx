@@ -62,7 +62,7 @@ export function InteractiveIssueJourneySection() {
   return (
     <section
       id="journey"
-      className="relative min-h-[120vh] border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white"
+      className="relative min-h-[90vh] border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white"
     >
       <div className="zt-container-hero px-4 pb-24 pt-16 sm:px-6 lg:px-8">
         <RevealOnScroll>
@@ -80,16 +80,14 @@ export function InteractiveIssueJourneySection() {
           <div className="sim-journey-panel rounded-2xl border border-slate-200/90 bg-white/95 p-5 shadow-lg shadow-slate-200/50 backdrop-blur-sm sm:p-6">
             {!started ? (
               <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-8">
-                <div className="flex min-w-0 flex-col justify-between">
+                <div className="flex min-w-0 flex-col justify-center gap-6">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">미니 시뮬레이션</p>
-                    <h3 className="mt-3 text-xl font-bold leading-snug text-slate-900 sm:text-2xl [word-break:keep-all]">
-                      {simulationIntro.title}
-                      {simulationIntro.titleAccent}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-600">{simulationIntro.description}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+                      {simulationIntro.description}
+                    </p>
                   </div>
-                  <div className="mt-6 flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
                       onClick={sim.startSimulation}

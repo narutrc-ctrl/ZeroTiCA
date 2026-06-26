@@ -13,7 +13,7 @@ export function TermsPage() {
         </p>
         <h2 className="mt-8 text-lg font-bold text-slate-900">1. 서비스</h2>
         <p>
-          회사는 네트워크 보안 모니터링·위협 분석·보고 서비스(인사이트, 와치)를 제공하며, 고객은
+          회사는 네트워크 보안 모니터링·위협 분석·보고 서비스(Insight, Watch)를 제공하며, 고객은
           계약에 따라 {site.productPortal} 고객 포털을 이용할 수 있습니다.
         </p>
         <h2 className="mt-8 text-lg font-bold text-slate-900">2. 문의</h2>

@@ -21,7 +21,7 @@ export function ContactCTA({ variant = "primary", className }: Props) {
           <div>
             <h2 className="text-2xl font-bold">도입·상담 문의</h2>
             <p className="mt-2 max-w-xl text-sm text-blue-100">
-              인사이트·와치 서비스 도입, PoC, 견적 문의를 남겨 주시면 담당자가 연락드립니다.
+              Insight·Watch 서비스 도입, PoC, 견적 문의를 남겨 주시면 담당자가 연락드립니다.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

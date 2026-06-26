@@ -6,7 +6,7 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [service, setService] = useState("와치");
+  const [service, setService] = useState("Watch");
   const [message, setMessage] = useState("");
 
   const onSubmit = (e: FormEvent) => {
@@ -59,8 +59,8 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
       <label className="block text-sm">
         <span className="mb-1 block font-medium text-slate-700">관심 서비스</span>
         <select className={fieldClass} value={service} onChange={(e) => setService(e.target.value)}>
-          <option>인사이트</option>
-          <option>와치</option>
+          <option>Insight</option>
+          <option>Watch</option>
           <option>미정 / 상담 후 결정</option>
         </select>
       </label>

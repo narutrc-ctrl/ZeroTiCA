@@ -41,7 +41,7 @@ export const socialProof = [
   {
     quote: "내부에서 몰랐던 통신이 Task로 올라오면서, 네트워크 가시성부터 확보됐습니다.",
     role: "제조·IT 인프라 담당",
-    industry: "인사이트 → Watch",
+    industry: "Insight → Watch",
   },
 ];
 
@@ -69,7 +69,6 @@ export const hero = {
   sub:
     "보안 전문가의 정밀 검증으로, 탐지부터 실제 조치까지의 모든 보안 공백을 완벽하게 메웁니다.",
   ctaFlow: { label: "서비스 흐름 체험하기", href: "#journey" },
-  ctaReport: { label: "샘플 보고서 보기", href: "/demo/event?tab=reports" },
 };
 
 export const heroFlowSteps = ["탐지", "RUNA 확인", "고객 답변", "전문가 검증", "보고서"] as const;
@@ -217,7 +216,7 @@ export const serviceDecision = {
 export const services = [
   {
     id: "insight",
-    name: "인사이트",
+    name: "Insight",
     tagline: "단기 집중 진단",
     description:
       "현재 네트워크와 보안 운영 상태를 집중적으로 점검하고, 우선 조치가 필요한 영역을 명확히 제시합니다.",
@@ -225,7 +224,7 @@ export const services = [
   },
   {
     id: "watch",
-    name: "와치",
+    name: "Watch",
     tagline: "지속 모니터링",
     description:
       "센서 기반 실시간 수집부터 탐지, 분석, 검증, 조치, 보고까지 보안 운영 전 과정을 대신 수행합니다.",
@@ -250,6 +249,7 @@ export const storyAnchors = [
   { id: "problem", label: "문제" },
   { id: "journey", label: "작업 순서" },
   { id: "outcomes", label: "고객 가치" },
+  { id: "choose", label: "서비스 선택" },
   { id: "faq", label: "FAQ" },
   { id: "experience", label: "체험" },
 ];

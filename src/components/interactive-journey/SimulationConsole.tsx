@@ -3,7 +3,7 @@ import type { SimCase, SimPhase } from "@/data/issue-story";
 import { cn } from "@/lib/cn";
 
 export const SIM_STAGE_HEIGHT_PX = 400;
-export const SIM_STAGE_HEIGHT_VH = 60;
+export const SIM_STAGE_HEIGHT_VH = 50;
 
 export function SimulationStageShell({
   children,

@@ -51,8 +51,8 @@ export function ServiceDecisionSection() {
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="py-3 pr-4 font-medium text-slate-500" />
-                  <th className="py-3 px-4 font-semibold text-slate-900">인사이트</th>
-                  <th className="py-3 pl-4 font-semibold text-blue-700">와치</th>
+                  <th className="py-3 px-4 font-semibold text-slate-900">Insight</th>
+                  <th className="py-3 pl-4 font-semibold text-blue-700">Watch</th>
                 </tr>
               </thead>
               <tbody>
