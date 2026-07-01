@@ -24,7 +24,7 @@ export function HeroDashboardPreview({ className }: { className?: string }) {
         <div className="grid gap-0 lg:grid-cols-[7.5rem_1fr]">
           <aside className="hidden border-r border-white/10 bg-slate-950/60 px-2 py-4 lg:block">
             <nav className="space-y-2">
-              {["대시보드", "업무관리", "보고서"].map((label, i) => (
+              {["대시보드", "이슈 관리", "보고서"].map((label, i) => (
                 <div
                   key={label}
                   className={cn(

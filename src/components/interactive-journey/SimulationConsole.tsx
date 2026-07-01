@@ -154,8 +154,8 @@ export function getWaitingLabel(phase: SimPhase, activeCase: SimCase): string {
       ? "분석팀이 고객 조치 결과를 검증 중입니다…"
       : "분석팀이 업무 맥락을 검증 중입니다…";
   }
-  if (phase === "staff-reply") return "Sheet를 닫고 칸반 「업무 완료」로 이동 중…";
-  if (phase === "delivery") return "RUNA에 업무 카드가 등록되고 있습니다…";
+  if (phase === "staff-reply") return "Sheet를 닫고 칸반 「완료」로 이동 중…";
+  if (phase === "delivery") return "RUNA에 이슈 카드가 등록되고 있습니다…";
   if (phase === "monitoring" || phase === "anomaly") return "네트워크 상태를 스캔 중입니다…";
   return "잠시만 기다려 주세요…";
 }

@@ -103,7 +103,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
         </section>
 
         <section className="rounded-lg bg-slate-50 p-3">
-          <p className="font-semibold text-slate-800">정상 / 위협 / 조치 완료 요약</p>
+          <p className="font-semibold text-slate-800">정상 / 위협 / 완료 요약</p>
           <div className="mt-2 grid gap-2 sm:grid-cols-3">
             <div className="rounded-lg bg-emerald-50 px-3 py-2 text-center">
               <p className="text-[10px] text-slate-500">정상 검증</p>
@@ -114,7 +114,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
               <p className="text-lg font-bold text-amber-700">2</p>
             </div>
             <div className="rounded-lg bg-red-50 px-3 py-2 text-center">
-              <p className="text-[10px] text-slate-500">위협·조치 완료</p>
+              <p className="text-[10px] text-slate-500">위협·완료</p>
               <p className="text-lg font-bold text-red-700">1</p>
             </div>
           </div>

@@ -17,6 +17,7 @@ import { SimulationRunaTaskView } from "@/components/interactive-journey/Simulat
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
+import { KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { cn } from "@/lib/cn";
 
 function MetricCard({
@@ -223,14 +224,17 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
             )}
           >
             <CheckCircle2 className="h-4 w-4" />
-            조치 완료 · {current.code}
+            완료 · {current.code}
           </div>
           <div className="flex gap-2">
-            <KanbanColumn title="업무 확인" titleClass="text-blue-600" headerClass="bg-sky-50" count={0} compact>
+            <KanbanColumn title={KANBAN_COLUMNS.pre_request} titleClass="text-slate-600" headerClass="bg-slate-100" count={0} compact>
+              <div className="rounded-lg border border-dashed border-slate-200 py-4 text-center text-[10px] text-slate-400">—</div>
+            </KanbanColumn>
+            <KanbanColumn title={KANBAN_COLUMNS.in_request} titleClass="text-blue-600" headerClass="bg-sky-50" count={0} compact>
               <div className="rounded-lg border border-dashed border-slate-200 py-4 text-center text-[10px] text-slate-400">—</div>
             </KanbanColumn>
             <KanbanColumn
-              title="업무 완료"
+              title={KANBAN_COLUMNS.done}
               titleClass="text-green-600"
               headerClass="bg-emerald-50"
               count={previousIncident ? 2 : 1}
@@ -242,7 +246,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                     title={previousIncident.title}
                     code={previousIncident.code}
                     author="제로티카 분석팀"
-                    status="조치 완료"
+                    status={ISSUE_STATUS.completed}
                     statusClass={taskStatusClass("completed")}
                   />
                 ) : null}
@@ -251,7 +255,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
                     title={current.title}
                     code={current.code}
                     author="제로티카 분석팀"
-                    status="조치 완료"
+                    status={ISSUE_STATUS.completed}
                     statusClass={taskStatusClass("completed")}
                     highlight={!previousIncident}
                   />

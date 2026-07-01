@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 
 const sideNav = [
   { to: "/demo/event", label: "대시보드", icon: AppWindow, match: (p: string) => p.startsWith("/demo/event") },
-  { to: "/demo/task", label: "업무관리", icon: ClipboardList, match: (p: string) => p.startsWith("/demo/task") },
+  { to: "/demo/task", label: "이슈 관리", icon: ClipboardList, match: (p: string) => p.startsWith("/demo/task") },
 ];
 
 export function MockRunaShell({ children }: { children: React.ReactNode }) {

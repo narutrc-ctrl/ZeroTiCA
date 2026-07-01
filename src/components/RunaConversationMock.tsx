@@ -5,7 +5,7 @@ export function RunaConversationMock() {
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-panel">
       <div className="border-b border-slate-100 bg-slate-50 px-4 py-3">
-        <p className="text-sm font-semibold text-slate-900">RUNA · 업무 대화</p>
+        <p className="text-sm font-semibold text-slate-900">RUNA · 이슈 대화</p>
         <p className="text-xs text-slate-500">의심 통신 DEMO-2026-05-003</p>
       </div>
       <div className="space-y-4 p-4">

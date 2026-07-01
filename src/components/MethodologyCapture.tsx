@@ -24,7 +24,7 @@ export type MethodologyScreenId =
 const SCREEN_LABELS: Record<MethodologyScreenId, string> = {
   "event-detail-agent": "RUNA 대시보드 · 이벤트 상세 (에이전트 통신)",
   "long-session": "RUNA 분석 · 장시간 세션",
-  "task-and-whitelist": "RUNA 업무관리 · 화이트리스트 설정",
+  "task-and-whitelist": "RUNA 이슈 관리 · 화이트리스트 설정",
   "event-dashboard": "RUNA 대시보드 · 단계별 요약",
   "ioc-batch": "RUNA 대시보드 · IOC 연결 이벤트",
 };
@@ -244,9 +244,9 @@ function TaskAndWhitelistPreview() {
     <RunaPreviewShell screenId="task-and-whitelist">
       <div className="grid gap-2 p-2 lg:grid-cols-2">
         <div>
-          <p className="mb-1 text-[10px] font-semibold text-slate-600">업무관리 · 칸반</p>
+          <p className="mb-1 text-[10px] font-semibold text-slate-600">이슈 관리 · 칸반</p>
           <KanbanColumn
-            title="업무 확인"
+            title="확인 요청"
             titleClass="text-blue-500"
             headerClass="bg-sky-50"
             count={inRequest.length}

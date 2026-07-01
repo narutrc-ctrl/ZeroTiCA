@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
 import { getCaseEmail, getCaseIncident, type CaseIncident } from "@/data/issue-story";
+import { ISSUE_MENU, KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { SimulationEmbeddedSheet } from "@/components/interactive-journey/SimulationEmbeddedSheet";
 import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
@@ -61,17 +62,16 @@ export function SimulationRunaTaskView({
 
   const showActiveCard = kanbanColumn !== "hidden";
   const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
-  const activeInConfirm = kanbanColumn === "pre_request" || kanbanColumn === "in_request";
-  const activeInDone = kanbanColumn === "done";
   const highlightNewCard = phase === "delivery" || waitCardClick;
 
   const activeStatus =
-    phase === "verifying" ? "확인 중" : activeInDone || phase === "staff-reply" ? "조치 완료" : "확인 요청";
+    phase === "verifying"
+      ? ISSUE_STATUS.checking
+      : kanbanColumn === "done" || phase === "staff-reply"
+        ? ISSUE_STATUS.completed
+        : ISSUE_STATUS.requested;
   const activeStatusKey =
-    phase === "verifying" ? "checking" : activeInDone || phase === "staff-reply" ? "completed" : "requested";
-
-  const confirmCount = activeInConfirm ? 1 : 0;
-  const doneCount = previousIncident ? (activeInDone ? 2 : 1) : activeInDone ? 1 : 0;
+    phase === "verifying" ? "checking" : kanbanColumn === "done" || phase === "staff-reply" ? "completed" : "requested";
 
   const activeCard = showActiveCard ? (
     <KanbanTaskCard
@@ -83,18 +83,13 @@ export function SimulationRunaTaskView({
       className={cn(
         kanbanColumn === "pre_request" && (phase === "delivery" || phase === "kanban") && "sim-card-enter",
         highlightNewCard && "sim-spotlight-ring rounded-xl",
-        activeInDone && "sim-card-enter",
+        kanbanColumn === "done" && "sim-card-enter",
       )}
     />
   ) : null;
 
   const previousDoneCard = previousIncident ? (
-    <KanbanTaskCard
-      incident={previousIncident}
-      status="조치 완료"
-      statusKey="completed"
-      className="opacity-90"
-    />
+    <KanbanTaskCard incident={previousIncident} status={ISSUE_STATUS.completed} statusKey="completed" className="opacity-90" />
   ) : null;
 
   const emptySlot = (
@@ -119,29 +114,39 @@ export function SimulationRunaTaskView({
 
       <MiniRunaFrame activeNav="tasks" showNotification variant="cropped" className="h-full border-0 shadow-none">
         <div className="flex h-full flex-col">
-          <p className="mb-2 text-[10px] font-semibold text-slate-500">업무 확인 · 칸반</p>
-          <div className="flex min-h-0 flex-1 gap-2">
+          <p className="mb-2 text-[10px] font-semibold text-slate-500">{ISSUE_MENU} · 칸반</p>
+          <div className="flex min-h-0 flex-1 gap-2 overflow-x-auto">
             <KanbanColumn
-              title="업무 확인"
-              titleClass="text-blue-600"
-              headerClass="bg-sky-50"
-              count={confirmCount}
+              title={KANBAN_COLUMNS.pre_request}
+              titleClass="text-slate-600"
+              headerClass="bg-slate-100"
+              count={kanbanColumn === "pre_request" ? 1 : 0}
               showArrow
               compact
             >
-              {activeInConfirm ? activeCard : emptySlot}
+              {kanbanColumn === "pre_request" ? activeCard : emptySlot}
             </KanbanColumn>
             <KanbanColumn
-              title="업무 완료"
-              titleClass="text-green-600"
-              headerClass="bg-emerald-50"
-              count={doneCount}
+              title={KANBAN_COLUMNS.in_request}
+              titleClass="text-blue-600"
+              headerClass="bg-sky-50"
+              count={kanbanColumn === "in_request" ? 1 : 0}
+              showArrow
               compact
             >
-              {doneCount > 0 ? (
+              {kanbanColumn === "in_request" ? activeCard : emptySlot}
+            </KanbanColumn>
+            <KanbanColumn
+              title={KANBAN_COLUMNS.done}
+              titleClass="text-green-600"
+              headerClass="bg-emerald-50"
+              count={kanbanColumn === "done" ? (previousIncident ? 2 : 1) : previousIncident ? 1 : 0}
+              compact
+            >
+              {kanbanColumn === "done" || previousIncident ? (
                 <div className="space-y-2">
                   {previousDoneCard}
-                  {activeInDone ? activeCard : null}
+                  {kanbanColumn === "done" ? activeCard : null}
                 </div>
               ) : (
                 emptySlot

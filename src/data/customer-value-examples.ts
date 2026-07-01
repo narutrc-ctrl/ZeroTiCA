@@ -1,4 +1,4 @@
-/** 실제 RUNA 업무(Task) 패턴 기반 — 고객사명·IP·호스트명 익명화 */
+/** 실제 RUNA 이슈 패턴 기반 — 고객사명·IP·호스트명 익명화 */
 
 export type CaseCategory = "unknown" | "cleanup" | "forbidden";
 
@@ -110,7 +110,7 @@ export const customerValueZones: CustomerValueZone[] = [
     id: "operations",
     title: "위협 이외 — 발견과 정리",
     lead: [
-      "모든 통신이 곧바로 위협은 아닙니다. 몰랐던 업무 통신과, 정책·예외로 정리해야 할 패턴도 같은 RUNA 업무 흐름으로 다룹니다.",
+      "모든 통신이 곧바로 위협은 아닙니다. 몰랐던 업무 통신과, 정책·예외로 정리해야 할 패턴도 같은 RUNA 이슈 흐름으로 다룹니다.",
       "화이트리스트·업무 메모·모니터링 예외까지 이어져, 알림 피로를 줄이고 네트워크 맥락을 쌓습니다.",
     ],
     columns: [
@@ -263,7 +263,7 @@ export const taskCaseStudies: TaskCaseStudy[] = [
     ],
     staffAsk: "프록시 성격 도메인 접근이 반복됩니다. 업무상 사용 중인지, 설치된 프로그램 확인 부탁드립니다.",
     customerReply: "비인가 S/W에서 발생한 것으로 확인되어 삭제 조치했습니다.",
-    resolution: "비인가 S/W 제거 → 재탐지 없음 확인 → 업무 완료",
+    resolution: "비인가 S/W 제거 → 재탐지 없음 확인 → 완료",
     customerGain: "「정리가 필요한 그림자 IT 통신」을 찾아 제거하고, 재발 여부를 추적합니다.",
   },
   {
@@ -389,11 +389,11 @@ export const taskCaseStudies: TaskCaseStudy[] = [
       "종료되지 않은 프록시 프로세스가 외부로 장기 세션을 유지하고 있었습니다. 고객 조치 후 재탐지 없음.",
     findings: [
       "내부 호스트 → 외부 IP 장시간 세션",
-      "Kerberos·프로세스 정보와 함께 RUNA 업무에 근거 첨부",
+      "Kerberos·프로세스 정보와 함께 RUNA 이슈에 근거 첨부",
     ],
     staffAsk: "프록시웨어 잔류 통신이 확인됩니다. 해당 서버 운영 여부·프로세스 종료 부탁드립니다.",
     customerReply: "레거시 에이전트 잔여 프로세스였습니다. 서비스 중지 및 삭제 완료.",
-    resolution: "프로세스 삭제 → 48시간 재탐지 없음 → 업무 완료·보고서 반영",
+    resolution: "프로세스 삭제 → 48시간 재탐지 없음 → 완료·보고서 반영",
     customerGain: "「있으면 안 되는 잔류 통신」을 조기에 끊고, 조치 결과가 보고서에 남습니다.",
   },
   {
@@ -570,14 +570,14 @@ export const taskCaseStudies: TaskCaseStudy[] = [
     eventType: "incident response report",
     direction: "측면이동",
     summary:
-      "워터링홀 침해사고 협조 요청에 따라, 언론사→에너지 경제 서버(SSH) 침투 경로와 웹쉘·권한 상승 흔적을 RUNA 업무·보고서로 종합 정리했습니다.",
+      "워터링홀 침해사고 협조 요청에 따라, 언론사→에너지 경제 서버(SSH) 침투 경로와 웹쉘·권한 상승 흔적을 RUNA 이슈·보고서로 종합 정리했습니다.",
     findings: [
       "침투 추정: 언론사 잔존 웹쉘 → 에너지 경제 서버 SSH",
       "웹쉘 2건(err.php, codeigniter.php), ping6 바이너리 위장",
       "ZeroTiCA 탐지 이전 사고이나 분석·조치 타임라인 문서화",
     ],
     staffAsk:
-      "국가기관 협조 요청에 따른 침해사고 분석·조치 내역을 RUNA 업무에 정리해 주세요.",
+      "국가기관 협조 요청에 따른 침해사고 분석·조치 내역을 RUNA 이슈에 정리해 주세요.",
     customerReply: "악성 파일 제거·패치 완료, 추가 점검 결과 공유.",
     resolution: "침해 평가 보고서 작성 → 조치·재발 방지 권고 반영",
     customerGain: "탐지 전후 사고까지 한 문서로 이어져 대응·보고·감사에 활용됩니다.",
@@ -587,7 +587,7 @@ export const taskCaseStudies: TaskCaseStudy[] = [
 export const primaryOutcomeHighlight = {
   title: "알림에서 끝나지 않습니다",
   titleAccent: "고객의 업무 상황을 반영합니다",
-  body: "위협 통신은 Outbound·Inbound·Lateral 관점에서 분석하고, 몰랐던 통신·정리가 필요한 패턴도 RUNA 업무로 남깁니다. 확인·검증·조치·화이트리스트까지 한 흐름으로 이어집니다.",
+  body: "위협 통신은 Outbound·Inbound·Lateral 관점에서 분석하고, 몰랐던 통신·정리가 필요한 패턴도 RUNA 이슈로 남깁니다. 확인·검증·조치·화이트리스트까지 한 흐름으로 이어집니다.",
 };
 
 export const customerOutcomeBlocks = [
@@ -662,13 +662,13 @@ export const journeyStepExamples: JourneyStepExample[] = [
   {
     step: "05",
     focus: "notify",
-    headline: "고객 RUNA에 도착하는 확인 요청 (선별된 업무만)",
+    headline: "고객 RUNA에 도착하는 확인 요청 (선별된 이슈만)",
     caseIds: ["unknown-mechanical", "forbidden-webshell"],
   },
   {
     step: "06",
     focus: "reply",
-    headline: "고객이 업무 Sheet·댓글로 남기는 맥락 답변",
+    headline: "고객이 이슈 상세·댓글로 남기는 맥락 답변",
     caseIds: ["unknown-mechanical", "cleanup-vpn", "forbidden-ssh-flood"],
   },
   {

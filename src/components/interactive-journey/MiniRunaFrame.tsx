@@ -63,7 +63,7 @@ export function MiniRunaFrame({
               cropped && "opacity-60",
             )}
           >
-            <span className="text-[10px] font-medium text-slate-500">RUNA · 업무 관리</span>
+            <span className="text-[10px] font-medium text-slate-500">RUNA · 이슈 관리</span>
             <span className="relative rounded-full p-1 text-slate-400">
               <Bell className="h-3.5 w-3.5" />
               {showNotification ? (

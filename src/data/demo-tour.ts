@@ -1,3 +1,5 @@
+import { ISSUE_MENU, KANBAN_COLUMNS } from "@/data/issue-ui-labels";
+
 export type TourStep = {
   id: string;
   route: string;
@@ -46,24 +48,24 @@ export const demoTours: Record<string, TourStep[]> = {
       id: "task-1",
       route: "/demo/task",
       target: "[data-tour='task-toolbar']",
-      title: "업무 관리",
-      body: "고객 계정의 업무 관리 화면입니다. 기간·목록/칸반 보기로 진행 중인 업무를 확인합니다.",
+      title: ISSUE_MENU,
+      body: `고객 계정의 ${ISSUE_MENU} 화면입니다. 기간·목록/칸반 보기로 진행 중인 이슈를 확인합니다.`,
       placement: "bottom",
     },
     {
       id: "task-2",
       route: "/demo/task",
       target: "[data-tour='task-kanban']",
-      title: "업무 요청 · 확인 · 완료",
-      body: "고객에게는 업무 요청 → 업무 확인 → 업무 완료 단계로 표시됩니다. 실제 RUNA 칸반과 동일한 구조입니다.",
+      title: `${KANBAN_COLUMNS.pre_request} · ${KANBAN_COLUMNS.in_request} · ${KANBAN_COLUMNS.done}`,
+      body: `고객에게는 ${KANBAN_COLUMNS.pre_request} → ${KANBAN_COLUMNS.in_request} → ${KANBAN_COLUMNS.done} 단계로 표시됩니다. 실제 RUNA 칸반과 동일한 구조입니다.`,
       placement: "top",
     },
     {
       id: "task-3",
       route: "/demo/task",
       target: "[data-task-detail-sheet]",
-      title: "업무 상세 Sheet",
-      body: "업무 카드를 선택하면 우측에서 Sheet가 열립니다. 요청일시·위협 내역·분석 본문·댓글을 한곳에서 확인합니다.",
+      title: "이슈 상세",
+      body: "이슈 카드를 선택하면 우측에서 Sheet가 열립니다. 요청일시·위협 내역·분석 본문·댓글을 한곳에서 확인합니다.",
       placement: "left",
       measureDelay: 420,
     },
@@ -120,7 +122,7 @@ export const demoTours: Record<string, TourStep[]> = {
       search: "tab=reports",
       target: "[data-tour='report-threat-summary']",
       title: "위협 분석 결과 요약",
-      body: "기간 내 업무(Task)를 날짜순으로 요약합니다. 이슈·원인과 결과·상태를 한눈에 볼 수 있습니다.",
+      body: "기간 내 이슈를 날짜순으로 요약합니다. 이슈·원인과 결과·상태를 한눈에 볼 수 있습니다.",
       placement: "top",
     },
   ],

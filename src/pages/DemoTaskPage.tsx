@@ -11,10 +11,12 @@ import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { DEMO_DATE_RANGE, demoTasks, type DemoTask } from "@/data/demo-runa-data";
 import { useDemoTour } from "@/hooks/useDemoTour";
 
+import { ISSUE_MENU, KANBAN_COLUMNS } from "@/data/issue-ui-labels";
+
 const COLUMN_META = {
-  pre_request: { title: "업무 요청", titleClass: "text-slate-600", headerClass: "bg-slate-100" },
-  in_request: { title: "업무 확인", titleClass: "text-blue-500", headerClass: "bg-sky-50" },
-  done: { title: "업무 완료", titleClass: "text-green-500", headerClass: "bg-emerald-50" },
+  pre_request: { title: KANBAN_COLUMNS.pre_request, titleClass: "text-slate-600", headerClass: "bg-slate-100" },
+  in_request: { title: KANBAN_COLUMNS.in_request, titleClass: "text-blue-500", headerClass: "bg-sky-50" },
+  done: { title: KANBAN_COLUMNS.done, titleClass: "text-green-500", headerClass: "bg-emerald-50" },
 } as const;
 
 export function DemoTaskPage() {
@@ -47,7 +49,7 @@ export function DemoTaskPage() {
   return (
     <MockRunaShell>
       <div className="runa-page relative">
-        <RunaPageTabs tabs={[{ id: "tasks", label: "업무 관리" }]} active="tasks" />
+        <RunaPageTabs tabs={[{ id: "tasks", label: ISSUE_MENU }]} active="tasks" />
 
         <div className="flex flex-1 flex-col px-6 pb-6 pt-4">
           <div data-tour="task-toolbar" className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -70,9 +72,9 @@ export function DemoTaskPage() {
             <div className="flex flex-wrap gap-2 text-sm">
               {[
                 { label: "전체", count: demoTasks.length, active: true },
-                { label: "업무 요청", count: bySection.pre_request.length },
-                { label: "업무 확인", count: bySection.in_request.length },
-                { label: "업무 완료", count: bySection.done.length },
+                { label: KANBAN_COLUMNS.pre_request, count: bySection.pre_request.length },
+                { label: KANBAN_COLUMNS.in_request, count: bySection.in_request.length },
+                { label: KANBAN_COLUMNS.done, count: bySection.done.length },
               ].map((g) => (
                 <span
                   key={g.label}

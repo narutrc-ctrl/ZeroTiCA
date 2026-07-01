@@ -1,3 +1,5 @@
+import { KANBAN_COLUMNS } from "@/data/issue-ui-labels";
+
 export function MockPreview({ id }: { id: string }) {
   if (id === "task") {
     return (
@@ -6,7 +8,7 @@ export function MockPreview({ id }: { id: string }) {
           <div className="w-12 shrink-0 bg-[hsl(217,28%,15%)]" />
           <div className="flex-1 p-3">
             <div className="mb-2 flex gap-2">
-              {["업무 요청", "업무 확인", "업무 완료"].map((c, i) => (
+              {[KANBAN_COLUMNS.pre_request, KANBAN_COLUMNS.in_request, KANBAN_COLUMNS.done].map((c, i) => (
                 <div
                   key={c}
                   className={

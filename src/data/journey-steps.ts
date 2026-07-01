@@ -131,10 +131,10 @@ export const unifiedJourneySteps: JourneyStep[] = [
     phase: "collaborate",
     actor: "both",
     actorLabel: "분석팀 → 고객",
-    title: "RUNA 알림 · 업무 확인 요청",
+    title: "RUNA 알림 · 확인 요청",
     body:
-      "검토가 필요한 이슈만 RUNA 업무로 등록됩니다. 쏟아지는 로그가 아니라, 분석팀이 선별한 확인 요청이 고객에게 도착합니다.",
-    detail: "고객 화면: 업무관리 칸반 · 알림. 분석팀: 위협 내역·근거 데이터 첨부.",
+      "검토가 필요한 이슈만 RUNA 이슈로 등록됩니다. 쏟아지는 로그가 아니라, 분석팀이 선별한 확인 요청이 고객에게 도착합니다.",
+    detail: "고객 화면: 이슈 관리 칸반 · 알림. 분석팀: 위협 내역·근거 데이터 첨부.",
     visual: "notify",
   },
   {
@@ -144,7 +144,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     actorLabel: "고객",
     title: "업무 맥락 답변",
     body:
-      "「정기 배포 통신인가요?」「해당 서버 용도는?」— RUNA 업무 Sheet와 댓글로 업무 맥락을 답합니다. 분석팀은 이 답변을 검증 근거에 포함합니다.",
+      "「정기 배포 통신인가요?」「해당 서버 용도는?」— RUNA 이슈 상세와 댓글로 업무 맥락을 답합니다. 분석팀은 이 답변을 검증 근거에 포함합니다.",
     detail: "고객이 하는 일: 맥락 확인·답변. 분석팀이 하는 일: 질문 정리·추가 확인.",
     visual: "interact",
   },
@@ -156,7 +156,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     title: "전문가 검증 · 조치 안내",
     body:
       "탐지 데이터 + 고객 답변 + IOC·행동 분석을 결합해 정상·주의·위협을 판단합니다. 차단·화이트리스트·추가 모니터링 등 조치를 안내합니다.",
-    detail: "고객은 조치 권고를 확인·실행. 분석팀은 재탐지 모니터링과 업무 상태를 관리합니다.",
+    detail: "고객은 조치 권고를 확인·실행. 분석팀은 재탐지 모니터링과 이슈 상태를 관리합니다.",
     visual: "verify",
   },
   {
@@ -209,9 +209,9 @@ export const journeyActs: JourneyAct[] = [
     stepRange: ["05", "06"],
     stepIndices: [4, 5],
     summary:
-      "선별된 이슈만 RUNA 업무로 등록됩니다. 분석팀이 확인을 요청하면, 고객은 업무 Sheet·댓글로 「정기 배포 통신입니다」처럼 맥락을 답합니다.",
-    customerNote: "고객님이 하시는 일: RUNA 알림 확인 → 업무 댓글로 맥락 답변.",
-    highlights: ["선별 알림 (로그 폭탄 없음)", "업무 Sheet·칸반", "분석팀 ↔ 고객 댓글", "맥락이 검증 근거로 반영"],
+      "선별된 이슈만 RUNA 이슈로 등록됩니다. 분석팀이 확인을 요청하면, 고객은 이슈 상세·댓글로 「정기 배포 통신입니다」처럼 맥락을 답합니다.",
+    customerNote: "고객님이 하시는 일: RUNA 알림 확인 → 댓글로 맥락 답변.",
+    highlights: ["선별 알림 (로그 폭탄 없음)", "이슈 상세·칸반", "분석팀 ↔ 고객 댓글", "맥락이 검증 근거로 반영"],
     visual: "interact",
   },
   {

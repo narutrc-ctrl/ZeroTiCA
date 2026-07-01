@@ -90,24 +90,24 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   analyst: {
     situation: "후보 통신이 분석 파이프라인에 들어갔습니다.",
     why: "탐지·IOC·화이트리스트 정제를 거쳐 고객 확인 필요 여부를 판단합니다.",
-    action: "분석이 끝나면 RUNA 업무로 등록됩니다.",
+    action: "분석이 끝나면 RUNA 이슈로 등록됩니다.",
     actionType: "wait",
     note: "미러링 로그 수집 → 탐지 규칙 매칭 → 화이트리스트 대조 → 이슈 등록",
   },
   delivery: {
     situation: "분석이 끝났고, RUNA가 고객 확인 요청을 등록했습니다.",
-    why: "선별된 업무 한 건이 메일과 칸반에 동시에 도착합니다.",
-    action: "오른쪽에서 새 업무 카드 생성을 확인하세요.",
+    why: "선별된 이슈 한 건이 메일과 칸반에 동시에 도착합니다.",
+    action: "오른쪽에서 새 이슈 카드 생성을 확인하세요.",
     actionType: "wait",
   },
   kanban: {
-    situation: "RUNA 업무 확인 컬럼에 새 카드가 올라왔습니다.",
+    situation: "확인 요청 컬럼에 새 카드가 올라왔습니다.",
     why: "분석 결과와 위협 내역이 Sheet에 담겨 있습니다.",
-    action: "강조된 카드를 클릭해 업무 Sheet를 여세요.",
+    action: "강조된 카드를 클릭해 이슈 상세를 여세요.",
     actionType: "click-card",
   },
   task: {
-    situation: "업무 Sheet가 열렸습니다.",
+    situation: "이슈 상세가 열렸습니다.",
     why: "의심 통신 개요와 위협 내역을 확인할 차례입니다.",
     action: "내용 확인 후 하단 「맥락 답변하기」를 누르세요.",
     actionType: "click-reply",
@@ -128,12 +128,12 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   "staff-reply": {
     situation: "분석팀 회신이 도착했습니다.",
     why: "검증 결과가 댓글로 기록되었습니다.",
-    action: "Sheet가 닫히고 칸반 「업무 완료」로 이동합니다.",
+    action: "Sheet가 닫히고 칸반 「완료」로 이동합니다.",
     actionType: "wait",
   },
   complete: {
     situation: "이 사건이 완료 처리되었습니다.",
-    why: "완료된 업무는 칸반 「업무 완료」 컬럼에서 이력으로 관리됩니다.",
+    why: "완료된 이슈는 칸반 「완료」 컬럼에서 이력으로 관리됩니다.",
     action: "다음 단계로 이어서 진행하세요.",
     actionType: "click-report",
   },
@@ -154,7 +154,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
       actionType: "wait",
     },
     task: {
-      situation: "업무 Sheet가 열렸습니다.",
+      situation: "이슈 상세가 열렸습니다.",
       why: "의심 통신이 정상 업무인지 확인이 필요합니다.",
       action: "내용 확인 후 하단 「맥락 답변하기」를 누르세요.",
       actionType: "click-reply",
@@ -175,12 +175,12 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     "staff-reply": {
       situation: "정상 업무 통신으로 검증되었습니다.",
       why: "분석팀 회신이 댓글에 기록되었습니다.",
-      action: "곧 Sheet가 닫히고 「업무 완료」로 이동합니다.",
+      action: "곧 Sheet가 닫히고 「완료」로 이동합니다.",
       actionType: "wait",
     },
     complete: {
       situation: "사례 1 · 정상 검증이 끝났습니다.",
-      why: "완료 업무는 칸반 「업무 완료」에서 이력으로 관리됩니다.",
+      why: "완료 이슈는 칸반 「완료」에서 이력으로 관리됩니다.",
       action: "「위험 통신 사례 이어서 보기」로 다음 사건을 체험하세요.",
       actionType: "click-next-case",
     },
@@ -195,17 +195,17 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     analyst: {
       situation: "스캔 패턴이 유효 위협으로 확정되었습니다.",
       why: "업무 통신 후보에서 제외되고 고객 조치 요청이 필요합니다.",
-      action: "분석 완료 후 RUNA 업무로 등록됩니다.",
+      action: "분석 완료 후 RUNA 이슈로 등록됩니다.",
       actionType: "wait",
     },
     kanban: {
-      situation: "유효 위협 업무가 RUNA 업무 확인에 등록되었습니다.",
+      situation: "유효 위협 이슈가 확인 요청에 등록되었습니다.",
       why: "내부망 스캔 정황 분석이 끝났고, 고객 조치 확인이 필요합니다.",
-      action: "강조된 카드를 클릭해 업무 Sheet를 여세요.",
+      action: "강조된 카드를 클릭해 이슈 상세를 여세요.",
       actionType: "click-card",
     },
     task: {
-      situation: "유효 위협 업무 Sheet가 열렸습니다.",
+      situation: "유효 위협 이슈 상세가 열렸습니다.",
       why: "고객 조치가 필요한 위협 통신 사례입니다.",
       action: "내용 확인 후 「조치 내용 답변하기」를 누르세요.",
       actionType: "click-reply",
@@ -225,7 +225,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     "staff-reply": {
       situation: "고객 조치 검증이 완료되었습니다.",
       why: "재탐지 없음이 확인되어 분석팀 회신이 도착했습니다.",
-      action: "곧 Sheet가 닫히고 「업무 완료」로 이동합니다.",
+      action: "곧 Sheet가 닫히고 「완료」로 이동합니다.",
       actionType: "wait",
     },
     complete: {
@@ -318,7 +318,7 @@ export const analystSteps = [
   {
     label: "등록",
     title: "고객 확인 이슈로 등록",
-    detail: "RUNA Task 생성 · 메일 알림 발송.",
+    detail: "RUNA 이슈 생성 · 메일 알림 발송.",
   },
 ];
 
@@ -341,12 +341,12 @@ export const threatAnalystSteps = [
   {
     label: "정제",
     title: "위협 내역 · ThreatHistory 연결",
-    detail: "유효 위협 이벤트를 업무 Task에 연결 · 고객 조치 요청 준비.",
+    detail: "유효 위협 이벤트를 이슈에 연결 · 고객 조치 요청 준비.",
   },
   {
     label: "등록",
     title: "고객 확인 이슈로 등록",
-    detail: "RUNA Task 생성 · 메일 알림 발송.",
+    detail: "RUNA 이슈 생성 · 메일 알림 발송.",
   },
 ];
 
@@ -392,7 +392,7 @@ export const incident: CaseIncident = {
   reportSummary: "업무 맥락 확인 후 정상 통신으로 분류·완료",
   reportVerdict: "정상 (업무 통신)",
   reportCause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",
-  reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 업무 완료",
+  reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 완료",
   emailPreview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
   monitoringAlertText: "이상 패턴 감지",
   initialEventCount: 1184,
@@ -450,7 +450,7 @@ export const threatIncident: CaseIncident = {
   staffReply:
     "고객 조치(도구 삭제·격리)를 확인했습니다. 이후 48시간 재탐지 없음을 검증하여 완료 처리합니다. 유효 위협으로 침해 평가 보고서에 기록합니다.",
   reportSummary: "유효 위협 확정 — 고객 조치 후 재탐지 없음, 분석팀 검증 완료",
-  reportVerdict: "유효 위협 (조치 완료)",
+  reportVerdict: "유효 위협 (완료)",
   reportCause: "단일 내부 호스트의 내부망 다수 포트 스캔·연결 거절 정황",
   reportOutcome: "고객 조치 후 재탐지 없음 확인, 분석팀 검증 완료",
   emailPreview: "내부 포트 스캔 정황(유효 위협) — 조치 내용 회신이 필요합니다.",
@@ -503,13 +503,13 @@ export function getCaseMonitoringLogs(activeCase: SimCase) {
 
 export const emailNotification = {
   from: "noreply@zerotica.app",
-  subject: "[ZeroTica Watch] RUNA 업무 확인 요청",
+  subject: "[ZeroTica Watch] RUNA 확인 요청",
   time: "2026-05-12 11:05",
 };
 
 export const threatEmailNotification = {
   from: "noreply@zerotica.app",
-  subject: "[ZeroTica Watch] RUNA 업무 확인 요청",
+  subject: "[ZeroTica Watch] RUNA 확인 요청",
   time: "2026-05-21 09:05",
 };
 

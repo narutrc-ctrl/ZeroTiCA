@@ -34,10 +34,10 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
   if (visual === "notify") {
     const bodyText = large ? "text-sm" : "text-xs";
     return (
-      <CaptureFrame title="RUNA · 업무 알림" large={large}>
+      <CaptureFrame title="RUNA · 확인 요청" large={large}>
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
-            <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 업무 확인 요청</p>
+            <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 확인 요청</p>
             <p className={`mt-2 font-bold text-slate-900 ${large ? "text-base" : "text-sm"}`}>
               폐쇄망 IP (10.24.18.52) 기계적 통신 식별
             </p>
@@ -45,7 +45,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
               분석팀이 의심 통신을 검토했습니다. 업무 맥락 확인이 필요합니다.
             </p>
             <span className={`mt-3 inline-block rounded-lg bg-blue-600 px-3 py-1.5 font-medium text-white ${bodyText}`}>
-              업무 확인하기
+              확인하기
             </span>
           </div>
           <div className="mt-3 rounded-xl border border-slate-200 bg-white p-3 opacity-60">
@@ -60,7 +60,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
     const bodyText = large ? "text-sm" : "text-xs";
     const titleText = large ? "text-base" : "text-sm";
     return (
-      <CaptureFrame title="업무 Sheet · 고객 협업" large={large}>
+      <CaptureFrame title="이슈 상세 · 고객 협업" large={large}>
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-slate-200 bg-white shadow-lg">
             <div className="border-b border-slate-100 px-4 py-3.5">
@@ -122,7 +122,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
               { t: "05-12 11:20", l: "고객 확인 요청" },
               { t: "05-13 09:40", l: "고객 응답 · 정상 업무 확인" },
               { t: "05-13 14:00", l: "화이트리스트 반영 권고" },
-              { t: "05-14 10:00", l: "조치 완료 · 업무 종결" },
+              { t: "05-14 10:00", l: "완료 · 이슈 종결" },
             ].map((item) => (
               <li key={item.t} className="relative">
                 <span className="absolute -left-[1.35rem] top-1.5 h-2.5 w-2.5 rounded-full bg-blue-500" />

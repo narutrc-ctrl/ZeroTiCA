@@ -30,7 +30,7 @@ const USER_ACTIONS: NarrativeAction[] = [
 function getCtaLabel(actionType: NarrativeAction | undefined, activeCase: SimCase): string | null {
   switch (actionType) {
     case "click-card":
-      return "오른쪽 강조된 「업무 확인」 카드를 클릭하세요";
+      return "오른쪽 강조된 「확인 요청」 카드를 클릭하세요";
     case "click-reply":
       return activeCase === "threat"
         ? "Sheet 하단 「조치 내용 답변하기」를 누르세요"

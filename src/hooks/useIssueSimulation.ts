@@ -58,7 +58,7 @@ export function useIssueSimulation() {
   const [eventDetailOpen, setEventDetailOpen] = useState(false);
   const [replyDraft, setReplyDraft] = useState("");
   const [replyTyping, setReplyTyping] = useState(false);
-  const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "조치 완료">("확인 요청");
+  const [taskStatus, setTaskStatus] = useState<"확인 요청" | "확인 중" | "완료">("확인 요청");
   const [comments, setComments] = useState<Comment[]>(() => initialComments("normal"));
   const timersRef = useRef<number[]>([]);
 
@@ -132,7 +132,7 @@ export function useIssueSimulation() {
     clearTimers();
     setStarted(true);
     setActiveCase("threat");
-    setTaskStatus("조치 완료");
+    setTaskStatus("완료");
     setKanbanColumn("done");
     setSheetOpen(false);
     setEventDetailOpen(false);
@@ -197,7 +197,7 @@ export function useIssueSimulation() {
           body: caseData.staffReply,
         },
       ]);
-      setTaskStatus("조치 완료");
+      setTaskStatus("완료");
       goTo("staff-reply");
       schedule(() => {
         setSheetOpen(false);

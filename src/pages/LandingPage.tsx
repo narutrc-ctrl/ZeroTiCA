@@ -43,7 +43,7 @@ export function LandingPage() {
               <div className="flex flex-col justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-8">
                 <p className="text-sm text-slate-300">가이드 투어 포함</p>
                 <ul className="space-y-2 text-sm text-slate-400">
-                  <li>· 업무 Sheet · 칸반</li>
+                  <li>· 이슈 상세 · 칸반</li>
                   <li>· 단계별 대시보드</li>
                   <li>· 침해 평가 보고서 뷰어</li>
                 </ul>

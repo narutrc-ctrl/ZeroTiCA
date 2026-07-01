@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
+import { ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { taskStatusClass } from "@/components/MockRunaShell";
 import { cn } from "@/lib/cn";
 
@@ -35,9 +36,9 @@ export function SimulationEmbeddedSheet({
   const { phase, current, activeCase, taskStatus, comments, replyDraft, replyTyping } = sim;
   const isThreat = activeCase === "threat";
   const statusKey =
-    phase === "verifying" ? "checking" : phase === "staff-reply" || taskStatus === "조치 완료" ? "completed" : "requested";
+    phase === "verifying" ? "checking" : phase === "staff-reply" || taskStatus === ISSUE_STATUS.completed ? "completed" : "requested";
   const statusLabel =
-    phase === "verifying" ? "확인 중" : phase === "staff-reply" || taskStatus === "조치 완료" ? "조치 완료" : "확인 요청";
+    phase === "verifying" ? ISSUE_STATUS.checking : phase === "staff-reply" || taskStatus === ISSUE_STATUS.completed ? ISSUE_STATUS.completed : ISSUE_STATUS.requested;
 
   if (!open) return null;
 

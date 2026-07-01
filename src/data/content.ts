@@ -3,7 +3,7 @@ export const site = {
   brandEn: "ZeroTica",
   productPortal: "ZeroTica Watch",
   runaDefinition:
-    "제로티카 고객 포털(RUNA) — 위협 탐지, 업무 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
+    "제로티카 고객 포털(RUNA) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
   contactEmail: "contact@zerotica.app",
   contactPhone: "1588-0000",
   companyLegalName: "주식회사 나루시큐리티",
@@ -34,12 +34,12 @@ export const statSources = [
 
 export const socialProof = [
   {
-    quote: "알람만 쌓이던 시절과 달리, 확인해야 할 업무만 RUNA에 정리되어 옵니다.",
+    quote: "알람만 쌓이던 시절과 달리, 확인해야 할 이슈만 RUNA에 정리되어 옵니다.",
     role: "국내 게임사 · 보안팀장",
     industry: "Watch 고객",
   },
   {
-    quote: "내부에서 몰랐던 통신이 Task로 올라오면서, 네트워크 가시성부터 확보됐습니다.",
+    quote: "내부에서 몰랐던 통신이 이슈로 올라오면서, 네트워크 가시성부터 확보됐습니다.",
     role: "제조·IT 인프라 담당",
     industry: "Insight → Watch",
   },
@@ -74,7 +74,7 @@ export const hero = {
 export const heroFlowSteps = ["탐지", "RUNA 확인", "고객 답변", "전문가 검증", "보고서"] as const;
 
 export const heroDashboardPreview = {
-  alertTitle: "RUNA 업무 알림",
+  alertTitle: "RUNA 확인 요청",
   taskTitle: "의심 통신 확인 요청",
   internalIp: "10.24.18.52",
   externalIp: "203.0.113.44",
@@ -235,7 +235,7 @@ export const services = [
 export const experienceSection = {
   title: "이제 직접 화면을 확인해 보십시오",
   lead:
-    "앞서 설명드린 흐름을 RUNA 고객 화면에서 그대로 체험할 수 있습니다. 업무 Sheet, 대시보드, 보고서 뷰어까지 약 3분 가이드로 안내합니다.",
+    "앞서 설명드린 흐름을 RUNA 고객 화면에서 그대로 체험할 수 있습니다. 이슈 상세, 대시보드, 보고서 뷰어까지 약 3분 가이드로 안내합니다.",
 };
 
 export const closing = {
@@ -255,7 +255,7 @@ export const storyAnchors = [
 ];
 
 export const tourPhases = [
-  { label: "업무 관리", stepRange: [0, 2] as const },
+  { label: "이슈 관리", stepRange: [0, 2] as const },
   { label: "대시보드", stepRange: [3, 5] as const },
   { label: "침해 평가 보고서", stepRange: [6, 8] as const },
 ];

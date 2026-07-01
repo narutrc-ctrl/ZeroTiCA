@@ -41,7 +41,7 @@ export function DemoTourPrompt() {
           </button>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          업무 관리 → 대시보드 → 침해 평가 보고서 순으로 약 3분 안에 제로티카 고객 화면을 안내해 드립니다.
+          이슈 관리 → 대시보드 → 침해 평가 보고서 순으로 약 3분 안에 제로티카 고객 화면을 안내해 드립니다.
         </p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row">
           <button type="button" onClick={startTour} className="zt-btn-primary flex-1">
