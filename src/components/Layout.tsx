@@ -1,12 +1,13 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlobalTour } from "@/components/GlobalTour";
 import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
 import { BrandLogo } from "@/components/BrandLogo";
 import { ContactCTA } from "@/components/ContactCTA";
 import { useContactModal } from "@/components/ContactModal";
+import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
@@ -16,8 +17,17 @@ export function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { openContactModal } = useContactModal();
-  const isDemo = location.pathname.startsWith("/demo");
-  const isHome = location.pathname === "/";
+  const parts = location.pathname.split("/").filter(Boolean);
+  const locale = isSupportedLocale(parts[0]) ? parts[0] : DEFAULT_LOCALE;
+  const basePath = isSupportedLocale(parts[0]) ? `/${parts.slice(1).join("/")}` || "/" : location.pathname;
+  const withLocale = (path: string) =>
+    locale === DEFAULT_LOCALE ? path : `/${locale}${path === "/" ? "" : path}`;
+  const isDemo = basePath.startsWith("/demo");
+  const isHome = basePath === "/";
+
+  useEffect(() => {
+    document.documentElement.lang = locale === "en-us" ? "en" : "ko";
+  }, [locale]);
 
   if (isDemo) {
     return (
@@ -53,7 +63,7 @@ export function Layout() {
           )}
           <div className="flex items-center gap-2">
             {!isHome && (
-              <Link to="/" className="hidden text-sm text-slate-600 hover:text-slate-900 sm:inline">
+              <Link to={withLocale("/")} className="hidden text-sm text-slate-600 hover:text-slate-900 sm:inline">
                 소개로
               </Link>
             )}
@@ -92,7 +102,7 @@ export function Layout() {
               도입 문의
             </button>
             <Link
-              to="/#experience"
+              to={withLocale("/#experience")}
               className="zt-btn-ghost mt-2 w-full text-sm"
               onClick={() => setOpen(false)}
             >

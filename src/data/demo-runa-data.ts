@@ -246,7 +246,7 @@ export const demoReports = [
 export const demoReportOverview = {
   period: "2026-05-01 ~ 2026-05-31",
   purpose: "네트워크 보안 취약점 식별 및 침해사고 대응 역량 평가",
-  target: "데모 고객사 내부망 (10.0.0.0/8, 172.16.0.0/12)",
+  target: "sample-corp 내부망 (sample subnet 대역)",
   personnel: "제로티카 분석팀 2명",
 };
 
@@ -390,5 +390,141 @@ export const demoIocBatch = {
       dst_ports: "443",
       count: 3,
     },
+  ],
+};
+
+/** front_cylee2 AD 인증 환경 관측 화면 용어 기준 데모 데이터 */
+export const demoAdEnvironmentSummary = {
+  title: "AD 인증 환경 관측",
+  description:
+    "Zeek dns.log · kerberos.log 기준으로 Domain/Site/DC 구조와 실제 인증 사용 상태를 확인합니다.",
+  sampleNotice: "모든 도메인·호스트·IP는 고객 정보 보호를 위해 sample 데이터로 치환되었습니다.",
+  domain: "sample-corp.local",
+  totalDc: 12,
+  activeDc: 9,
+  dnsOnlyDc: 3,
+  unknownIpDc: 1,
+};
+
+export const demoAdOperationalRows = [
+  { item: "Kerberos 인증 상태", status: "주의", summary: "실패율 12.8% · 우선 확인 1대" },
+  { item: "DNS SRV 조회 상태", status: "확인 필요", summary: "NXDOMAIN/SERVFAIL 합계 318건" },
+  { item: "Site 내 부하 분산", status: "일부 편중", summary: "SEOUL-SITE-1에서 DC1 비중 74%" },
+];
+
+export const demoAdNarrative = {
+  overallStatus: "운영 상태: 확인 필요",
+  summary:
+    "sample-corp.local 도메인에서 Kerberos 로그인 통신은 정상적으로 관측되지만, 특정 Site의 DC 부하 편중과 DNS SRV 실패가 함께 확인됩니다.",
+  why:
+    "실패율 10% 이상 클라이언트와 _ldap/_gc SRV 실패가 동시 발생해 인증 지연·로그인 실패 위험이 존재합니다.",
+};
+
+export const demoAdActionItems = [
+  {
+    priority: "우선 확인",
+    title: "DC-SAMPLE-SEOUL-02",
+    bullets: [
+      "Kerberos 실패율 12.8% · 주요 오류 KDC_ERR_PREAUTH_FAILED",
+      "sample-client-044 / sample-client-107 계정 정책·시간 동기화 점검",
+    ],
+  },
+  {
+    priority: "확인 필요",
+    title: "DNS SRV _ldap._tcp.sample-corp.local",
+    bullets: [
+      "SERVFAIL 178건 · NXDOMAIN 92건",
+      "sample-dns-01, sample-dns-02 포워더/존 구성 점검",
+    ],
+  },
+  {
+    priority: "참고",
+    title: "SEOUL-SITE-1 부하 편중",
+    bullets: [
+      "DC-SAMPLE-SEOUL-01 점유율 74%",
+      "DNS 가중치/우선순위 조정 검토",
+    ],
+  },
+];
+
+export const demoAdFailingClients = [
+  {
+    ip: "10.20.44.18",
+    priority: "우선 확인",
+    failCount: 6812,
+    totalEvents: 21384,
+    failRate: "31.9%",
+    primaryCause: "KDC_ERR_PREAUTH_FAILED",
+    nextCheck: "sample-client-044 계정 잠금/시간 동기화 확인",
+  },
+  {
+    ip: "10.20.52.107",
+    priority: "확인 필요",
+    failCount: 2380,
+    totalEvents: 12658,
+    failRate: "18.8%",
+    primaryCause: "KDC_ERR_C_PRINCIPAL_UNKNOWN",
+    nextCheck: "sample-client-107 서비스 계정/SPN 매핑 확인",
+  },
+];
+
+export const demoAdDnsFailureTopQueries = [
+  { query: "_ldap._tcp.sample-corp.local", count: 178 },
+  { query: "_gc._tcp.sample-corp.local", count: 96 },
+  { query: "_kerberos._tcp.sample-corp.local", count: 44 },
+];
+
+export const demoAdKerberosCauseRows = [
+  { code: "KDC_ERR_PREAUTH_FAILED", title: "사전 인증 실패", count: 4892, pct: "54.1%" },
+  { code: "KDC_ERR_C_PRINCIPAL_UNKNOWN", title: "계정 식별 실패", count: 2310, pct: "25.5%" },
+  { code: "KDC_ERR_S_PRINCIPAL_UNKNOWN", title: "서비스 계정 식별 실패", count: 1129, pct: "12.5%" },
+];
+
+export const demoAdDcRows = [
+  {
+    dc: "DC-SAMPLE-SEOUL-01",
+    ip: "10.20.1.10",
+    site: "SEOUL-SITE-1",
+    status: "Kerberos 확인",
+    events: 128430,
+    failRate: "4.2%",
+  },
+  {
+    dc: "DC-SAMPLE-SEOUL-02",
+    ip: "10.20.1.11",
+    site: "SEOUL-SITE-1",
+    status: "Kerberos 확인",
+    events: 41220,
+    failRate: "12.8%",
+  },
+  {
+    dc: "DC-SAMPLE-BUSAN-01",
+    ip: "10.30.1.10",
+    site: "BUSAN-SITE-1",
+    status: "DNS에서만 확인",
+    events: 0,
+    failRate: "—",
+  },
+];
+
+/** 다중 페이지 보고서 뷰어 섹션 */
+export const demoReportPages = {
+  toc: [
+    "1. 침해 평가 개요",
+    "2. 단계별 요약",
+    "3. 위협 분석 결과",
+    "4. AD 인증 환경 관측",
+    "5. 권장 조치 및 후속 계획",
+  ],
+  executiveSummary: [
+    "이번 기간 총 3,219건 이벤트 중 위협 의심 48건, 유효 위협 6건을 확인했습니다.",
+    "고객 확인 요청 이슈는 5건이며, 완료 2건/확인 중 2건/요청 전 1건 상태입니다.",
+    "AD 인증 환경에서는 Site별 DC 부하 편중과 DNS SRV 실패가 확인되어 운영 점검이 필요합니다.",
+  ],
+  recommendations: [
+    "SEOUL-SITE-1 DC 부하 분산 정책 점검 (DNS 가중치/우선순위 확인)",
+    "SERVFAIL 상위 질의(_ldap._tcp, _gc._tcp) DNS 설정 점검",
+    "실패율 10% 이상 클라이언트 IP 대상 계정 정책·시간 동기화 점검",
+    "유효 위협 확정 건은 48시간 재탐지 모니터링 후 월간 보고서에 반영",
   ],
 };

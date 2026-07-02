@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ContactModalProvider } from "@/components/ContactModal";
 import { Layout } from "@/components/Layout";
+import { LocaleRoute } from "@/components/LocaleRoute";
 import { LandingPage } from "@/pages/LandingPage";
 import { DemoTaskPage } from "@/pages/DemoTaskPage";
 import { DemoEventPage } from "@/pages/DemoEventPage";
@@ -23,6 +24,16 @@ export default function App() {
           <Route path="demo/task" element={<DemoTaskPage />} />
           <Route path="demo/event" element={<DemoEventPage />} />
           <Route path="demo/report" element={<Navigate to="/demo/event?tab=reports" replace />} />
+
+          <Route path=":locale" element={<LocaleRoute />}>
+            <Route index element={<LandingPage />} />
+            <Route path="contact" element={<ContactPage />} />
+            <Route path="legal/privacy" element={<PrivacyPage />} />
+            <Route path="legal/terms" element={<TermsPage />} />
+            <Route path="demo/task" element={<DemoTaskPage />} />
+            <Route path="demo/event" element={<DemoEventPage />} />
+            <Route path="demo/report" element={<Navigate to="../event?tab=reports" replace />} />
+          </Route>
         </Route>
       </Routes>
     </ContactModalProvider>
