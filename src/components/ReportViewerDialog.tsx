@@ -64,14 +64,14 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-blue-600">침해 평가 보고서</p>
-                  <h1 className="mt-2 text-3xl font-extrabold text-slate-900">{title}</h1>
+                  <h1 className="mt-2 text-3xl font-extrabold text-zinc-800">{title}</h1>
                   <p className="mt-1 text-slate-500">{period}</p>
                 </div>
                 <BrandMark size="lg" />
               </div>
               <div className="my-6 h-px bg-blue-500" />
               <div className="mt-auto rounded-xl border border-slate-200 bg-slate-50 p-5">
-                <h2 className="text-base font-bold text-slate-900">목차</h2>
+                <h2 className="text-base font-bold text-zinc-800">목차</h2>
                 <ol className="mt-2 list-decimal space-y-1 pl-5 text-slate-700">
                   {demoReportPages.toc.map((toc) => (
                     <li key={toc}>{toc}</li>
@@ -83,7 +83,7 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
             <div className="my-8 border-t border-dashed border-slate-300" />
 
             <section className="min-h-[250mm]">
-              <h2 className="text-base font-bold text-slate-900">1. 침해 평가 개요</h2>
+              <h2 className="text-base font-bold text-zinc-800">1. 침해 평가 개요</h2>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-slate-700">
                 <li>분석 기간: {demoReportOverview.period}</li>
                 <li>분석 목적: {demoReportOverview.purpose}</li>
@@ -91,7 +91,7 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
                 <li>투입 인력: {demoReportOverview.personnel}</li>
               </ul>
 
-              <h2 className="mt-8 text-base font-bold text-slate-900">2. 단계별 요약</h2>
+              <h2 className="mt-8 text-base font-bold text-zinc-800">2. 단계별 요약</h2>
               <div className="mt-3 overflow-hidden rounded border border-[#f0f4fa] text-xs">
                 <div className="grid grid-cols-4 bg-[#f7fbfe] font-medium text-[#898989]">
                   <div className="p-2">STAGE</div>
@@ -109,11 +109,11 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
                 ))}
               </div>
 
-              <h2 className="mt-8 text-base font-bold text-slate-900">3. 위협 분석 결과</h2>
+              <h2 className="mt-8 text-base font-bold text-zinc-800">3. 위협 분석 결과</h2>
               <ul data-tour="report-threat-summary" className="mt-3 space-y-4 text-sm">
                 {demoReportThreatSummary.map((item, i) => (
                   <li key={item.title}>
-                    <p className="font-semibold text-slate-900">
+                    <p className="font-semibold text-zinc-800">
                       {i + 1}) {item.title} <span className="font-normal text-slate-400">({item.date})</span>
                     </p>
                     <ul className="mt-1 list-disc space-y-0.5 pl-5 text-slate-600">
@@ -128,7 +128,7 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
             <div className="my-8 border-t border-dashed border-slate-300" />
 
             <section className="min-h-[250mm]">
-              <h2 className="text-base font-bold text-slate-900">4. AD 인증 환경 관측</h2>
+              <h2 className="text-base font-bold text-zinc-800">4. AD 인증 환경 관측</h2>
               <p className="mt-2 text-slate-600">
                 Domain/Site/DC 구조 및 Kerberos 인증 통신 관측 결과를 월간 관점에서 정리했습니다.
               </p>
@@ -171,14 +171,14 @@ export function ReportViewerDialog({ open, onClose, title, period }: Props) {
                 </table>
               </div>
 
-              <h2 className="mt-8 text-base font-bold text-slate-900">5. 권장 조치 및 후속 계획</h2>
+              <h2 className="mt-8 text-base font-bold text-zinc-800">5. 권장 조치 및 후속 계획</h2>
               <ol className="mt-3 list-decimal space-y-1 pl-5 text-slate-700">
                 {demoReportPages.recommendations.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ol>
 
-              <h3 className="mt-8 text-sm font-semibold text-slate-900">Executive Summary</h3>
+              <h3 className="mt-8 text-sm font-semibold text-zinc-800">Executive Summary</h3>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-600">
                 {demoReportPages.executiveSummary.map((line) => (
                   <li key={line}>{line}</li>

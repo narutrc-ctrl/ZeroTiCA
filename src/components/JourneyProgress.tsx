@@ -44,7 +44,7 @@ export function JourneyProgressDock({
     >
       <div className="mx-auto flex max-w-lg items-center gap-4">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-semibold text-slate-900">{act.title}</p>
+          <p className="truncate text-xs font-semibold text-zinc-800">{act.title}</p>
           <p className="text-[10px] text-slate-500">
             {formatActLabel(act)} · {pct}%
           </p>

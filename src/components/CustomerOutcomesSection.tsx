@@ -128,9 +128,9 @@ export function CustomerOutcomesSection() {
 
   return (
     <section id="outcomes" className="border-b border-slate-100 bg-slate-950 text-white">
-      <div className="zt-container-wide zt-section">
+      <div className="zt-container-hero zt-section">
         <RevealOnScroll variant="fade-up">
-          <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400">고객 가치</p>
+          <p className="text-[16px] font-semibold uppercase tracking-wider text-cyan-400">고객 가치</p>
           <h2 className="mt-2 text-3xl font-bold sm:text-4xl [word-break:keep-all]">
             {primaryOutcomeHighlight.title}
             <span className="text-cyan-400"> · {primaryOutcomeHighlight.titleAccent}</span>

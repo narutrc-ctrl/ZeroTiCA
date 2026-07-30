@@ -178,7 +178,7 @@ export function TaskCard({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <h4 className="text-sm font-semibold text-slate-900">{title}</h4>
+        <h4 className="text-sm font-semibold text-zinc-800">{title}</h4>
         <span className={cn("shrink-0 rounded-xl border px-2 py-0.5 text-[11px] font-semibold", statusClass)}>
           {status}
         </span>

@@ -63,7 +63,7 @@ export function HeroDashboardPreview({ className }: { className?: string }) {
                   </span>
                   <span className="text-[10px] text-slate-400">long session outbound</span>
                 </div>
-                <p className="mt-2 text-sm font-bold text-slate-900 sm:text-base">{d.taskTitle}</p>
+                <p className="mt-2 text-sm font-bold text-zinc-800 sm:text-base">{d.taskTitle}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-px bg-slate-100 sm:grid-cols-4">

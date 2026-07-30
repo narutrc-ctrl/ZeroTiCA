@@ -18,15 +18,15 @@ export function StoryStepHeader({
       <p
         className={
           dark
-            ? "text-sm font-bold tracking-widest text-cyan-400"
-            : "text-sm font-bold tracking-widest text-blue-600"
+            ? "text-[16px] font-bold tracking-widest text-cyan-400"
+            : "text-[16px] font-bold tracking-widest text-blue-600"
         }
       >
         {eyebrow ?? `STEP ${step}`}
       </p>
       <h2
         className={`mt-3 max-w-3xl text-balance text-3xl font-bold sm:text-4xl [word-break:keep-all] ${
-          dark ? "text-white" : "text-slate-900"
+          dark ? "text-white" : "text-zinc-800"
         }`}
       >
         {title}

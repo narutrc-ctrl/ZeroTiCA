@@ -6,10 +6,10 @@ import { cn } from "@/lib/cn";
 export function ServiceDecisionSection() {
   return (
     <section id="choose" className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white">
-      <div className="zt-container zt-section">
+      <div className="zt-container-hero zt-section">
         <RevealOnScroll>
-          <p className="text-sm font-semibold text-blue-600">서비스 선택</p>
-          <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl [word-break:keep-all]">
+          <p className="text-[16px] font-semibold text-blue-600">서비스 선택</p>
+          <h2 className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]">
             {serviceDecision.title}
           </h2>
           <p className="mt-3 max-w-2xl text-slate-600">{serviceDecision.lead}</p>
@@ -31,7 +31,7 @@ export function ServiceDecisionSection() {
                     </span>
                   )}
                   <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">{svc.tagline}</p>
-                  <h3 className="mt-2 text-2xl font-bold text-slate-900">{svc.name}</h3>
+                  <h3 className="mt-2 text-2xl font-bold text-zinc-800">{svc.name}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600">{svc.description}</p>
                   <ul className="mt-4 space-y-2">
                     {svc.bullets.map((b) => (
@@ -51,7 +51,7 @@ export function ServiceDecisionSection() {
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="py-3 pr-4 font-medium text-slate-500" />
-                  <th className="py-3 px-4 font-semibold text-slate-900">Insight</th>
+                  <th className="py-3 px-4 font-semibold text-zinc-800">Insight</th>
                   <th className="py-3 pl-4 font-semibold text-blue-700">Watch</th>
                 </tr>
               </thead>
@@ -60,7 +60,7 @@ export function ServiceDecisionSection() {
                   <tr key={row.label} className="border-b border-slate-100">
                     <td className="py-3 pr-4 font-medium text-slate-500">{row.label}</td>
                     <td className="py-3 px-4 text-slate-700">{row.insight}</td>
-                    <td className="py-3 pl-4 font-medium text-slate-900">{row.watch}</td>
+                    <td className="py-3 pl-4 font-medium text-zinc-800">{row.watch}</td>
                   </tr>
                 ))}
               </tbody>

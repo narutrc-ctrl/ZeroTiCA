@@ -4,8 +4,29 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Noto Sans KR", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
-        display: ["Noto Sans KR", "system-ui", "sans-serif"],
+        sans: [
+          "Pretendard",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "system-ui",
+          "Roboto",
+          "Helvetica Neue",
+          "Segoe UI",
+          "Apple SD Gothic Neo",
+          "Noto Sans KR",
+          "Malgun Gothic",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "sans-serif",
+        ],
+        display: [
+          "Pretendard",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -64,7 +64,7 @@ export function JourneyStepDetailDrawer({
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-xs font-bold uppercase tracking-wider text-blue-600">{formatActLabel(act)}</p>
-              <p className="mt-0.5 truncate text-sm font-semibold text-slate-900">{act.title}</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-zinc-800">{act.title}</p>
             </div>
             <button
               type="button"

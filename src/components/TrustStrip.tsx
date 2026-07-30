@@ -5,10 +5,10 @@ import { RevealOnScroll } from "@/components/RevealOnScroll";
 export function TrustStrip() {
   return (
     <section className="bg-slate-50">
-      <div className="zt-container zt-section">
+      <div className="zt-container-hero zt-section">
         <RevealOnScroll variant="fade-up" className="max-w-3xl">
-          <p className="text-sm font-semibold text-blue-600">함께하는 고객사</p>
-          <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl [word-break:keep-all]">
+          <p className="text-[16px] font-semibold text-blue-600">함께하는 고객사</p>
+          <h2 className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]">
             {closing.title}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -25,7 +25,7 @@ export function TrustStrip() {
                   key={item.sector}
                   className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm"
                 >
-                  <p className="text-sm font-bold text-slate-900">{item.sector}</p>
+                  <p className="text-sm font-bold text-zinc-800">{item.sector}</p>
                   <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
                 </div>
               ))}
@@ -67,7 +67,7 @@ export function TrustStrip() {
 
         <RevealOnScroll variant="fade-up" delay={140} className="mt-10 text-center">
           <p className="text-lg text-slate-600">{closing.lines[0]}</p>
-          <p className="mt-2 text-lg font-semibold text-slate-900">{closing.lines[1]}</p>
+          <p className="mt-2 text-lg font-semibold text-zinc-800">{closing.lines[1]}</p>
         </RevealOnScroll>
       </div>
     </section>

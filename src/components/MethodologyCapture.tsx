@@ -83,7 +83,7 @@ function EventDetailAgentPreview() {
   return (
     <RunaPreviewShell screenId="event-detail-agent">
       <div className="border-b border-slate-200 bg-white px-3 py-2">
-        <p className="text-[11px] font-semibold text-slate-900">{d.eventName}</p>
+        <p className="text-[11px] font-semibold text-zinc-800">{d.eventName}</p>
         <p className="text-[10px] text-slate-500">
           {d.date} · {d.srcIp} → {d.dstIp}
         </p>
@@ -387,7 +387,7 @@ function IocBatchPreview() {
   return (
     <RunaPreviewShell screenId="event-dashboard">
       <div className="border-b border-slate-200 bg-white px-3 py-2">
-        <p className="text-[11px] font-semibold text-slate-900">{d.eventName}</p>
+        <p className="text-[11px] font-semibold text-zinc-800">{d.eventName}</p>
         <p className="text-[10px] text-slate-500">
           {d.date} · {d.poolNote}
         </p>

@@ -23,7 +23,7 @@ export function SensorMirroringSection() {
             <div className="space-y-6">
               {sensorCollectionSection.points.map((p) => (
                 <div key={p.title} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-                  <p className="font-semibold text-slate-900">{p.title}</p>
+                  <p className="font-semibold text-zinc-800">{p.title}</p>
                   <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.body}</p>
                 </div>
               ))}
@@ -32,7 +32,7 @@ export function SensorMirroringSection() {
                 {sensorCollectionSection.flowSteps.map((s, i, arr) => (
                   <span key={s.label} className="flex items-center gap-2">
                     <span className="rounded-lg bg-white px-3 py-2 shadow-sm">
-                      <span className="block font-medium text-slate-900">{s.label}</span>
+                      <span className="block font-medium text-zinc-800">{s.label}</span>
                       <span className="text-xs text-slate-500">{s.sub}</span>
                     </span>
                     {i < arr.length - 1 ? <ArrowRight className="h-4 w-4 shrink-0 text-blue-400" /> : null}

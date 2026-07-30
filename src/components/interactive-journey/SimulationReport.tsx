@@ -15,7 +15,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold text-blue-600">침해 평가 보고서</p>
-            <h3 className="mt-1 text-lg font-extrabold text-slate-900">{reportMeta.title}</h3>
+            <h3 className="mt-1 text-lg font-extrabold text-zinc-800">{reportMeta.title}</h3>
             <p className="text-xs text-slate-500">{reportMeta.period}</p>
           </div>
           <BrandMark size="sm" />
@@ -24,7 +24,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
 
       <div className="space-y-6 p-5 text-xs leading-relaxed text-slate-800 sm:text-sm">
         <section>
-          <h4 className="font-bold text-slate-900">01. 침해 평가 개요</h4>
+          <h4 className="font-bold text-zinc-800">01. 침해 평가 개요</h4>
           <ul className="mt-2 list-disc space-y-1 pl-4 text-slate-600">
             <li>분석 기간: {reportMeta.period}</li>
             <li>분석 목적: {reportMeta.purpose}</li>
@@ -34,7 +34,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
         </section>
 
         <section>
-          <h4 className="font-bold text-slate-900">02. 침해 평가 결과 (STAGE별)</h4>
+          <h4 className="font-bold text-zinc-800">02. 침해 평가 결과 (STAGE별)</h4>
           <div className="mt-2 overflow-hidden rounded border border-[#f0f4fa] text-[11px]">
             <div className="grid grid-cols-4 bg-[#f7fbfe] font-medium text-[#898989]">
               <div className="p-2">STAGE</div>
@@ -54,7 +54,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
         </section>
 
         <section>
-          <h4 className="font-bold text-slate-900">03. 위협 분석 결과 요약</h4>
+          <h4 className="font-bold text-zinc-800">03. 위협 분석 결과 요약</h4>
           <p className="mt-1 text-slate-500">이번 달 의심 통신 검증 결과 · 주요 확인 요청</p>
 
           <div
@@ -66,7 +66,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
             {highlightNormal ? (
               <span className="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white">방금 처리</span>
             ) : null}
-            <p className="mt-2 font-semibold text-slate-900">
+            <p className="mt-2 font-semibold text-zinc-800">
               1) {incident.title}{" "}
               <span className="font-normal text-slate-400">(2026-05-12)</span>
             </p>
@@ -88,7 +88,7 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
             {highlightThreat ? (
               <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white">위험 통신 사례</span>
             ) : null}
-            <p className="mt-2 font-semibold text-slate-900">
+            <p className="mt-2 font-semibold text-zinc-800">
               2) {threatIncident.title}{" "}
               <span className="font-normal text-slate-400">(2026-05-21)</span>
             </p>

@@ -61,7 +61,7 @@ function ActPanel({
         <h3
           className={cn(
             "mt-6 text-3xl font-bold leading-tight sm:text-4xl lg:text-[2.75rem] [word-break:keep-all]",
-            active ? "text-blue-800" : "text-slate-900",
+            active ? "text-blue-800" : "text-zinc-800",
           )}
         >
           {act.title}
@@ -240,7 +240,7 @@ export function UnifiedJourneySection() {
       <div className="zt-container-journey border-b border-slate-100 py-12 sm:py-16 lg:py-20">
         <RevealOnScroll>
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-blue-600">{storyJourneyIntro.eyebrow}</p>
+            <p className="text-[16px] font-semibold text-blue-600">{storyJourneyIntro.eyebrow}</p>
             <h2 className="mt-3 text-3xl font-bold text-[#212529] sm:text-4xl lg:text-5xl [word-break:keep-all]">
               {intro.title}
               <span className="text-blue-600"> {intro.titleAccent}</span>

@@ -205,7 +205,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     phase === "staff-reply"
   ) {
     return (
-      <SimulationStageShell>
+      <SimulationStageShell scrollable>
         <SimulationRunaTaskView sim={sim} showEmail={phase === "delivery"} />
       </SimulationStageShell>
     );
@@ -215,7 +215,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     const previousIncident = isThreat ? getCaseIncident("normal") : null;
 
     return (
-      <SimulationStageShell>
+      <SimulationStageShell scrollable>
         <MiniRunaFrame activeNav="tasks" variant="cropped" className="h-full">
           <div
             className={cn(
@@ -271,7 +271,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
               className="sim-click-cue-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500"
             >
               <AlertTriangle className="h-4 w-4" />
-              위험 통신 사례 이어서 보기
+              고객 조치 단계 이어서 보기
             </button>
           ) : (
             <button
@@ -280,7 +280,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
               className="sim-click-cue-target mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-500 bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50"
             >
               <FileText className="h-4 w-4" />
-              보고서에서 확인하기
+              침해평가 보고서 확인하기
             </button>
           )}
         </MiniRunaFrame>
@@ -295,8 +295,14 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   );
 }
 
-export function SimulationChapterIndex({ phase }: { phase: IssueSimulationState["phase"] }) {
-  const active = chapterForPhase(phase);
+export function SimulationChapterIndex({
+  phase,
+  activeCase = "normal",
+}: {
+  phase: IssueSimulationState["phase"];
+  activeCase?: IssueSimulationState["activeCase"];
+}) {
+  const active = chapterForPhase(phase, activeCase);
   return (
     <div className="flex flex-wrap gap-1">
       {storyChapters.map((ch, i) => (

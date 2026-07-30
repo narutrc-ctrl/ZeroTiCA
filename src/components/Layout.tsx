@@ -11,6 +11,7 @@ import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
+import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { storyAnchors } from "@/data/content";
 
 export function Layout() {
@@ -43,10 +44,10 @@ export function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-white">
       <ScrollProgress />
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-        <div className="zt-container flex h-16 items-center justify-between gap-4">
+        <div className="zt-container-hero flex h-16 items-center justify-between gap-4">
           <BrandLogo />
           {isHome && (
             <nav className="hidden items-center gap-0.5 lg:flex">
@@ -54,7 +55,7 @@ export function Layout() {
                 <a
                   key={a.id}
                   href={`#${a.id}`}
-                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800"
                 >
                   {a.label}
                 </a>
@@ -63,7 +64,7 @@ export function Layout() {
           )}
           <div className="flex items-center gap-2">
             {!isHome && (
-              <Link to={withLocale("/")} className="hidden text-sm text-slate-600 hover:text-slate-900 sm:inline">
+              <Link to={withLocale("/")} className="hidden text-sm text-slate-600 hover:text-zinc-800 sm:inline">
                 소개로
               </Link>
             )}
@@ -112,11 +113,12 @@ export function Layout() {
         )}
       </header>
 
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
 
       {isHome && <FloatingCTA />}
+      {isHome && <ScrollToTopButton />}
 
       <SiteFooter />
     </div>

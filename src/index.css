@@ -6,7 +6,7 @@
   :root {
     color-scheme: light;
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 240 3.7% 15.9%; /* zinc-800 #27272a */
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 210 40% 98%;
     --muted: 210 40% 96.1%;
@@ -20,7 +20,8 @@
 
   html {
     scroll-behavior: smooth;
-    font-size: 14px;
+    /* 브라우저 기본 root(16px) — rem 유틸이 Tailwind 기준과 동일하게 동작 */
+    font-size: 16px;
   }
 
   html.journey-snap-active {
@@ -28,25 +29,26 @@
   }
 
   body {
-    @apply m-0 min-h-screen bg-white font-sans text-slate-900 antialiased;
+    @apply m-0 min-h-screen bg-white font-sans text-zinc-800 antialiased;
   }
 }
 
 @layer components {
   .zt-container {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-12;
   }
 
   .zt-container-wide {
-    @apply mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-10 xl:px-12;
+    @apply mx-auto w-full max-w-[1360px] px-6 sm:px-8 lg:px-12 xl:px-16;
   }
 
   .zt-container-journey {
-    @apply mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-12 xl:px-16;
+    @apply mx-auto w-full max-w-[1600px] px-6 sm:px-10 lg:px-14 xl:px-20;
   }
 
+  /* 랜딩 공통 가로 여백 */
   .zt-container-hero {
-    @apply mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-10 xl:px-12;
+    @apply mx-auto w-full max-w-[1400px] px-6 sm:px-8 lg:px-12;
   }
 
   .zt-section {
@@ -218,6 +220,326 @@
 
   .hero-dashboard-float {
     animation: hero-float 7s ease-in-out infinite;
+  }
+
+  /* Wireframe hero-focus — sizes match zerotica_wireframe_analysis_scope_added.html */
+  .hero-focus {
+    background:
+      radial-gradient(circle at 50% 45%, hsl(205 90% 52% / 0.12), transparent 45%),
+      hsl(var(--background));
+  }
+
+  .hero-focus-inner {
+    padding-top: 118px;
+    padding-bottom: 96px;
+    transform: translateY(-56px);
+  }
+
+  .hero-focus-eyebrow {
+    @apply text-primary;
+    margin: 4px 0 24px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+
+  .hero-focus-title {
+    @apply text-zinc-800;
+    --hero-headline-size: clamp(42px, 5.4vw, 66px);
+    max-width: 960px;
+    margin: 0 0 22px;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+    word-break: keep-all;
+    text-wrap: balance;
+  }
+
+  .hero-focus-brand {
+    @apply text-zinc-800;
+    display: inline-block;
+    font-family: "Paperlogy", Pretendard, sans-serif;
+    font-size: clamp(54px, 7.2vw, 92px);
+    font-weight: 800; /* ExtraBold */
+    letter-spacing: 0.02em;
+    vertical-align: baseline;
+    margin-right: 0.12em;
+  }
+
+  .hero-focus-brand-i {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* i 상단 원(tittle)만 primary */
+  .hero-focus-brand-idot {
+    @apply bg-primary;
+    position: absolute;
+    left: 50%;
+    top: 0.12em;
+    width: 0.20em;
+    height: 0.20em;
+    border-radius: 999px;
+    transform: translateX(-50%);
+  }
+
+  /* "로" / "기업 내부를…" 동일 사이즈 */
+  .hero-focus-headline {
+    display: inline-block;
+    font-size: var(--hero-headline-size);
+    font-weight: 800; /* ExtraBold */
+    letter-spacing: 0;
+    vertical-align: baseline;
+  }
+
+  .hero-focus-headline-line {
+    margin-top: 0.24em;
+  }
+
+  .hero-focus-accent {
+    @apply text-primary;
+  }
+
+  .hero-focus-lead {
+    @apply text-slate-400;
+    max-width: 800px;
+    margin: 0px auto 0;
+    font-size: clamp(17px, 1.8vw, 22px);
+    line-height: 1.75;
+    word-break: keep-all;
+  }
+
+  .hero-focus-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 68px;
+    width: min(100%, 400px);
+  }
+
+  .hero-focus-btn {
+    @apply rounded-full;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 22px;
+    border: 1px solid transparent;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .hero-focus-btn-primary {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .hero-focus-btn-primary:hover {
+    @apply bg-primary/90;
+  }
+
+  .hero-focus-btn-secondary {
+    @apply border-transparent bg-background text-primary;
+  }
+
+  .hero-focus-btn-secondary:hover {
+    @apply bg-primary/5;
+  }
+
+  /* Hero → Section2 scroll transition */
+  .hero-transition-scene {
+    position: relative;
+    /*
+     * 씬 높이(200vh) 변경은 사용자 요청 시에만.
+     * --hero-s2-dwell: 섹션2 콘텐츠가 다 뜬 뒤 sticky로 잠깐 머무는 여유
+     */
+    --hero-s2-dwell: 10vh;
+    height: calc(200vh + var(--hero-s2-dwell));
+    background: hsl(var(--background));
+  }
+
+  .hero-sticky-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 640px;
+    overflow: hidden;
+    isolation: isolate;
+    background: hsl(var(--background));
+  }
+
+  .hero-sticky-stage .hero-focus {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-bottom: none;
+    will-change: opacity, transform, filter;
+  }
+
+  .hero-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 112px;
+    z-index: 4;
+    width: 34px;
+    height: 54px;
+    transform: translateX(-50%);
+    transform-origin: 50% 50%;
+    pointer-events: none;
+    overflow: visible;
+    will-change: transform;
+  }
+
+  .hero-indicator-capsule {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    background: hsl(var(--background) / 0.92);
+    box-shadow: 0 7px 18px hsl(var(--foreground) / 0.08);
+    transform-origin: 50% 50%;
+    will-change: opacity, filter, transform;
+  }
+
+  /* 이전 마우스 휠: 원 + ::after 막대 */
+  .hero-indicator-wheel {
+    @apply bg-zinc-800;
+    position: absolute;
+    left: 50%;
+    top: 11px;
+    z-index: 2;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    transform: translateX(-50%);
+  }
+
+  .hero-indicator-wheel::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    width: 3px;
+    height: 7px;
+    border-radius: 999px;
+    background: inherit;
+    transform: translateX(-50%);
+  }
+
+  .hero-indicator.is-scrolling .hero-indicator-wheel {
+    background: #10141d;
+  }
+
+  .hero-indicator:not(.is-scrolling) .hero-indicator-wheel {
+    animation: hero-scroll-nudge 1.6s ease-in-out infinite;
+  }
+
+  @keyframes hero-scroll-nudge {
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(0);
+      opacity: 0.85;
+    }
+    50% {
+      transform: translateX(-50%) translateY(4px);
+      opacity: 1;
+    }
+  }
+
+  /* 원+막대 확대 레이어: sticky stage 안에서만 (fixed면 아래 섹션까지 덮음) */
+  .hero-indicator-expand {
+    position: absolute;
+    z-index: 5;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: visible;
+    transform: translate(-50%, -25%);
+  }
+
+  /* 2단계: 좌우에서 모여 겹치는 원 (크기·겹침은 JS에서 vmin/지름 비율로 정규화) */
+  .hero-merge-circles {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-merge-circle {
+    position: absolute;
+    /* 하단 정렬 + 아랫부분 클리핑 */
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    /* 왼쪽 위 흰색 → 오른쪽 아래 #abd1ff */
+    background: linear-gradient(to bottom right, #ffffff 0%, #abd1ff 100%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    will-change: transform, width, height;
+  }
+
+  .hero-section-2-handoff {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 640px) {
+    .hero-transition-scene {
+      --hero-s2-dwell: 5vh;
+      height: calc(170vh + var(--hero-s2-dwell));
+    }
+
+    .hero-sticky-stage {
+      min-height: 580px;
+    }
+
+    .hero-focus-inner {
+      padding-top: 86px;
+      padding-bottom: 72px;
+    }
+
+    .hero-focus-brand {
+      font-size: 50px;
+    }
+
+    .hero-focus-title {
+      --hero-headline-size: 38px;
+    }
+
+    .hero-focus-actions {
+      width: 100%;
+      grid-template-columns: 1fr;
+    }
+
+    .hero-indicator {
+      bottom: 72px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-transition-scene {
+      height: auto;
+    }
+
+    .hero-sticky-stage {
+      position: relative;
+      height: auto;
+      min-height: calc(100svh - 4rem);
+    }
+
+    .hero-indicator {
+      display: none;
+    }
   }
 
   @keyframes issue-journey-fade-in {
@@ -475,9 +797,38 @@
   }
 
   .sim-journey-panel {
-    position: sticky;
-    top: 5rem;
+    position: relative;
     z-index: 10;
+  }
+
+  /* 직접 따라가기: 수평 그라데이션 원 4개 (섹션2 컬러와 동일) */
+  .journey-bg-circles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .journey-bg-circle {
+    position: absolute;
+    /* 세로 위치: 값↑ = 아래로. 중앙 근처면 50%, 더 아래로 55~65% */
+    top: 50%;
+    left: 0;
+    width: min(140vw, 1600px);
+    height: min(140vw, 1600px);
+    border-radius: 50%;
+    background: linear-gradient(to right, #ffffff 0%, #abd1ff 100%);
+    opacity: 0;
+    will-change: left, opacity;
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  @media (max-width: 640px) {
+    .journey-bg-circle {
+      width: min(170vw, 900px);
+      height: min(170vw, 900px);
+    }
   }
 
   @keyframes contact-modal-backdrop-in {
@@ -507,4 +858,26 @@
   .contact-modal-dialog {
     animation: contact-modal-dialog-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+}
+
+/* 히어로(.hero-focus) 제외 — 사이트 전체 자간 0 */
+body,
+body * {
+  letter-spacing: 0 !important;
+}
+
+body .hero-focus-eyebrow {
+  letter-spacing: 0.1em !important;
+}
+
+body .hero-focus-title {
+  letter-spacing: -0.055em !important;
+}
+
+body .hero-focus-brand {
+  letter-spacing: 0.02em !important;
+}
+
+body .hero-focus-headline {
+  letter-spacing: 0 !important;
 }

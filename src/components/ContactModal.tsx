@@ -71,7 +71,7 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
         <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">문의</p>
-            <h2 id="contact-modal-title" className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+            <h2 id="contact-modal-title" className="mt-1 text-xl font-bold text-zinc-800 sm:text-2xl">
               도입·상담 문의
             </h2>
             <p className="mt-1 text-sm text-slate-600">

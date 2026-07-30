@@ -106,7 +106,7 @@ export function SimulationRunaTaskView({
             </div>
             <div className="min-w-0">
               <p className="text-[9px] text-slate-400">메일 알림</p>
-              <p className="truncate text-[10px] font-semibold text-slate-900">{email.subject}</p>
+              <p className="truncate text-[10px] font-semibold text-zinc-800">{email.subject}</p>
             </div>
           </div>
         </div>

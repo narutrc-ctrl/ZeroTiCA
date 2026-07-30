@@ -1,23 +1,74 @@
 /** 랜딩 미니 시뮬레이션 — 정상 검증 사례 + 위협 통신 사례 */
 
 export const simulationIntro = {
-  eyebrow: "직접 따라가 보기",
-  title: "의심 통신 한 건을",
-  titleAccent: "끝까지 처리해보세요",
+  eyebrow: "제로티카의 문제 해결 방법",
+  title: "정상 · 위협 통신의 검증 과정을 따라가 보세요",
+  titleAccent: "",
   description:
     "Zerotica/RUNA가 이상 징후를 발견하고, 고객 업무 맥락을 확인한 뒤, 분석팀 검증과 조치 보고서까지 연결하는 과정을 짧게 체험합니다.",
-  coreMessage:
-    "Zerotica는 단순히 이상 통신을 탐지하는 서비스가 아니라, RUNA를 통해 고객의 업무 맥락을 확인하고, 분석팀이 이를 검증해 정상·위협 여부를 판단하며, 필요한 조치와 보고서까지 연결하는 서비스입니다.",
+  coreMessage: "",
   startCta: "미니 시뮬레이션 시작하기",
 };
 
+export type StoryChapterId =
+  | "observe"
+  | "select"
+  | "verify"
+  | "customer-action"
+  | "report";
+
+export type StoryTitlePart = { text: string; accent?: boolean };
+
 export const storyChapters = [
-  { id: "discover", label: "발견" },
-  { id: "analyze", label: "분석" },
-  { id: "deliver", label: "알림" },
-  { id: "collaborate", label: "협업" },
-  { id: "close", label: "완료" },
-  { id: "report", label: "보고서" },
+  {
+    id: "observe" as const,
+    label: "관측",
+    titleParts: [
+      { text: "이상 이벤트 하나가 아닌,\n" },
+      { text: "연결된 흐름", accent: true },
+      { text: "을 봅니다." },
+    ] satisfies StoryTitlePart[],
+    description: "이벤트 간 연계 분석을 통해\n네트워크 통신의 흐름을 분석합니다.",
+  },
+  {
+    id: "select" as const,
+    label: "선별",
+    titleParts: [
+      { text: "평소와 다른 변화", accent: true },
+      { text: "를" },
+      { text: "\n선별합니다." },
+    ] satisfies StoryTitlePart[],
+    description: "평소와 새로운 연결, 다른 시간, 빈도처럼 우선적으로 분석이 필요한 통신을 구분합니다.",
+  },
+  {
+    id: "verify" as const,
+    label: "검증",
+    titleParts: [
+      { text: "전문가가 직접", accent: true },
+      { text: "\n변화의 의미를 검증합니다." },
+    ] satisfies StoryTitlePart[],
+    description: "관련 자산, 고객의 업무 맥락을 분석해\n정상인지 위협인지 판단합니다.",
+  },
+  {
+    id: "customer-action" as const,
+    label: "고객 조치",
+    titleParts: [
+      { text: "조치사항을 안내하고\n" },
+      { text: "하나의 이슈", accent: true },
+      { text: "로 관리합니다." },
+    ] satisfies StoryTitlePart[],
+    description: "필요한 조치 방향을 안내합니다.\n고객이 조치를 수행하고 완료 될 때까지 관리합니다.",
+  },
+  {
+    id: "report" as const,
+    label: "침해평가 보고서",
+    titleParts: [
+      { text: "모든 분석과정은\n" },
+      { text: "보고서에 정리", accent: true },
+      { text: "됩니다." },
+    ] satisfies StoryTitlePart[],
+    description: "일정 기간동안 분석한 내용과\n침해평가 결과가 정리되어 보고서로 제공됩니다.",
+  },
 ] as const;
 
 export type SimCase = "normal" | "threat";
@@ -49,13 +100,13 @@ export const simPhaseOrder: SimPhase[] = [
   "report",
 ];
 
-export function chapterForPhase(phase: SimPhase): number {
+/** 5단계 UI 챕터 인덱스 (0–4). 사례·페이즈를 함께 본다. */
+export function chapterForPhase(phase: SimPhase, activeCase: SimCase = "normal"): number {
+  if (phase === "report") return 4;
+  if (activeCase === "threat") return 3;
   if (phase === "monitoring" || phase === "anomaly") return 0;
   if (phase === "analyst") return 1;
-  if (phase === "delivery" || phase === "kanban") return 2;
-  if (phase === "task" || phase === "reply" || phase === "verifying" || phase === "staff-reply") return 3;
-  if (phase === "complete") return 4;
-  return 5;
+  return 2;
 }
 
 export type NarrativeAction =
@@ -181,7 +232,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     complete: {
       situation: "사례 1 · 정상 검증이 끝났습니다.",
       why: "완료 이슈는 칸반 「완료」에서 이력으로 관리됩니다.",
-      action: "「위험 통신 사례 이어서 보기」로 다음 사건을 체험하세요.",
+      action: "「다음」으로 고객 조치 단계를 이어가세요.",
       actionType: "click-next-case",
     },
   },
@@ -231,7 +282,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     complete: {
       situation: "사례 2 · 위협 통신 조치·검증이 끝났습니다.",
       why: "두 사례 모두 월간 보고서에 반영됩니다.",
-      action: "「보고서에서 확인하기」를 눌러 결과를 확인하세요.",
+      action: "「다음」으로 침해평가 보고서를 확인하세요.",
       actionType: "click-report",
     },
   },

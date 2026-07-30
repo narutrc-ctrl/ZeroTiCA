@@ -29,7 +29,7 @@ function FaqAccordionItem({
         aria-expanded={open}
         aria-controls={`faq-a-${id}`}
       >
-        <span className="text-base font-semibold leading-snug text-slate-900 [word-break:keep-all]">{question}</span>
+        <span className="text-base font-semibold leading-snug text-zinc-800 [word-break:keep-all]">{question}</span>
         <ChevronDown
           className={cn("mt-0.5 h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200", open && "rotate-180")}
         />
@@ -65,10 +65,10 @@ export function FaqSection() {
 
   return (
     <section id="faq" className="border-b border-slate-200 bg-slate-50">
-      <div className="zt-container zt-section">
+      <div className="zt-container-hero zt-section">
         <RevealOnScroll>
-          <p className="text-sm font-semibold text-blue-600">{faqSection.eyebrow}</p>
-          <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl [word-break:keep-all]">
+          <p className="text-[16px] font-semibold text-blue-600">{faqSection.eyebrow}</p>
+          <h2 className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]">
             {faqSection.title}
             <span className="text-blue-600"> {faqSection.titleAccent}</span>
           </h2>

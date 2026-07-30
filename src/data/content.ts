@@ -1,13 +1,16 @@
 export const site = {
   brandKo: "제로티카",
-  brandEn: "ZeroTica",
+  brandEn: "ZeroTiCA",
   productPortal: "ZeroTica Watch",
   runaDefinition:
     "제로티카 고객 포털(RUNA) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
-  contactEmail: "contact@zerotica.app",
-  contactPhone: "1588-0000",
-  companyLegalName: "주식회사 나루시큐리티",
-  companyAddress: "서울특별시 강남구 (상세 주소는 문의 시 안내)",
+  footerTagline: "네트워크 데이터와 전문가 분석을 기반으로\n기업의 침해 여부를 평가합니다.",
+  contactEmail: "mrlee@narusec.com",
+  contactPhone: "02-522-7912",
+  companyLegalName: "나루씨큐리티",
+  companyCeo: "김혁준",
+  companyAddress: "서울특별시 송파구 중대로 97, 6층 (가락동 효원빌딩) 05719",
+  copyrightEntity: "NaruSecurity Inc.",
   siteUrl: "https://zerotica.app",
 };
 
@@ -63,12 +66,13 @@ export const clientLogos = partnerIndustries.map((p) => ({
 }));
 
 export const hero = {
-  eyebrow: "Network Detection · Verification · Response",
-  headline: "보안 알림은 시작일 뿐,",
-  headlineAccent: "중요한 건 '조치'까지 끝내는 것.",
-  sub:
-    "보안 전문가의 정밀 검증으로, 탐지부터 실제 조치까지의 모든 보안 공백을 완벽하게 메웁니다.",
-  ctaFlow: { label: "서비스 흐름 체험하기", href: "#journey" },
+  eyebrow: "네트워크 침해평가 서비스",
+  headlineAccent: "기업 내부",
+  headlineRest: "를 점검해보세요.",
+  sub: "내부에 침해정황이 있는지 전문가가 직접 검증해드립니다.",
+  ctaVideo: { label: "서비스 영상보기", href: "#flow" },
+  ctaFlow: { label: "침해평가 흐름보기", href: paths.fullTour },
+  scrollHref: "#problem",
 };
 
 export const heroFlowSteps = ["탐지", "RUNA 확인", "고객 답변", "전문가 검증", "보고서"] as const;
@@ -93,6 +97,91 @@ export const problemSection = {
     { q: "이 통신이 정상인가?" },
     { q: "지금 조치해야 하는 위협인가?" },
     { q: "담당자에게 무엇을 확인해야 하나?" },
+  ],
+};
+
+/** 섹션3 — WHAT'S DIFFERENT (섹션2 타이포·간격 체계 공유) */
+export const whatsDifferentSection = {
+  eyebrow: "기존 보완 체계와의 차별점",
+  titleBefore: "ZeroTiCA는 공격자가",
+  titleAccent: "이미 내부 있을 가능성",
+  titleAfter: "에서 시작합니다.",
+  lead: "외부의 공격 신호뿐 아니라, 내부에서 이어지는 이동과 통신 정황을 확인합니다.",
+  cards: [
+    {
+      eyebrow: "예방 탐지 체계의 관점",
+      title: "어디가 취약하고",
+      titleLine2: "어떤 이상 신호가 발생했는가?",
+      /** accent: true → text-zinc-700 (중간 강조) */
+      points: [
+        [
+          { text: "공격에 노출된 " },
+          { text: "취약한 시스템이나 설정", accent: true },
+          { text: "은 없는가" },
+        ],
+        [
+          { text: "알려진 공격 패턴", accent: true },
+          { text: "이나 " },
+          { text: "이상 이벤트", accent: true },
+          { text: "가 감지됐는가" },
+        ],
+        [
+          { text: "어떤 위험 요소를 우선 보완", accent: true },
+          { text: "해야 하는가" },
+        ],
+      ],
+      tone: "neutral" as const,
+    },
+    {
+      eyebrow: "제로티카의 관점",
+      title: "현재 내부에",
+      titleLine2: "침해 정황이 존재하는가?",
+      points: [
+        [
+          { text: "평소와 다른 통신 흐름", accent: true },
+          { text: "이 나타나는가" },
+        ],
+        [
+          { text: "정상 업무로 " },
+          { text: "설명되지 않는 활동", accent: true },
+          { text: "은 없는가" },
+        ],
+        [
+          { text: "지금 " },
+          { text: "무엇을 확인하고 조치", accent: true },
+          { text: "해야 하는가" },
+        ],
+      ],
+      tone: "accent" as const,
+    },
+  ],
+};
+
+/** Hero 전환 후 섹션2 — 원 합류 시 노출 */
+export const section2Gap = {
+  eyebrow: "보안 운영에 남는 공백",
+  title: "내부에는 여전히,",
+  titleLine2: "확인하고 해결해야 할 문제들이 남아있습니다.",
+  lead: "무엇이 있는지 · 무슨 의미인지 · 무엇을 해야 하는지.",
+  cards: [
+    {
+      num: "01",
+      title: "파악하기 어려운",
+      titleLine2: "자산과 통신",
+      body: "내부에 어떤 자산이 있고 어떤 통신이 오가는지 전체적으로 파악하기 어렵습니다.",
+    },
+    {
+      num: "02",
+      title: "정상과 위협을",
+      titleLine2: "구분하기 어려운 활동",
+      body: "개별 로그와 알림만으로는 정상 업무와 침해 정황을 구분하기 어렵습니다.",
+    },
+    {
+      num: "03",
+      title: "판단과",
+      titleLine2: "조치에 대한 부담",
+      body: "문제를 발견해도 무엇을 먼저 확인하고 어떻게 조치해야 하는지 판단하기 어렵습니다.",
+    },
   ],
 };
 
@@ -233,9 +322,43 @@ export const services = [
 ];
 
 export const experienceSection = {
-  title: "이제 직접 화면을 확인해 보십시오",
-  lead:
-    "앞서 설명드린 흐름을 RUNA 고객 화면에서 그대로 체험할 수 있습니다. 이슈 상세, 대시보드, 보고서 뷰어까지 약 3분 가이드로 안내합니다.",
+  eyebrow: "실제화면으로",
+  title: "설명은 여기까지,",
+  titleLine2: "이제 직접 확인해보세요.",
+  mock: {
+    label: "RUNA - 고객에게 공유되는 이슈 예시",
+    title: "비인가 원격 접근 정황 확인 요청",
+    badge: "고객 확인 요청",
+  },
+  // listEyebrow: "RUNA 이슈에 담기는 정보",
+  points: [
+    {
+      num: "01",
+      title: "무엇이 발생했는가",
+      body: "이슈 제목, 관련 자산, 탐지 내역을 정리합니다.",
+    },
+    {
+      num: "02",
+      title: "평소와 무엇이 달랐는가",
+      body: "평소 대비 달라진 통신·활동 차이를 보여줍니다.",
+    },
+    {
+      num: "03",
+      title: "왜 확인이 필요한가",
+      body: "분석 내용과 근거 자료를 바탕으로 이유를 설명합니다.",
+    },
+    {
+      num: "04",
+      title: "무엇을 확인하고 조치해야 하는가",
+      body: "업무 맥락·자산 사용 여부 등 확인하고, 권장 조치 방향을 제시합니다.",
+    },
+    {
+      num: "05",
+      title: "처리 결과가 어떻게 됐는가",
+      body: "댓글·상태 변경으로 처리 결과를 남깁니다.",
+    },
+  ],
+  ctaLabel: "데모 체험하기",
 };
 
 export const closing = {

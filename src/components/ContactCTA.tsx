@@ -15,9 +15,9 @@ export function ContactCTA({ variant = "primary", className }: Props) {
     return (
       <section
         id="contact"
-        className={cn("border-y border-blue-100 bg-gradient-to-r from-blue-600 to-blue-500 text-white", className)}
+        className={cn("border-t border-blue-100 bg-gradient-to-r from-blue-600 to-blue-500 text-white", className)}
       >
-        <div className="zt-container flex flex-col items-start justify-between gap-6 py-12 sm:flex-row sm:items-center">
+        <div className="zt-container-hero flex flex-col items-start justify-between gap-6 py-12 sm:flex-row sm:items-center">
           <div>
             <h2 className="text-2xl font-bold">도입·상담 문의</h2>
             <p className="mt-2 max-w-xl text-sm text-blue-100">

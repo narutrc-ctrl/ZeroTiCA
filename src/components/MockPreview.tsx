@@ -68,7 +68,7 @@ export function MockPreview({ id }: { id: string }) {
   }
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4 text-[11px] shadow-sm">
-      <p className="font-semibold text-slate-900">ZeroTica Watch</p>
+      <p className="font-semibold text-zinc-800">ZeroTica Watch</p>
       <div className="my-2 h-px bg-blue-500" />
       <p className="text-slate-500">01. 침해 평가 개요</p>
       <p className="mt-1 text-slate-600">평가 기간 위협 12건 · 검증 완료 3건</p>

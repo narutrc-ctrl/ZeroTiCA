@@ -38,7 +38,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
             <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 확인 요청</p>
-            <p className={`mt-2 font-bold text-slate-900 ${large ? "text-base" : "text-sm"}`}>
+            <p className={`mt-2 font-bold text-zinc-800 ${large ? "text-base" : "text-sm"}`}>
               폐쇄망 IP (10.24.18.52) 기계적 통신 식별
             </p>
             <p className={`mt-2 text-slate-600 ${bodyText}`}>
@@ -64,7 +64,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-slate-200 bg-white shadow-lg">
             <div className="border-b border-slate-100 px-4 py-3.5">
-              <p className={`font-bold text-slate-900 ${titleText}`}>폐쇄망 IP 기계적 통신 문의</p>
+              <p className={`font-bold text-zinc-800 ${titleText}`}>폐쇄망 IP 기계적 통신 문의</p>
               <span className="mt-1.5 inline-block rounded-lg border border-blue-300 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-blue-600">
                 확인 요청
               </span>
@@ -101,7 +101,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
             ))}
           </div>
           <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">
-            <p className="font-semibold text-slate-900">검증 결과 요약</p>
+            <p className="font-semibold text-zinc-800">검증 결과 요약</p>
             <p className="mt-2 text-slate-600">
               탐지 데이터 + 고객 응답 + 전문가 분석을 결합해 「주의」등급으로 분류. 추가 모니터링
               및 화이트리스트 검토 권고.
@@ -145,7 +145,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
         >
           <div className="p-5 text-[10px]">
             <p className="text-blue-600">침해 평가 보고서</p>
-            <h3 className="mt-1 text-lg font-extrabold text-slate-900">ZeroTica Watch</h3>
+            <h3 className="mt-1 text-lg font-extrabold text-zinc-800">ZeroTica Watch</h3>
             <div className="my-3 h-px bg-blue-500" />
             <p className="font-semibold">01. 침해 평가 개요</p>
             <p className="mt-1 text-slate-600">평가 기간 위협 12건 · 검증 완료 3건</p>

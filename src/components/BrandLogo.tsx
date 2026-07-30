@@ -26,7 +26,7 @@ export function BrandMark({
   inverted?: boolean;
 }) {
   const sizeClass = size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base";
-  const main = inverted ? "text-white" : "text-slate-900";
+  const main = inverted ? "text-white" : "text-zinc-800";
   const accent = inverted ? "text-cyan-300" : "text-blue-600";
 
   return (

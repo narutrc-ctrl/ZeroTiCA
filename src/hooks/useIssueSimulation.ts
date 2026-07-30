@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  chapterForPhase,
   getCaseAnalystSteps,
   getCaseIncident,
   getCaseMonitoringLogs,
-  simPhaseOrder,
+  storyChapters,
   type SimCase,
   type SimPhase,
 } from "@/data/issue-story";
@@ -66,9 +67,8 @@ export function useIssueSimulation() {
   const monitoringLogs = getCaseMonitoringLogs(activeCase);
   const analystSteps = getCaseAnalystSteps(activeCase);
 
-  const caseOffset = activeCase === "normal" ? 0 : simPhaseOrder.length;
-  const chapterIndex = started ? caseOffset + simPhaseOrder.indexOf(phase) : -1;
-  const progress = started ? Math.round(((chapterIndex + 1) / (simPhaseOrder.length * 2)) * 100) : 0;
+  const chapterIndex = chapterForPhase(phase, activeCase);
+  const progress = Math.round(((chapterIndex + 1) / storyChapters.length) * 100);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((t) => window.clearTimeout(t));
@@ -106,11 +106,6 @@ export function useIssueSimulation() {
     setPhase(options?.startAtKanban ? "kanban" : "monitoring");
   }, []);
 
-  const resetAll = useCallback(() => {
-    resetCaseState("normal");
-    setStarted(false);
-  }, [resetCaseState]);
-
   const startSimulation = useCallback(() => {
     clearTimers();
     resetCaseState("normal");
@@ -119,8 +114,9 @@ export function useIssueSimulation() {
 
   const restart = useCallback(() => {
     clearTimers();
-    resetAll();
-  }, [clearTimers, resetAll]);
+    resetCaseState("normal");
+    setStarted(true);
+  }, [clearTimers, resetCaseState]);
 
   const startThreatCase = useCallback(() => {
     clearTimers();
@@ -138,6 +134,61 @@ export function useIssueSimulation() {
     setEventDetailOpen(false);
     setPhase("report");
   }, [clearTimers]);
+
+  /** 5단계 UI 챕터로 점프 (이전/다음·탭) */
+  const goToChapter = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(storyChapters.length - 1, index));
+      clearTimers();
+      setStarted(true);
+
+      if (clamped === 0) {
+        resetCaseState("normal");
+        return;
+      }
+      if (clamped === 1) {
+        const caseData = getCaseIncident("normal");
+        setActiveCase("normal");
+        setAnalystStep(0);
+        setLogCount(2);
+        setEventCount(caseData.initialEventCount + 12);
+        setIssueCount(caseData.initialIssueCount + 1);
+        setRiskLevel(caseData.riskAfter);
+        setKanbanColumn("hidden");
+        setSheetOpen(false);
+        setEventDetailOpen(false);
+        setReplyDraft("");
+        setReplyTyping(false);
+        setTaskStatus("확인 요청");
+        setComments(initialComments("normal"));
+        setPhase("analyst");
+        return;
+      }
+      if (clamped === 2) {
+        resetCaseState("normal", { startAtKanban: true });
+        return;
+      }
+      if (clamped === 3) {
+        resetCaseState("threat", { startAtKanban: true });
+        return;
+      }
+      setActiveCase("threat");
+      setTaskStatus("완료");
+      setKanbanColumn("done");
+      setSheetOpen(false);
+      setEventDetailOpen(false);
+      setPhase("report");
+    },
+    [clearTimers, resetCaseState],
+  );
+
+  const goNextChapter = useCallback(() => {
+    goToChapter(chapterIndex + 1);
+  }, [chapterIndex, goToChapter]);
+
+  const goPrevChapter = useCallback(() => {
+    goToChapter(chapterIndex - 1);
+  }, [chapterIndex, goToChapter]);
 
   const openTask = useCallback(() => {
     setKanbanColumn("in_request");
@@ -280,6 +331,9 @@ export function useIssueSimulation() {
     startThreatCase,
     jumpToReport,
     goTo,
+    goToChapter,
+    goNextChapter,
+    goPrevChapter,
     openTask,
     openEventDetail,
     closeEventDetail,

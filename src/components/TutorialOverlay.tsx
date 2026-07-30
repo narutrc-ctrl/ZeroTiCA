@@ -180,7 +180,7 @@ export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, 
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
               가이드 {index + 1} / {steps.length}
             </p>
-            <h3 className="mt-1 text-lg font-bold text-slate-900">{step.title}</h3>
+            <h3 className="mt-1 text-lg font-bold text-zinc-800">{step.title}</h3>
           </div>
           <button type="button" onClick={onClose} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100">
             <X className="h-4 w-4" />

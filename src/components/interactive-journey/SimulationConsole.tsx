@@ -2,8 +2,8 @@ import { Activity, ArrowRight } from "lucide-react";
 import type { SimCase, SimPhase } from "@/data/issue-story";
 import { cn } from "@/lib/cn";
 
-export const SIM_STAGE_HEIGHT_PX = 400;
-export const SIM_STAGE_HEIGHT_VH = 50;
+/** 왼쪽 시뮬레이션 화면 공통 높이 (보고서 단계 기준) */
+export const SIM_STAGE_HEIGHT_PX = 600;
 
 export function SimulationStageShell({
   children,
@@ -17,16 +17,13 @@ export function SimulationStageShell({
   return (
     <div
       className={cn(
-        "sim-stage-shell relative rounded-xl border border-slate-200/90 bg-slate-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]",
-        scrollable ? "overflow-y-auto" : "overflow-hidden",
+        "sim-stage-shell relative overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50",
+        scrollable && "overflow-y-auto",
         className,
       )}
-      style={{
-        height: `${SIM_STAGE_HEIGHT_VH}vh`,
-        minHeight: SIM_STAGE_HEIGHT_PX,
-      }}
+      style={{ height: SIM_STAGE_HEIGHT_PX }}
     >
-      <div className={cn(!scrollable && "h-full overflow-hidden")}>{children}</div>
+      <div className={cn("h-full", !scrollable && "overflow-hidden")}>{children}</div>
     </div>
   );
 }
@@ -61,7 +58,7 @@ export function SimulationNarrativeCard({
         </p>
       )}
       <ul className="mt-2 flex-1 space-y-2.5 text-sm leading-snug text-slate-700">
-        <li className="font-semibold text-slate-900 [word-break:keep-all]">{situation}</li>
+        <li className="font-semibold text-zinc-800 [word-break:keep-all]">{situation}</li>
         <li className="text-slate-600 [word-break:keep-all]">{why}</li>
         <li className="text-blue-700 [word-break:keep-all]">{action}</li>
       </ul>

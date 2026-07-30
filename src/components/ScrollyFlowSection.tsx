@@ -54,10 +54,10 @@ export function ScrollyFlowSection({ steps }: { steps: Step[] }) {
                 "flex flex-col justify-center border-b border-slate-100 last:border-b-0",
               )}
             >
-              <p className="text-sm font-bold tracking-widest text-blue-600">STEP {s.step}</p>
+              <p className="text-[16px] font-bold tracking-widest text-blue-600">STEP {s.step}</p>
               <h3
                 className={cn(
-                  "mt-3 text-2xl font-bold text-slate-900 transition-colors sm:text-3xl [word-break:keep-all]",
+                  "mt-3 text-2xl font-bold text-zinc-800 transition-colors sm:text-3xl [word-break:keep-all]",
                   active === i && "text-blue-700",
                 )}
               >

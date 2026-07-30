@@ -79,7 +79,7 @@ export function TaskDetailSheet({
       >
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
           <div className="min-w-0 flex-1">
-            <h2 className="break-words text-xl font-bold leading-tight text-slate-900 sm:text-2xl">
+            <h2 className="break-words text-xl font-bold leading-tight text-zinc-800 sm:text-2xl">
               {task.title}
             </h2>
             <span
@@ -136,7 +136,7 @@ export function TaskDetailSheet({
                     </div>
                     <div className="overflow-x-auto rounded-xl border border-slate-100 bg-slate-50/90">
                       <table className="w-full min-w-full border-collapse text-left text-xs sm:text-sm">
-                        <thead className="text-[11px] font-medium text-slate-900/80">
+                        <thead className="text-[11px] font-medium text-zinc-800/80">
                           <tr>
                             <th className="px-2 py-1.5 sm:px-3">일시</th>
                             <th className="border-l border-slate-200/80 px-2 py-1.5 sm:px-3">이벤트 명</th>
@@ -179,7 +179,7 @@ export function TaskDetailSheet({
                 <section data-tour="task-comments">
                   <div className="mb-3 flex items-center gap-2">
                     <MessageSquare className="h-4 w-4 text-slate-400" />
-                    <h3 className="text-sm font-semibold text-slate-900">댓글</h3>
+                    <h3 className="text-sm font-semibold text-zinc-800">댓글</h3>
                   </div>
                   {task.comments.length === 0 ? (
                     <p className="text-sm text-slate-400">아직 댓글이 없습니다.</p>
