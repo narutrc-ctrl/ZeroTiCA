@@ -70,7 +70,10 @@ export const hero = {
   headlineAccent: "기업 내부",
   headlineRest: "를 점검해보세요.",
   sub: "내부에 침해정황이 있는지 전문가가 직접 검증해드립니다.",
-  ctaVideo: { label: "서비스 영상보기", href: "#flow" },
+  ctaVideo: {
+    label: "서비스 영상보기",
+    youtubeId: "EeKxCfILC58",
+  },
   ctaFlow: { label: "침해평가 흐름보기", href: paths.fullTour },
   scrollHref: "#problem",
 };

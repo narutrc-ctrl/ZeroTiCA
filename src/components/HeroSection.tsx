@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { YouTubeVideoModal } from "@/components/YouTubeVideoModal";
 import { hero, section2Gap } from "@/data/content";
 
 const INSIDE = "#10141d";
@@ -69,6 +70,8 @@ function lerpLog(a: number, b: number, t: number) {
 }
 
 export function HeroSection() {
+  const [videoOpen, setVideoOpen] = useState(false);
+  const closeVideo = useCallback(() => setVideoOpen(false), []);
   const sceneRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -394,9 +397,13 @@ export function HeroSection() {
               <p className="hero-focus-lead">{hero.sub}</p>
 
               <div className="hero-focus-actions">
-                <a href={hero.ctaVideo.href} className="hero-focus-btn hero-focus-btn-secondary">
+                <button
+                  type="button"
+                  className="hero-focus-btn hero-focus-btn-secondary"
+                  onClick={() => setVideoOpen(true)}
+                >
                   {hero.ctaVideo.label}
-                </a>
+                </button>
                 <a href="#journey" className="hero-focus-btn hero-focus-btn-primary">
                   {hero.ctaFlow.label}
                 </a>
@@ -488,6 +495,13 @@ export function HeroSection() {
           </div>
         </div>
       </section>
+
+      <YouTubeVideoModal
+        open={videoOpen}
+        onClose={closeVideo}
+        videoId={hero.ctaVideo.youtubeId}
+        title={hero.ctaVideo.label}
+      />
     </>
   );
 }
