@@ -1,149 +1,72 @@
-import { useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import {
-  customerValueZones,
-  primaryOutcomeHighlight,
-  type CustomerValueZone,
-} from "@/data/customer-value-examples";
-import { CaseStudySlider } from "@/components/CaseStudySlider";
+import { ArrowRight } from "lucide-react";
+import { customerValueSection } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
-import { cn } from "@/lib/cn";
-
-function CustomerValueZoneBlock({ zone, delay }: { zone: CustomerValueZone; delay: number }) {
-  const [casesOpen, setCasesOpen] = useState(false);
-  const collapsibleCases = zone.id === "threat";
-
-  const slides = useMemo(
-    () => zone.slideTabs.map(({ caseId, tabLabel }) => ({ caseId, tabLabel })),
-    [zone],
-  );
-
-  const gridCols =
-    zone.columns.length === 3 ? "lg:grid-cols-3" : zone.columns.length === 2 ? "lg:grid-cols-2" : "";
-
-  return (
-    <RevealOnScroll delay={delay} variant="fade-up">
-      <div
-        className={cn(
-          "rounded-2xl border p-6 sm:p-8",
-          zone.id === "threat"
-            ? "border-red-500/15 bg-gradient-to-br from-red-950/20 via-slate-900/40 to-slate-950"
-            : "border-cyan-500/15 bg-gradient-to-br from-cyan-950/15 via-slate-900/40 to-slate-950",
-        )}
-      >
-        <div className="max-w-3xl">
-          <p
-            className={cn(
-              "text-xs font-bold uppercase tracking-wider",
-              zone.id === "threat" ? "text-red-300/90" : "text-cyan-300/90",
-            )}
-          >
-            {zone.id === "threat" ? "Threat analysis" : "Discovery & hygiene"}
-          </p>
-          <h3 className="mt-2 text-2xl font-bold sm:text-3xl [word-break:keep-all]">{zone.title}</h3>
-          <div className="mt-3 space-y-2 text-sm leading-relaxed text-slate-400 sm:text-base">
-            {zone.lead.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </div>
-
-        <div className={cn("mt-8 grid gap-5", gridCols)}>
-          {zone.columns.map((col) => (
-            <div
-              key={col.id}
-              className="flex flex-col rounded-xl border border-white/10 bg-white/[0.04] p-5"
-            >
-              <div className="flex flex-wrap items-baseline gap-2">
-                <h4 className="text-base font-bold text-white">{col.title}</h4>
-                {col.subtitle ? (
-                  <span className="text-xs font-medium text-slate-500">{col.subtitle}</span>
-                ) : null}
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">{col.description}</p>
-              {col.hygieneNote ? (
-                <p className="mt-3 rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-3 py-2.5 text-xs leading-relaxed text-slate-300">
-                  {col.hygieneNote}
-                </p>
-              ) : null}
-              <ul className="mt-4 flex-1 space-y-1.5">
-                {col.bullets.map((bullet) => (
-                  <li key={bullet.label} className="text-sm text-slate-300">
-                    <span
-                      className={cn(
-                        "font-medium",
-                        zone.id === "threat" ? "text-red-300/80" : "text-cyan-400",
-                      )}
-                    >
-                      ·
-                    </span>{" "}
-                    {bullet.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-5">
-          {collapsibleCases ? (
-            <>
-              <div
-                className="mx-auto flex items-center bg-white/[0.04] flex justify-center px-5 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white hover:cursor-pointer"
-                onClick={() => setCasesOpen((open) => !open)}
-                aria-expanded={casesOpen}
-              >
-                사례 확인
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 text-slate-500 transition-transform duration-200",
-                    casesOpen && "rotate-180",
-                  )}
-                />
-              </div>
-              <div
-                className={cn(
-                  "grid transition-[grid-template-rows] duration-300",
-                  casesOpen ? "mt-8 grid-rows-[1fr]" : "mt-8 grid-rows-[0fr]",
-                )}
-              >
-                <div className="overflow-hidden">
-                  <CaseStudySlider slides={slides} />
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <CaseStudySlider slides={slides} />
-            </>
-          )}
-        </div>
-      </div>
-    </RevealOnScroll>
-  );
-}
 
 export function CustomerOutcomesSection() {
-  const [threatZone, operationsZone] = customerValueZones;
+  const { eyebrow, title, titleAccent, lead, beforeLabel, afterLabel, rows } =
+    customerValueSection;
 
   return (
-    <section id="outcomes" className="border-b border-slate-100 bg-slate-950 text-white">
-      <div className="zt-container-hero zt-section">
+    <section id="outcomes" className="border-b border-slate-200/80 bg-white">
+      <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up">
-          <p className="text-[16px] font-semibold uppercase tracking-wider text-cyan-400">고객 가치</p>
-          <h2 className="mt-2 text-3xl font-bold sm:text-4xl [word-break:keep-all]">
-            {primaryOutcomeHighlight.title}
-            <span className="text-cyan-400"> · {primaryOutcomeHighlight.titleAccent}</span>
+          <p className="text-[16px] font-bold tracking-wide text-primary">{eyebrow}</p>
+          <h2 className="mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+            <span className="text-zinc-900">{title}</span>
+            <br />
+            <span className="text-primary">{titleAccent}</span>
           </h2>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-400 sm:text-lg">
-            {primaryOutcomeHighlight.body}
+          <p className="mt-4 max-w-[720px] text-[16px] leading-relaxed text-slate-500 sm:mt-5 sm:text-[18px] [word-break:keep-all]">
+            {lead}
           </p>
         </RevealOnScroll>
 
-        <div className="mt-12 space-y-10 sm:mt-14 sm:space-y-12">
-          {threatZone ? <CustomerValueZoneBlock zone={threatZone} delay={60} /> : null}
-          {operationsZone ? <CustomerValueZoneBlock zone={operationsZone} delay={100} /> : null}
-        </div>
+        <RevealOnScroll delay={80} variant="fade-up">
+          <div className="mt-[48px] rounded-[28px] bg-[#e8f1ff] px-4 py-8 sm:mt-[64px] sm:rounded-[32px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+            <div className="mb-5 hidden grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] items-end gap-4 px-1 sm:mb-6 sm:gap-5 md:grid lg:gap-6">
+              <p className="pl-1 text-[13px] font-medium text-slate-400 sm:text-[14px]">
+                {beforeLabel}
+              </p>
+              <span className="w-8 lg:w-10" aria-hidden />
+              <p className="pl-1 text-[13px] font-semibold text-primary sm:text-[14px]">
+                {afterLabel}
+              </p>
+            </div>
+
+            <ul className="flex flex-col gap-5 sm:gap-6">
+              {rows.map((row) => (
+                <li
+                  key={row.num}
+                  className="grid grid-cols-1 items-center gap-3 md:grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] md:gap-5 lg:gap-6"
+                >
+                  <p className="text-[12px] font-medium text-slate-400 md:hidden">{beforeLabel}</p>
+                  <div className="flex min-h-[88px] items-center gap-3 rounded-2xl bg-white px-4 py-4 shadow-[0_8px_28px_rgba(59,130,246,0.08)] sm:gap-4 sm:px-5 sm:py-5">
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-bold tabular-nums text-white sm:h-10 sm:w-10 sm:text-[13px]">
+                      {row.num}
+                    </span>
+                    <p className="text-[15px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[17px]">
+                      {row.before}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-center py-0.5 md:py-0" aria-hidden>
+                    <ArrowRight className="h-5 w-5 rotate-90 text-primary md:h-6 md:w-6 md:rotate-0" />
+                  </div>
+
+                  <p className="text-[12px] font-semibold text-primary md:hidden">{afterLabel}</p>
+                  <div className="rounded-2xl bg-white px-5 py-5 shadow-[0_8px_28px_rgba(59,130,246,0.08)] sm:px-6 sm:py-6">
+                    <h3 className="text-[17px] font-bold leading-snug tracking-tight text-primary [word-break:keep-all] sm:text-[20px]">
+                      {row.afterTitle}
+                    </h3>
+                    <p className="mt-2 text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-2.5 sm:text-[15px]">
+                      {row.afterBody}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </RevealOnScroll>
       </div>
     </section>
   );

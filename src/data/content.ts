@@ -105,7 +105,7 @@ export const problemSection = {
 
 /** 섹션3 — WHAT'S DIFFERENT (섹션2 타이포·간격 체계 공유) */
 export const whatsDifferentSection = {
-  eyebrow: "기존 보완 체계와의 차별점",
+  eyebrow: "기존 보안 체계와의 차별점",
   titleBefore: "ZeroTiCA는 공격자가",
   titleAccent: "이미 내부 있을 가능성",
   titleAfter: "에서 시작합니다.",
@@ -265,24 +265,44 @@ export const serviceFlowSteps: {
   },
 ];
 
-export const customerOutcomes = [
-  {
-    title: "알림에서 끝나지 않습니다",
-    body: "의심 통신의 원인과 맥락까지 확인합니다.",
-  },
-  {
-    title: "고객의 업무 상황을 반영합니다",
-    body: "정상 운영 트래픽인지, 실제 위협인지 함께 구분합니다.",
-  },
-  {
-    title: "보고서가 쓸모 있습니다",
-    body: "단순 로그 목록이 아니라 판단 근거와 조치 결과가 정리됩니다.",
-  },
-  {
-    title: "전 고객 IOC가 매일 적용됩니다",
-    body: "다른 고객 사례에서 검증된 악성 IP·패턴을 IocIP로 축적하고, 매일 conn 로그와 일괄 매칭합니다.",
-  },
-];
+/** 고객 가치 — Before → ZeroTICA 변화 비교 */
+export const customerValueSection = {
+  eyebrow: "고객 가치",
+  title: "확인하기 어려웠던 내부 정황을",
+  titleAccent: "판단하고 대응할 수 있는 상태로 바꿉니다.",
+  lead: "전문가 분석으로 내부 네트워크 정황을 정리해 현재 상태와 다음 확인·조치 방향을 분명히 합니다.",
+  beforeLabel: "Before",
+  afterLabel: "ZeroTICA로 인한 변화",
+  rows: [
+    {
+      num: "01",
+      before: "파악하기 어려운 자산과 통신",
+      afterTitle: "파악된 자산과 통신",
+      afterBody:
+        "관측 범위 안에서 자산과 연결 관계를 정리해 현재 내부 통신 현황을 보여줍니다.",
+    },
+    {
+      num: "02",
+      before: "정상과 위협을 구분하기 어려운 활동",
+      afterTitle: "검증된 활동의 의미",
+      afterBody:
+        "관련 흐름과 업무 맥락을 검토해 정상 업무인지, 추가 확인이나 조치가 필요한지 판단합니다.",
+    },
+    {
+      num: "03",
+      before: "판단과 조치에 대한 부담",
+      afterTitle: "구체적인 조치 방향 제시",
+      afterBody:
+        "확인할 항목과 조치 방향을 제시하고 고객의 처리 상태와 결과를 함께 확인합니다.",
+    },
+  ],
+};
+
+/** @deprecated customerValueSection 사용 */
+export const customerOutcomes = customerValueSection.rows.map((row) => ({
+  title: row.afterTitle,
+  body: row.afterBody,
+}));
 
 export const trustBadges = [
   { value: stats.responseCasesLabel, numeric: stats.responseCases, suffix: "+", label: "침해사고 대응 경험" },
