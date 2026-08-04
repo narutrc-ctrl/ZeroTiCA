@@ -66,10 +66,8 @@ export const clientLogos = partnerIndustries.map((p) => ({
 }));
 
 export const hero = {
-  eyebrow: "네트워크 침해평가 서비스",
-  headlineAccent: "기업 내부",
-  headlineRest: "를 점검해보세요.",
-  sub: "내부에 침해정황이 있는지 전문가가 직접 검증해드립니다.",
+  eyebrow: "보안은 검증이다.",
+  headline: "안전하다는 확신의 근거",
   ctaVideo: {
     label: "서비스 영상보기",
     youtubeId: "EeKxCfILC58",
@@ -162,14 +160,14 @@ export const whatsDifferentSection = {
 
 /** 키홀 확대 중·직후 브릿지 문구 (2단계) */
 export const keyholeBridge = {
-  line1: "지켜온 만큼, 분명히 알고 싶습니다.",
-  line2: "지금, 우리는 안전한가.",
+  line1: "그동안 보안은\n예방하고 탐지하며 기업을 지켜왔습니다.",
+  line2: "지금 우리는,\n안전하다고 말할 수 있을까요?",
 };
 
 /** Hero 전환 후 섹션2 — 원 합류 시 노출 */
 export const section2Gap = {
   eyebrow: "보안 운영에 남는 공백",
-  title: "내부에는 여전히,",
+  title: "기업 내부에는 여전히,",
   titleLine2: "확인하고 해결해야 할 문제들이 남아있습니다.",
   lead: "무엇이 있는지 · 무슨 의미인지 · 무엇을 해야 하는지.",
   cards: [

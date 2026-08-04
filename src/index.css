@@ -235,23 +235,17 @@
     transform: translateY(-56px);
   }
 
-  .hero-focus-eyebrow {
-    @apply text-primary;
-    margin: 4px 0 24px;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-  }
-
   .hero-focus-title {
     @apply text-zinc-800;
-    --hero-headline-size: clamp(42px, 5.4vw, 66px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2em;
     max-width: 960px;
-    margin: 0 0 22px;
+    margin: 0;
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.055em;
+    line-height: 1.25;
+    letter-spacing: -0.04em;
     word-break: keep-all;
     text-wrap: balance;
   }
@@ -259,12 +253,12 @@
   .hero-focus-brand {
     @apply text-zinc-800;
     display: inline-block;
+    margin-top: 0.08em;
     font-family: "Paperlogy", Pretendard, sans-serif;
-    font-size: clamp(54px, 7.2vw, 92px);
-    font-weight: 800; /* ExtraBold */
+    font-size: clamp(44px, 5.4vw, 68px);
+    font-weight: 800;
     letter-spacing: 0.02em;
     vertical-align: baseline;
-    margin-right: 0.12em;
   }
 
   .hero-focus-brand-i {
@@ -284,30 +278,19 @@
     transform: translateX(-50%);
   }
 
-  /* "로" / "기업 내부를…" 동일 사이즈 */
   .hero-focus-headline {
-    display: inline-block;
-    font-size: var(--hero-headline-size);
+    display: block;
+    font-size: 56px;
     font-weight: 800; /* ExtraBold */
     letter-spacing: 0;
-    vertical-align: baseline;
   }
 
-  .hero-focus-headline-line {
-    margin-top: 0.24em;
-  }
-
-  .hero-focus-accent {
+  .hero-focus-headline-accent {
     @apply text-primary;
-  }
-
-  .hero-focus-lead {
-    @apply text-slate-400;
-    max-width: 800px;
-    margin: 0px auto 0;
-    font-size: clamp(17px, 1.8vw, 22px);
-    line-height: 1.75;
-    word-break: keep-all;
+    margin-bottom: 1.00em;
+    font-size: 28px;
+    font-weight: 600; /* SemiBold */
+    letter-spacing: 0;
   }
 
   .hero-focus-actions {
@@ -476,6 +459,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0;
     width: min(18em, calc(100% - 3rem));
     font-size: clamp(1.45rem, 3.5vw, 2.25rem);
@@ -489,8 +475,29 @@
     will-change: opacity, transform;
   }
 
+  .hero-keyhole-bridge-line-row {
+    display: block;
+    opacity: 0;
+  }
+
   .hero-keyhole-bridge-line-emphasis {
     font-weight: 800;
+  }
+
+  /*
+   * 섹션2 타이틀 — 어두운 본색 유지
+   * 밝은 영역(데스크톱)에선 거의 티 안 나고,
+   * 다크 원과 겹칠 때만 아주 옅은 밝은 외곽으로 분리
+   */
+  .hero-section2-title {
+    text-shadow:
+      0 0 1px rgba(255, 255, 255, 0.9),
+      0 0 3px rgba(255, 255, 255, 0.55),
+      0 0 8px rgba(255, 255, 255, 0.35),
+      1px 0 0 rgba(255, 255, 255, 0.35),
+      -1px 0 0 rgba(255, 255, 255, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.35),
+      0 -1px 0 rgba(255, 255, 255, 0.35);
   }
 
   /* 브릿지 이후: 좌우에서 모여 겹치는 원 (크기·겹침은 JS에서 vmin/지름 비율로 정규화) */
@@ -544,11 +551,15 @@
     }
 
     .hero-focus-brand {
-      font-size: 50px;
+      font-size: 44px;
     }
 
-    .hero-focus-title {
-      --hero-headline-size: 38px;
+    .hero-focus-headline {
+      font-size: 40px;
+    }
+
+    .hero-focus-headline-accent {
+      font-size: 22px;
     }
 
     .hero-focus-actions {
@@ -901,18 +912,15 @@ body * {
   letter-spacing: 0 !important;
 }
 
-body .hero-focus-eyebrow {
-  letter-spacing: 0.1em !important;
-}
-
 body .hero-focus-title {
-  letter-spacing: -0.055em !important;
+  letter-spacing: -0.04em !important;
 }
 
 body .hero-focus-brand {
   letter-spacing: 0.02em !important;
 }
 
-body .hero-focus-headline {
+body .hero-focus-headline,
+body .hero-focus-headline-accent {
   letter-spacing: 0 !important;
 }

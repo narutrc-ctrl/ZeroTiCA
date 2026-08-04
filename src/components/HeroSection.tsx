@@ -37,11 +37,19 @@ const RISE_SCALE = 2.4;
 const PHRASE_PEAK = 0.3;
 const PHRASE_SCALE_FROM = 0.92;
 const PHRASE_SCALE_TO = 1.42;
+/**
+ * 줄별 순차 페이드인 — 페이드인 구간(PHRASE_PEAK) 안에서
+ * 다음 줄이 시작되기까지의 비율. 키우면 줄 간 딜레이↑
+ */
+const PHRASE_LINE_STAGGER = 0.65;
 
 /**
  * 합류 원 — 해상도/비율에 덜 흔들리게 정규화한 값들
  * (크기·이동을 vw가 아니라 vmin / 원 지름 비율로 계산)
+ * START/END X는 지름 비율이라 스케일만 키워도 겹침 비율이 유지됨
  */
+/** 합쳐진 구도 전체 배율 (지름·중심거리 함께 확대) */
+const MERGE_COMPOSITION_SCALE = 1.1;
 /** 원 지름 = min(가로,세로) * 이 값 */
 const MERGE_CIRCLE_VMIN = 1.08;
 /** 원 지름 상한 = 가로 * 이 값 */
@@ -54,7 +62,7 @@ const MERGE_END_X_OF_CIRCLE = 0.34;
 const MERGE_Y_PERCENT = 68;
 const MERGE_Y_PERCENT_MOBILE = 40;
 /** 섹션2 콘텐츠 세로 위치(아래 +, px) — 가운데 기준에서 얼마나 내릴지 */
-const SECTION2_Y_OFFSET = 150;
+const SECTION2_Y_OFFSET = 100;
 /** 섹션2 등장 시 추가로 올라오는 거리 */
 const SECTION2_ENTER_RISE = 28;
 /** 섹션2 1번(eyebrow+title) 등장 시작 — 기존 contentT와 동일 */
@@ -207,18 +215,44 @@ export function HeroSection() {
       el.style.transform = `translate3d(0, ${(1 - e) * SECTION2_ENTER_RISE}px, 0)`;
     };
 
-    /** localT 0→1: 페이드인+살짝 확대 → 계속 확대하며 페이드아웃 */
+    /**
+     * localT 0→1: 줄별 순차 페이드인 → 함께 확대하며 페이드아웃
+     * (줄은 .hero-keyhole-bridge-line-row)
+     */
     const applyPhrase = (el: HTMLElement, localT: number) => {
       const t = clamp(localT);
-      const opacity =
-        t <= 0
-          ? 0
-          : t < PHRASE_PEAK
-            ? easeInOutCubic(t / PHRASE_PEAK)
-            : 1 - easeInOutCubic((t - PHRASE_PEAK) / Math.max(1 - PHRASE_PEAK, 0.001));
+      const lines = el.querySelectorAll<HTMLElement>(".hero-keyhole-bridge-line-row");
+      const n = Math.max(lines.length, 1);
       const scale = PHRASE_SCALE_FROM + t * (PHRASE_SCALE_TO - PHRASE_SCALE_FROM);
-      el.style.opacity = clamp(opacity).toFixed(3);
       el.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(4)})`;
+
+      if (t <= 0) {
+        el.style.opacity = "0";
+        lines.forEach((line) => {
+          line.style.opacity = "0";
+        });
+        return;
+      }
+
+      // 피크 이후: 줄은 모두 보인 채 블록 전체 페이드아웃
+      if (t >= PHRASE_PEAK) {
+        const out = 1 - easeInOutCubic((t - PHRASE_PEAK) / Math.max(1 - PHRASE_PEAK, 0.001));
+        el.style.opacity = clamp(out).toFixed(3);
+        lines.forEach((line) => {
+          line.style.opacity = "1";
+        });
+        return;
+      }
+
+      // 페이드인: 부모는 보이고, 줄만 순차 등장
+      el.style.opacity = "1";
+      const fadeInT = t / PHRASE_PEAK;
+      const stagger = n <= 1 ? 0 : PHRASE_LINE_STAGGER;
+      const lineFade = Math.max(1 - (n - 1) * stagger, 0.2);
+      lines.forEach((line, i) => {
+        const lineT = clamp((fadeInT - i * stagger) / lineFade);
+        line.style.opacity = easeInOutCubic(lineT).toFixed(3);
+      });
     };
 
     const resetBridge = () => {
@@ -375,10 +409,10 @@ export function HeroSection() {
           : easeOutCubic(clamp((p - circleStartP) / Math.max(1 - circleStartP, 0.001)));
 
       // 해상도 무관: 크기는 vmin 기준, 좌우 이동·겹침은 원 지름 비율
-      const circleSize = Math.min(
-        vmin * MERGE_CIRCLE_VMIN,
-        window.innerWidth * MERGE_CIRCLE_MAX_VW,
-      );
+      const circleSize =
+        Math.min(vmin * MERGE_CIRCLE_VMIN, window.innerWidth * MERGE_CIRCLE_MAX_VW) *
+        MERGE_COMPOSITION_SCALE;
+      // 중심 거리도 지름 비율 → 스케일과 함께 커져 겹침 비율 유지
       const startMergeX = circleSize * MERGE_START_X_OF_CIRCLE;
       const endMergeX = circleSize * MERGE_END_X_OF_CIRCLE;
       const mergeX = startMergeX + circleT * (endMergeX - startMergeX);
@@ -447,9 +481,11 @@ export function HeroSection() {
             />
 
             <div className="hero-focus-inner zt-container-hero relative z-[1] flex flex-col items-center">
-              <p className="hero-focus-eyebrow">{hero.eyebrow}</p>
-
               <h1 className="hero-focus-title">
+                <span className="hero-focus-headline hero-focus-headline-accent">
+                  {hero.eyebrow}
+                </span>
+                <span className="hero-focus-headline">{hero.headline}</span>
                 <span className="hero-focus-brand" aria-label="ZeroTiCA">
                   ZeroT
                   <span className="hero-focus-brand-i" aria-hidden="true">
@@ -458,17 +494,12 @@ export function HeroSection() {
                   </span>
                   CA
                 </span>
-                <span className="hero-focus-headline">로</span>
-                <br />
-                <span className="hero-focus-headline hero-focus-headline-line">
-                  <span className="hero-focus-accent">{hero.headlineAccent}</span>
-                  {hero.headlineRest}
-                </span>
               </h1>
 
-              <p className="hero-focus-lead">{hero.sub}</p>
-
               <div className="hero-focus-actions">
+                <a href="#journey" className="hero-focus-btn hero-focus-btn-primary">
+                  {hero.ctaFlow.label}
+                </a>
                 <button
                   type="button"
                   className="hero-focus-btn hero-focus-btn-secondary"
@@ -476,9 +507,6 @@ export function HeroSection() {
                 >
                   {hero.ctaVideo.label}
                 </button>
-                <a href="#journey" className="hero-focus-btn hero-focus-btn-primary">
-                  {hero.ctaFlow.label}
-                </a>
               </div>
             </div>
           </section>
@@ -498,21 +526,29 @@ export function HeroSection() {
             <rect x="1.5" y="4" width="3" height="7" rx="1.5" fill={INSIDE} />
           </svg>
 
-          {/* 키홀 확대 중 1번 문구 → 다크 배경 후 2번 문구 */}
+          {/* 키홀 확대 중 1번 문구 → 다크 배경 후 2번 문구 (줄별 순차 페이드인) */}
           <div ref={bridgeRef} className="hero-keyhole-bridge" aria-hidden="true" style={{ opacity: 0 }}>
             <p
               ref={phrase1Ref}
               className="hero-keyhole-bridge-line"
               style={{ opacity: 0, transform: "translate(-50%, -50%) scale(0.94)" }}
             >
-              {keyholeBridge.line1}
+              {keyholeBridge.line1.split("\n").map((row, i) => (
+                <span key={i} className="hero-keyhole-bridge-line-row" style={{ opacity: 0 }}>
+                  {row}
+                </span>
+              ))}
             </p>
             <p
               ref={phrase2Ref}
               className="hero-keyhole-bridge-line hero-keyhole-bridge-line-emphasis"
               style={{ opacity: 0, transform: "translate(-50%, -50%) scale(0.94)" }}
             >
-              {keyholeBridge.line2}
+              {keyholeBridge.line2.split("\n").map((row, i) => (
+                <span key={i} className="hero-keyhole-bridge-line-row" style={{ opacity: 0 }}>
+                  {row}
+                </span>
+              ))}
             </p>
           </div>
 
@@ -538,7 +574,7 @@ export function HeroSection() {
                 <p className="text-[16px] font-bold tracking-wide text-primary">
                   {section2Gap.eyebrow}
                 </p>
-                <h2 className="mt-[32px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+                <h2 className="hero-section2-title mt-[32px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
                   {section2Gap.title}
                   <br />
                   {section2Gap.titleLine2}
