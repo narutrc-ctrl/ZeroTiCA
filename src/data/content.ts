@@ -160,6 +160,12 @@ export const whatsDifferentSection = {
   ],
 };
 
+/** 키홀 확대 중·직후 브릿지 문구 (2단계) */
+export const keyholeBridge = {
+  line1: "지켜온 만큼, 분명히 알고 싶습니다.",
+  line2: "지금, 우리는 안전한가.",
+};
+
 /** Hero 전환 후 섹션2 — 원 합류 시 노출 */
 export const section2Gap = {
   eyebrow: "보안 운영에 남는 공백",

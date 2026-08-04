@@ -11,8 +11,8 @@ function heroSceneProgress(hero: HTMLElement) {
   return Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / scrollable));
 }
 
-/** 섹션2 콘텐츠 등장 구간 (Hero S2_REVEAL / EXPAND_END 근처) */
-const SHOW_FROM_PROGRESS = 0.8;
+/** 브릿지 문구 이후·섹션2 등장 구간 */
+const SHOW_FROM_PROGRESS = 0.84;
 
 /** 섹션2부터 노출 → 클릭 시 최상단으로 */
 export function ScrollToTopButton() {

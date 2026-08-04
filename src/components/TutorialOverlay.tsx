@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { TourStep } from "@/data/demo-tour";
 import { cn } from "@/lib/cn";
-import { useContactModal } from "@/components/ContactModal";
+// TODO: 도입 문의 CTA — 요청 시 주석 해제
+// import { useContactModal } from "@/components/ContactModal";
 
 type Rect = { top: number; left: number; width: number; height: number };
 type Point = { top: number; left: number };
@@ -79,7 +80,8 @@ type Props = {
 export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, onComplete }: Props) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const measureToken = useRef(0);
-  const { openContactModal } = useContactModal();
+  // TODO: 도입 문의 CTA — 요청 시 주석 해제
+  // const { openContactModal } = useContactModal();
 
   const [spotlightRect, setSpotlightRect] = useState<Rect | null>(null);
   const [tooltipPos, setTooltipPos] = useState<Point | null>(null);
@@ -197,6 +199,7 @@ export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, 
           </button>
           {isLast ? (
             <div className="flex gap-2">
+              {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
               <button
                 type="button"
                 className="zt-btn-ghost px-3 py-2 text-xs"
@@ -207,6 +210,7 @@ export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, 
               >
                 도입 문의
               </button>
+              */}
               <button
                 type="button"
                 className="zt-btn-primary px-4 py-2 text-xs"

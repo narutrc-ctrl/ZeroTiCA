@@ -1,25 +1,42 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { YouTubeVideoModal } from "@/components/YouTubeVideoModal";
-import { hero, section2Gap } from "@/data/content";
+import { hero, keyholeBridge, section2Gap } from "@/data/content";
 
 const INSIDE = "#10141d";
 const WHEEL_DIAMETER = 6;
 /** 1/2 지점 도착(= 상승·hero 페이드 끝) */
-const RISE_END = 0.38;
+const RISE_END = 0.26;
 /**
  * 1/2 지점 도착 시 키홀 "원" 지름(px).
  * 이 숫자만 바꿔서 크기를 조절하면 됨. (예: 80 / 120 / 180)
  */
 const KEYHOLE_DIAMETER_AT_HALF = 40;
-/** 확대가 화면을 덮는 시점 — 낮출수록 이후 원 합류 스크롤 구간이 길어짐 */
-const EXPAND_END = 0.78;
-/** 키홀이 화면의 이 비율만큼 찼을 때 양쪽 원 등장 */
-const CIRCLE_COVER_TRIGGER = 0.8;
-/** 원 합류: 키홀 막바지 비중 / 이후 스크롤 비중 (합 1) */
-const CIRCLE_COVER_WEIGHT = 0.22;
-const CIRCLE_SCROLL_WEIGHT = 0.78;
+/**
+ * 확대 구간을 화면 채움(screenFill = 지름/vmin) 기준으로 나눔.
+ * — RISE→EXPAND_MID: 작은 키홀 → 화면을 거의 채움 (1번 문구는 여기 중간)
+ * — EXPAND_MID→EXPAND_END: 코너까지 덮어 완전 다크
+ */
+const EXPAND_MID = 0.58;
+const EXPAND_END = 0.7;
+/** 2번 문구 시작/종료 (스크롤 progress) — 시작은 풀커버보다 살짝 앞 */
+const PHRASE2_START = 0.64;
+const PHRASE2_END = 0.84;
+/**
+ * 2번 문구 localT가 이 값에 닿을 때 섹션2 원 합류 시작.
+ * (페이드아웃이 거의 끝난 직후 — PHRASE_PEAK 이후 opacity≈0 근처)
+ */
+const CIRCLE_AT_PHRASE2 = 0.9;
+/** 1번 문구 시작/종료 시점의 화면 채움 비율(vmin 대비 키홀 지름) */
+const PHRASE1_FILL_START = 0.90;
+const PHRASE1_FILL_END = 1.50;
+/** EXPAND_MID 에서의 목표 화면 채움 (1 = 짧은 변과 동일 지름) */
+const FILL_AT_MID = 1.05;
 /** 상승 중 인디케이터(캡슐+키홀) 최대 scale */
 const RISE_SCALE = 2.4;
+/** 문구 모션 */
+const PHRASE_PEAK = 0.3;
+const PHRASE_SCALE_FROM = 0.92;
+const PHRASE_SCALE_TO = 1.42;
 
 /**
  * 합류 원 — 해상도/비율에 덜 흔들리게 정규화한 값들
@@ -62,6 +79,10 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+function easeOutCubic(t: number) {
+  return 1 - (1 - t) ** 3;
+}
+
 /** 로그 보간 — 큰 확대에서도 속도감이 비교적 일정 */
 function lerpLog(a: number, b: number, t: number) {
   const min = Math.max(a, 0.001);
@@ -78,6 +99,9 @@ export function HeroSection() {
   const capsuleRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const expandRef = useRef<SVGSVGElement>(null);
+  const bridgeRef = useRef<HTMLDivElement>(null);
+  const phrase1Ref = useRef<HTMLParagraphElement>(null);
+  const phrase2Ref = useRef<HTMLParagraphElement>(null);
   const circleLeftRef = useRef<HTMLDivElement>(null);
   const circleRightRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -93,6 +117,9 @@ export function HeroSection() {
     const capsule = capsuleRef.current;
     const wheel = wheelRef.current;
     const expand = expandRef.current;
+    const bridge = bridgeRef.current;
+    const phrase1 = phrase1Ref.current;
+    const phrase2 = phrase2Ref.current;
     const circleLeft = circleLeftRef.current;
     const circleRight = circleRightRef.current;
     const stage = stageRef.current;
@@ -107,6 +134,9 @@ export function HeroSection() {
       !capsule ||
       !wheel ||
       !expand ||
+      !bridge ||
+      !phrase1 ||
+      !phrase2 ||
       !circleLeft ||
       !circleRight ||
       !stage ||
@@ -177,6 +207,26 @@ export function HeroSection() {
       el.style.transform = `translate3d(0, ${(1 - e) * SECTION2_ENTER_RISE}px, 0)`;
     };
 
+    /** localT 0→1: 페이드인+살짝 확대 → 계속 확대하며 페이드아웃 */
+    const applyPhrase = (el: HTMLElement, localT: number) => {
+      const t = clamp(localT);
+      const opacity =
+        t <= 0
+          ? 0
+          : t < PHRASE_PEAK
+            ? easeInOutCubic(t / PHRASE_PEAK)
+            : 1 - easeInOutCubic((t - PHRASE_PEAK) / Math.max(1 - PHRASE_PEAK, 0.001));
+      const scale = PHRASE_SCALE_FROM + t * (PHRASE_SCALE_TO - PHRASE_SCALE_FROM);
+      el.style.opacity = clamp(opacity).toFixed(3);
+      el.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(4)})`;
+    };
+
+    const resetBridge = () => {
+      bridge.style.opacity = "0";
+      applyPhrase(phrase1, 0);
+      applyPhrase(phrase2, 0);
+    };
+
     const resetSection2 = () => {
       section2.style.pointerEvents = "none";
       applyReveal(section2Head, 0);
@@ -196,6 +246,7 @@ export function HeroSection() {
         capsule.style.transform = "";
         wheel.style.opacity = "1";
         resetExpand();
+        resetBridge();
         resetCircles();
         applyReveal(section2Head, 1);
         applyReveal(section2Lead, 1);
@@ -210,6 +261,7 @@ export function HeroSection() {
       const pastScene = sceneRect.bottom <= 0;
       if (pastScene) {
         resetExpand();
+        resetBridge();
         stage.style.background = "";
         return;
       }
@@ -227,6 +279,7 @@ export function HeroSection() {
         capsule.style.transform = "";
         wheel.style.opacity = "";
         resetExpand();
+        resetBridge();
         resetCircles();
         resetSection2();
         return;
@@ -258,20 +311,28 @@ export function HeroSection() {
       const localX = centerX - stageRect.left;
       const localY = centerY - stageRect.top;
 
-      // 확대는 스크롤에 선형으로 이어지게 (이징 끊김 = 1/2에서 멈칫하는 원인 제거)
+      // 상승: 로그
+      // 확대: 화면 채움(screenFill) 기준 선형 → 체감상 고르게 커지고, 중간에 문구 노출
       const startWidth = WHEEL_DIAMETER;
       const halfWidth = Math.max(KEYHOLE_DIAMETER_AT_HALF, startWidth);
       const endWidth = coverDiameter(centerX, centerY);
+      const vmin = Math.min(window.innerWidth, window.innerHeight);
+      const midWidth = Math.min(FILL_AT_MID * vmin, endWidth);
 
       let width: number;
       if (p <= RISE_END) {
-        // riseT(easeInOut) 쓰지 않음 — 끝에서 속도 0이 되며 멈칫함
         const t = clamp(p / RISE_END);
         width = lerpLog(startWidth, halfWidth, t);
+      } else if (p <= EXPAND_MID) {
+        // 작은 키홀 → 화면을 거의 채울 때까지 (라이트 배경이 주변에 남음)
+        const t = clamp((p - RISE_END) / (EXPAND_MID - RISE_END));
+        width = halfWidth + t * (midWidth - halfWidth);
+      } else if (p <= EXPAND_END) {
+        // 코너까지 덮어 완전 다크
+        const t = clamp((p - EXPAND_MID) / (EXPAND_END - EXPAND_MID));
+        width = midWidth + t * (endWidth - midWidth);
       } else {
-        // 이징 없이 스크롤에 선형 연결 → 1/2에서 속도가 0으로 떨어지지 않음
-        const t = clamp((p - RISE_END) / (EXPAND_END - RISE_END));
-        width = lerpLog(halfWidth, endWidth, t);
+        width = endWidth;
       }
       const height = width * SYMBOL_ASPECT;
 
@@ -281,28 +342,39 @@ export function HeroSection() {
       expand.style.height = `${height}px`;
       expand.style.opacity = width > startWidth + 0.5 ? "1" : "0";
 
-      // 확대 SVG가 보이면 작은 휠은 넘김
       const coverRatio = width / Math.max(endWidth, 1);
+      const screenFill = width / Math.max(vmin, 1);
       wheel.style.opacity = map(width / Math.max(halfWidth, 1), 0.08, 0.35, 1, 0).toFixed(3);
 
-      // 키홀이 거의 덮으면 sticky 배경도 다크로 (원 레이어 뒤 비침 방지)
-      stage.style.background = coverRatio > 0.92 ? INSIDE : "";
+      // 절대 stage 전체를 일찍 칠하지 않음 — 그게 "풀스크린 점프"처럼 보였음.
+      // 키홀 SVG가 거의 덮은 뒤에만 sticky 배경을 다크로.
+      stage.style.background = coverRatio > 0.96 ? INSIDE : "";
 
-      // ── 2단계: 키홀 ~80% 이후 양쪽 원이 가운데로 모여 겹침에서 정지
-      let circleT = 0;
-      if (coverRatio >= CIRCLE_COVER_TRIGGER) {
-        const coverPart = clamp(
-          (coverRatio - CIRCLE_COVER_TRIGGER) / (1 - CIRCLE_COVER_TRIGGER),
-        );
-        const scrollPart =
-          p <= EXPAND_END ? 0 : clamp((p - EXPAND_END) / Math.max(1 - EXPAND_END, 0.001));
-        circleT = easeInOutCubic(
-          clamp(coverPart * CIRCLE_COVER_WEIGHT + scrollPart * CIRCLE_SCROLL_WEIGHT),
-        );
-      }
+      // ── 1번 문구: 키홀이 화면 중간쯤일 때 페이드인 → 키홀과 같이 커지며 페이드아웃
+      const fillRange = Math.max(PHRASE1_FILL_END - PHRASE1_FILL_START, 0.001);
+      const phrase1T = clamp((screenFill - PHRASE1_FILL_START) / fillRange);
+      applyPhrase(phrase1, phrase1T);
+
+      // ── 2번 문구: 풀커버 직전부터 페이드인 → 확대+페이드아웃
+      const phrase2T =
+        p <= PHRASE2_START
+          ? 0
+          : clamp((p - PHRASE2_START) / Math.max(PHRASE2_END - PHRASE2_START, 0.001));
+      applyPhrase(phrase2, phrase2T);
+
+      const bridgeVisible =
+        (phrase1T > 0 && phrase1T < 1) || (phrase2T > 0 && phrase2T < 1);
+      bridge.style.opacity = bridgeVisible ? "1" : "0";
+
+      // ── 섹션2: 2번 문구 페이드아웃이 끝날 때 바로 원 합류
+      const circleStartP =
+        PHRASE2_START + CIRCLE_AT_PHRASE2 * (PHRASE2_END - PHRASE2_START);
+      const circleT =
+        p <= circleStartP
+          ? 0
+          : easeOutCubic(clamp((p - circleStartP) / Math.max(1 - circleStartP, 0.001)));
 
       // 해상도 무관: 크기는 vmin 기준, 좌우 이동·겹침은 원 지름 비율
-      const vmin = Math.min(window.innerWidth, window.innerHeight);
       const circleSize = Math.min(
         vmin * MERGE_CIRCLE_VMIN,
         window.innerWidth * MERGE_CIRCLE_MAX_VW,
@@ -312,7 +384,7 @@ export function HeroSection() {
       const mergeX = startMergeX + circleT * (endMergeX - startMergeX);
       const isMobile = window.innerWidth <= 640;
       const mergeY = `-${isMobile ? MERGE_Y_PERCENT_MOBILE : MERGE_Y_PERCENT}%`;
-      const circleVisible = coverRatio >= CIRCLE_COVER_TRIGGER ? "1" : "0";
+      const circleVisible = circleT > 0.001 ? "1" : "0";
       const sizePx = `${circleSize}px`;
 
       circleLeft.style.width = sizePx;
@@ -426,7 +498,25 @@ export function HeroSection() {
             <rect x="1.5" y="4" width="3" height="7" rx="1.5" fill={INSIDE} />
           </svg>
 
-          {/* 키홀 ~80% 이후: 좌우 원이 가운데로 모여 겹침 */}
+          {/* 키홀 확대 중 1번 문구 → 다크 배경 후 2번 문구 */}
+          <div ref={bridgeRef} className="hero-keyhole-bridge" aria-hidden="true" style={{ opacity: 0 }}>
+            <p
+              ref={phrase1Ref}
+              className="hero-keyhole-bridge-line"
+              style={{ opacity: 0, transform: "translate(-50%, -50%) scale(0.94)" }}
+            >
+              {keyholeBridge.line1}
+            </p>
+            <p
+              ref={phrase2Ref}
+              className="hero-keyhole-bridge-line hero-keyhole-bridge-line-emphasis"
+              style={{ opacity: 0, transform: "translate(-50%, -50%) scale(0.94)" }}
+            >
+              {keyholeBridge.line2}
+            </p>
+          </div>
+
+          {/* 2번 문구 이후: 좌우 원이 가운데로 모여 겹침 */}
           <div className="hero-merge-circles" aria-hidden="true">
             <div ref={circleLeftRef} className="hero-merge-circle" />
             <div ref={circleRightRef} className="hero-merge-circle" />

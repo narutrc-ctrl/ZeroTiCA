@@ -5,19 +5,21 @@ import { GlobalTour } from "@/components/GlobalTour";
 import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
 import { BrandLogo } from "@/components/BrandLogo";
-import { ContactCTA } from "@/components/ContactCTA";
-import { useContactModal } from "@/components/ContactModal";
+// TODO: 도입 문의 CTA — 요청 시 주석 해제
+// import { ContactCTA } from "@/components/ContactCTA";
+// import { useContactModal } from "@/components/ContactModal";
 import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
-import { storyAnchors } from "@/data/content";
+import { paths, storyAnchors } from "@/data/content";
 
 export function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const { openContactModal } = useContactModal();
+  // TODO: 도입 문의 CTA — 요청 시 주석 해제
+  // const { openContactModal } = useContactModal();
   const parts = location.pathname.split("/").filter(Boolean);
   const locale = isSupportedLocale(parts[0]) ? parts[0] : DEFAULT_LOCALE;
   const basePath = isSupportedLocale(parts[0]) ? `/${parts.slice(1).join("/")}` || "/" : location.pathname;
@@ -68,7 +70,13 @@ export function Layout() {
                 소개로
               </Link>
             )}
+            {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
             <ContactCTA className="hidden text-sm sm:inline-flex" />
+            */}
+            {/* 임시: 도입 문의 자리 → 데모 체험 */}
+            <Link to={withLocale(paths.fullTour)} className="zt-btn-primary hidden text-sm sm:inline-flex">
+              데모 체험
+            </Link>
             <button
               type="button"
               className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
@@ -92,6 +100,7 @@ export function Layout() {
                   {a.label}
                 </a>
               ))}
+            {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
             <button
               type="button"
               className="zt-btn-primary mt-3 w-full text-sm"
@@ -102,12 +111,13 @@ export function Layout() {
             >
               도입 문의
             </button>
+            */}
             <Link
-              to={withLocale("/#experience")}
-              className="zt-btn-ghost mt-2 w-full text-sm"
+              to={withLocale(paths.fullTour)}
+              className="zt-btn-primary mt-3 w-full text-sm"
               onClick={() => setOpen(false)}
             >
-              서비스 체험
+              데모 체험
             </Link>
           </div>
         )}
