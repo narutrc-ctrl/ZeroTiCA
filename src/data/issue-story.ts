@@ -1,7 +1,7 @@
 /** 랜딩 미니 시뮬레이션 — 정상 검증 사례 + 위협 통신 사례 */
 
 export const simulationIntro = {
-  eyebrow: "제로티카의 문제 해결 방법",
+  eyebrow: "ZeroTiCA의 검증 과정",
   title: "정상 · 위협 통신의 검증 과정을 따라가 보세요",
   titleAccent: "",
   description:

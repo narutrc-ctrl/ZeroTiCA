@@ -103,54 +103,54 @@ export const problemSection = {
 
 /** 섹션3 — WHAT'S DIFFERENT (섹션2 타이포·간격 체계 공유) */
 export const whatsDifferentSection = {
-  eyebrow: "기존 보안 체계와의 차별점",
-  titleBefore: "ZeroTiCA는 공격자가",
-  titleAccent: "이미 내부 있을 가능성",
-  titleAfter: "에서 시작합니다.",
-  lead: "외부의 공격 신호뿐 아니라, 내부에서 이어지는 이동과 통신 정황을 확인합니다.",
+  eyebrow: "ZeroTiCA의 검증 관점",
+  titleBefore: "안전하다고 판단하려면,",
+  titleAccent: "침해 가능성",
+  titleAfter: "까지 확인해야 합니다.",
+  lead: "ZeroTiCA는 실제 네트워크에서 관측된 활동을 바탕으로 침해 정황이 있는지 확인하고 현재 상태를 검증합니다.",
   cards: [
     {
-      eyebrow: "예방 탐지 체계의 관점",
+      eyebrow: "예방 탐지로 확인해온 것",
       title: "어디가 취약하고",
-      titleLine2: "어떤 이상 신호가 발생했는가?",
+      titleLine2: "어떤 위협이 발생했는가?",
       /** accent: true → text-zinc-700 (중간 강조) */
       points: [
         [
-          { text: "공격에 노출된 " },
-          { text: "취약한 시스템이나 설정", accent: true },
+          { text: "공격에 노출될 수 있는 " },
+          { text: "취약점이나 설정", accent: true },
           { text: "은 없는가" },
         ],
         [
-          { text: "알려진 공격 패턴", accent: true },
-          { text: "이나 " },
-          { text: "이상 이벤트", accent: true },
-          { text: "가 감지됐는가" },
+          { text: "알려진" },
+          { text: "공격 패턴이나 이상 신호", accent: true },
+          { text: "가 탐지되었는가" },
         ],
         [
-          { text: "어떤 위험 요소를 우선 보완", accent: true },
-          { text: "해야 하는가" },
+          { text: "위험을 줄이기 위해 " },
+          { text: "무엇을 보완해야 하는가", accent: true }
+          ,
         ],
       ],
       tone: "neutral" as const,
     },
     {
-      eyebrow: "제로티카의 관점",
+      eyebrow: "ZeroTiCA가 더 확인하는 것",
       title: "현재 내부에",
       titleLine2: "침해 정황이 존재하는가?",
       points: [
         [
-          { text: "평소와 다른 통신 흐름", accent: true },
-          { text: "이 나타나는가" },
+          { text: "평소와 " },
+          { text: "다른 자산과 통신의 변화", accent: true },
+          { text: "는 없는가" },
         ],
         [
-          { text: "정상 업무로 " },
+          { text: "정상적인 업무로 " },
           { text: "설명되지 않는 활동", accent: true },
           { text: "은 없는가" },
         ],
         [
-          { text: "지금 " },
-          { text: "무엇을 확인하고 조치", accent: true },
-          { text: "해야 하는가" },
+          { text: "서로 다른 정황이 하나의 " },
+          { text: "침해 흐름으로 이어지지는 않는가", accent: true },
         ],
       ],
       tone: "accent" as const,
@@ -168,26 +168,29 @@ export const keyholeBridge = {
 export const section2Gap = {
   eyebrow: "보안 운영에 남는 공백",
   title: "기업 내부에는 여전히,",
-  titleLine2: "확인하고 해결해야 할 문제들이 남아있습니다.",
+  titleLine2: "확인되지 않은 영역이 남아있습니다.",
   lead: "무엇이 있는지 · 무슨 의미인지 · 무엇을 해야 하는지.",
   cards: [
     {
       num: "01",
-      title: "파악하기 어려운",
-      titleLine2: "자산과 통신",
-      body: "내부에 어떤 자산이 있고 어떤 통신이 오가는지 전체적으로 파악하기 어렵습니다.",
+      title: "기업 내부에",
+      titleLine2Accent: "무엇이 연결",
+      titleLine2Rest: "되어 있는가?",
+      body: "어떤 자산이 있고 어떤 통신이 오가는지 전체적으로 파악하기 어렵습니다.",
     },
     {
       num: "02",
-      title: "정상과 위협을",
-      titleLine2: "구분하기 어려운 활동",
+      title: "이 활동은 정상인가,",
+      titleLine2Accent: "확인이 필요",
+      titleLine2Rest: "한 문제인가?",
       body: "개별 로그와 알림만으로는 정상 업무와 침해 정황을 구분하기 어렵습니다.",
     },
     {
       num: "03",
-      title: "판단과",
-      titleLine2: "조치에 대한 부담",
-      body: "문제를 발견해도 무엇을 먼저 확인하고 어떻게 조치해야 하는지 판단하기 어렵습니다.",
+      title: "그래서 지금",
+      titleLine2Accent: "무엇을 조치",
+      titleLine2Rest: "해야 하는가?",
+      body: "문제를 발견해도 확인 대상과 조치 우선순위를 판단하기 어렵습니다.",
     },
   ],
 };

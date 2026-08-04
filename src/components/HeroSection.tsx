@@ -71,9 +71,9 @@ const S2_REVEAL_START = 0.46;
 const S2_REVEAL_DURATION = 0.34;
 /** 그룹 간 등장 시차 (circleT 기준) */
 const S2_REVEAL_STAGGER = 0.14;
-/** 섹션2 완전 등장 후 sticky 유지 구간 (vh). CSS --hero-s2-dwell 과 동기화 */
-const S2_DWELL_VH = 0.55;
-const S2_DWELL_VH_MOBILE = 0.45;
+/** 섹션2 완전 등장 후 sticky 유지 구간 (vh). 0 = 붙잡지 않고 바로 다음 섹션으로 */
+const S2_DWELL_VH = 0;
+const S2_DWELL_VH_MOBILE = 0;
 
 function clamp(v: number, min = 0, max = 1) {
   return Math.min(Math.max(v, min), max);
@@ -600,23 +600,25 @@ export function HeroSection() {
                   {section2Gap.cards.map((card) => (
                     <article
                       key={card.num}
-                      className="relative flex flex-col items-start p-8 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
+                      className="relative flex w-full min-w-0 flex-col items-stretch p-8 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
                     >
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-[13px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
+                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-[13px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
                         {card.num}
                       </span>
-                      <h3 className="mt-5 text-[18px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[26px]">
+                      <h3 className="mt-5 w-full text-[18px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[26px]">
                         {card.title}
                         <br />
-                        {card.titleLine2}
+                        <span className="text-primary">{card.titleLine2Accent}</span>
+                        {card.titleLine2Rest}
                       </h3>
-                      <p className="mt-6 text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
+                      <p className="mt-6 w-full min-w-0 self-stretch text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
                         {card.body}
                       </p>
                     </article>
                   ))}
                 </div>
               </div>
+
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import { whatsDifferentSection } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { cn } from "@/lib/cn";
-import section3Bg from "@/assets/section_3.png";
 
 const INSIDE = "#10141d";
 
@@ -15,20 +14,6 @@ export function ProblemDifferentiatorSection() {
       className="relative flex min-h-[80vh] scroll-mt-20 items-center overflow-hidden"
       style={{ background: INSIDE }}
     >
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-0 h-full" aria-hidden>
-        <img
-          src={section3Bg}
-          alt=""
-          className="h-full w-auto max-w-none object-contain object-right opacity-10 mix-blend-screen"
-        />
-        {/* 이미지 왼쪽 끊김 → 배경색으로 페이드 */}
-        <div
-          className="absolute inset-y-0 left-0 w-[55%]"
-          style={{
-            background: `linear-gradient(to right, ${INSIDE} 0%, ${INSIDE}cc 40%, transparent 100%)`,
-          }}
-        />
-      </div>
       <div className="zt-container-hero relative z-10 w-full py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up">
           <p className="text-[16px] font-bold tracking-wide text-[#7eb6ff]">
@@ -40,7 +25,7 @@ export function ProblemDifferentiatorSection() {
             <span className="text-primary">{titleAccent}</span>
             {titleAfter}
           </h2>
-          <p className="mt-3 max-w-[640px] text-[20px] leading-relaxed text-slate-300 sm:mt-4">
+          <p className="mt-3 w-full max-w-none text-[20px] leading-relaxed text-slate-300 sm:mt-4">
             {lead}
           </p>
         </RevealOnScroll>

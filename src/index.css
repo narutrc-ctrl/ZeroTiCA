@@ -336,11 +336,8 @@
   /* Hero → Section2 scroll transition */
   .hero-transition-scene {
     position: relative;
-    /*
-     * 키홀 브릿지 문구(2단계) 구간 포함.
-     * --hero-s2-dwell: 섹션2 콘텐츠가 다 뜬 뒤 sticky로 잠깐 머무는 여유
-     */
-    --hero-s2-dwell: 10vh;
+    /* 키홀 브릿지 문구(2단계) 구간 포함. dwell 없음 → 섹션2 후 자연 스크롤 */
+    --hero-s2-dwell: 0vh;
     height: calc(230vh + var(--hero-s2-dwell));
     background: hsl(var(--background));
   }
@@ -532,7 +529,7 @@
 
   @media (max-width: 640px) {
     .hero-transition-scene {
-      --hero-s2-dwell: 5vh;
+      --hero-s2-dwell: 0vh;
       height: calc(200vh + var(--hero-s2-dwell));
     }
 
