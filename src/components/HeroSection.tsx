@@ -602,7 +602,7 @@ export function HeroSection() {
                       key={card.num}
                       className="relative flex w-full min-w-0 flex-col items-stretch p-8 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
                     >
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-[13px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
+                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
                         {card.num}
                       </span>
                       <h3 className="mt-5 w-full text-[18px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[26px]">

@@ -3,8 +3,18 @@ import { customerValueSection } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 
 export function CustomerOutcomesSection() {
-  const { eyebrow, title, titleAccent, lead, beforeLabel, afterLabel, rows } =
-    customerValueSection;
+  const {
+    eyebrow,
+    title,
+    titleAccent,
+    lead,
+    beforeLabel,
+    afterLabel,
+    closingBefore,
+    closingAccent,
+    closingAfter,
+    rows,
+  } = customerValueSection;
 
   return (
     <section id="outcomes" className="border-b border-slate-200/80 bg-white">
@@ -16,13 +26,13 @@ export function CustomerOutcomesSection() {
             <br />
             <span className="text-primary">{titleAccent}</span>
           </h2>
-          <p className="mt-4 max-w-[720px] text-[16px] leading-relaxed text-slate-500 sm:mt-5 sm:text-[18px] [word-break:keep-all]">
+          <p className="mt-4 w-full max-w-none text-[16px] leading-relaxed text-slate-500 sm:mt-5 sm:text-[18px] [word-break:keep-all]">
             {lead}
           </p>
         </RevealOnScroll>
 
         <RevealOnScroll delay={80} variant="fade-up">
-          <div className="mt-[48px] rounded-[28px] bg-[#e8f1ff] px-4 py-8 sm:mt-[64px] sm:rounded-[32px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+          <div className="mt-[48px] rounded-[28px] bg-gradient-to-r from-white to-[#abd1ff] px-4 py-8 sm:mt-[64px] sm:rounded-[32px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
             <div className="mb-5 hidden grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] items-end gap-4 px-1 sm:mb-6 sm:gap-5 md:grid lg:gap-6">
               <p className="pl-1 text-[13px] font-medium text-slate-400 sm:text-[14px]">
                 {beforeLabel}
@@ -65,6 +75,21 @@ export function CustomerOutcomesSection() {
                 </li>
               ))}
             </ul>
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={140} variant="fade-up">
+          <div className="mt-16 flex flex-col items-center px-2 text-center sm:mt-20">
+            <span
+              className="mb-6 h-1 w-9 rounded-full bg-primary/35 sm:mb-7"
+              aria-hidden
+            />
+            <p className="max-w-[720px] text-[20px] font-semibold leading-[1.45] tracking-[-0.01em] text-zinc-800 [word-break:keep-all] sm:text-[24px] lg:text-[28px]">
+              {closingBefore}
+              <br />
+              <span className="text-primary">{closingAccent}</span>
+              {closingAfter}
+            </p>
           </div>
         </RevealOnScroll>
       </div>
