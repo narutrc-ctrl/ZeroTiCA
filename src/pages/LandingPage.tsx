@@ -1,5 +1,4 @@
-// TODO: 도입 문의 CTA — 요청 시 주석 해제
-// import { ContactCTA } from "@/components/ContactCTA";
+import { ContactCTA } from "@/components/ContactCTA";
 import { CustomerOutcomesSection } from "@/components/CustomerOutcomesSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { TrustStrip } from "@/components/TrustStrip";
@@ -28,9 +27,7 @@ export function LandingPage() {
 
       <FaqSection />
 
-      {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
       <ContactCTA variant="banner" />
-      */}
     </div>
   );
 }

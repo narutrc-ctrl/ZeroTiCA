@@ -1,71 +1,52 @@
-import { Check } from "lucide-react";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { serviceDecision, services } from "@/data/content";
-import { cn } from "@/lib/cn";
 
 export function ServiceDecisionSection() {
   return (
-    <section id="choose" className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white">
-      <div className="zt-container-hero zt-section">
-        <RevealOnScroll>
-          <p className="text-[16px] font-semibold text-blue-600">서비스 선택</p>
-          <h2 className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]">
+    <section id="choose" className="border-b border-slate-200/80 bg-gradient-to-b from-slate-50 to-white">
+      <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
+        <RevealOnScroll variant="fade-up" className="text-center">
+          <p className="text-[16px] font-bold tracking-wide text-primary">서비스 선택</p>
+          <h2 className="mx-auto mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
             {serviceDecision.title}
+            <br />
+            {serviceDecision.titleLine2}
           </h2>
-          <p className="mt-3 max-w-2xl text-slate-600">{serviceDecision.lead}</p>
         </RevealOnScroll>
 
-        <div className="mt-10">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {services.map((svc, i) => (
-              <RevealOnScroll key={svc.id} delay={i * 100} variant="scale">
-                <article
-                  className={cn(
-                    "relative h-full overflow-hidden rounded-2xl border bg-white p-6 shadow-sm transition hover:shadow-lg",
-                    svc.id === "watch" ? "border-blue-200 ring-1 ring-blue-100" : "border-slate-200",
-                  )}
-                >
-                  {svc.id === "watch" && (
-                    <span className="absolute right-4 top-4 rounded-full bg-blue-600 px-2.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                      추천
-                    </span>
-                  )}
-                  <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">{svc.tagline}</p>
-                  <h3 className="mt-2 text-2xl font-bold text-zinc-800">{svc.name}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{svc.description}</p>
-                  <ul className="mt-4 space-y-2">
-                    {svc.bullets.map((b) => (
-                      <li key={b} className="flex gap-2 text-sm text-slate-700">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              </RevealOnScroll>
-            ))}
-          </div>
-
-          <RevealOnScroll delay={120} className="mt-8 overflow-x-auto">
-            <table className="w-full min-w-[540px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="py-3 pr-4 font-medium text-slate-500" />
-                  <th className="py-3 px-4 font-semibold text-zinc-800">Insight</th>
-                  <th className="py-3 pl-4 font-semibold text-blue-700">Watch</th>
-                </tr>
-              </thead>
-              <tbody>
-                {serviceDecision.compare.map((row) => (
-                  <tr key={row.label} className="border-b border-slate-100">
-                    <td className="py-3 pr-4 font-medium text-slate-500">{row.label}</td>
-                    <td className="py-3 px-4 text-slate-700">{row.insight}</td>
-                    <td className="py-3 pl-4 font-medium text-zinc-800">{row.watch}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </RevealOnScroll>
+        <div className="mt-[48px] grid gap-5 sm:mt-[64px] sm:gap-6 lg:grid-cols-2 lg:gap-8">
+          {services.map((svc, i) => (
+            <RevealOnScroll key={svc.id} delay={i * 100} variant="fade-up">
+              <article className="flex h-full flex-col rounded-[24px] border border-slate-200/80 bg-white p-7 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_16px_40px_rgba(171,209,255,0.45)] sm:rounded-[28px] sm:p-8 lg:p-10">
+                <p className="text-[16px] font-bold tracking-wide text-primary sm:text-[18px]">
+                  {svc.name}
+                </p>
+                <h3 className="mt-5 text-[22px] font-extrabold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-6 sm:text-[26px] lg:text-[28px]">
+                  {svc.title}
+                  <br />
+                  {svc.titleLine2}
+                </h3>
+                <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-5 sm:text-[16px]">
+                  {svc.description}
+                </p>
+                <div className="mt-auto grid grid-cols-2 gap-3 pt-8 sm:gap-4 sm:pt-10">
+                  {svc.meta.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-2xl bg-slate-50 px-4 py-4 text-center sm:px-5 sm:py-5"
+                    >
+                      <p className="text-[12px] font-medium text-slate-400 sm:text-[13px]">
+                        {item.label}
+                      </p>
+                      <p className="mt-1.5 text-[14px] font-semibold leading-snug text-zinc-800 [word-break:keep-all] sm:text-[15px]">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            </RevealOnScroll>
+          ))}
         </div>
       </div>
     </section>

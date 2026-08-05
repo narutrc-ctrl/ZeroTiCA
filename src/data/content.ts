@@ -325,32 +325,32 @@ export const trustBadges = [
 export const partnerTrustStats = trustBadges.slice(0, 2);
 
 export const serviceDecision = {
-  title: "어떤 서비스가 맞을까요?",
-  lead: "단기 진단이 필요한지, 지속 운영을 맡길지에 따라 선택하시면 됩니다.",
-  compare: [
-    { label: "기간", insight: "수 주 집중", watch: "연간·월간 구독" },
-    { label: "목적", insight: "현황 진단·우선순위", watch: "24/7 모니터링·대응" },
-    { label: "산출물", insight: "진단 요약·권고", watch: "침해 평가 보고서" },
-    { label: "적합 고객", insight: "보안 체계 수립 초기", watch: "전담 인력 부족·MDR 필요" },
-  ],
+  title: "우리 기업에 필요한 검증은",
+  titleLine2: "무엇일까요?",
 };
 
 export const services = [
   {
     id: "insight",
     name: "Insight",
-    tagline: "단기 집중 진단",
-    description:
-      "현재 네트워크와 보안 운영 상태를 집중적으로 점검하고, 우선 조치가 필요한 영역을 명확히 제시합니다.",
-    bullets: ["단기간 위협·취약 영역 진단", "내부 자산·통신 가시성 확보", "경영진·실무진 공유용 요약 자료"],
+    title: "현재 내부 상태를",
+    titleLine2: "한번 정확히 점검해야 해요.",
+    description: "최근 보안 상태가 우려되거나,\n현재 침해 정황과 우선 조치 과제를 확인해야 할 때",
+    meta: [
+      { label: "목적", value: "현재 상태를 먼저 확인" },
+      { label: "운영 방식", value: "4~6주 집중 검증" },
+    ],
   },
   {
     id: "watch",
     name: "Watch",
-    tagline: "지속 모니터링",
-    description:
-      "센서 기반 실시간 수집부터 탐지, 분석, 검증, 조치, 보고까지 보안 운영 전 과정을 대신 수행합니다.",
-    bullets: ["24/7 위협 모니터링", "전문가 검증 기반 알림", "침해 평가 보고서 제공"],
+    title: "새로운 변화와 이슈를",
+    titleLine2: "지속적으로 확인해야 해요.",
+    description: "자산과 통신이 계속 변하고 있어,\n새로운 정황을 상시 확인하고 대응해야 할 때",
+    meta: [
+      { label: "목적", value: "내부 변화를 계속 확인" },
+      { label: "운영 방식", value: "구독형 지속 검증" },
+    ],
   },
 ];
 
