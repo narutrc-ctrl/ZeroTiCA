@@ -47,8 +47,28 @@ export function SiteFooter() {
                 <InfoRow label="대표이사" value={site.companyCeo} />
               </dl>
               <dl className="space-y-2.5">
-                <InfoRow label="이메일" value={site.contactEmail} />
-                <InfoRow label="전화" value={site.contactPhone} />
+                <div className="grid grid-cols-[4rem_minmax(0,1fr)] gap-x-1 text-[13px] leading-relaxed sm:grid-cols-[4.5rem_max-content] sm:gap-x-1 sm:text-[14px]">
+                  <dt className="shrink-0 text-[#9ca3af]">이메일</dt>
+                  <dd className="min-w-0 text-left text-[#e5e7eb]">
+                    <a
+                      href={`mailto:${site.contactEmail}`}
+                      className="underline-offset-2 transition-colors hover:text-white hover:underline"
+                    >
+                      {site.contactEmail}
+                    </a>
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[4rem_minmax(0,1fr)] gap-x-1 text-[13px] leading-relaxed sm:grid-cols-[4.5rem_max-content] sm:gap-x-1 sm:text-[14px]">
+                  <dt className="shrink-0 text-[#9ca3af]">전화</dt>
+                  <dd className="min-w-0 text-left text-[#e5e7eb]">
+                    <a
+                      href={`tel:${site.contactPhone.replace(/-/g, "")}`}
+                      className="underline-offset-2 transition-colors hover:text-white hover:underline"
+                    >
+                      {site.contactPhone}
+                    </a>
+                  </dd>
+                </div>
               </dl>
             </div>
             <dl className="sm:-translate-x-8 lg:-translate-x-10">

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zerotica.app/sitemap.xml
+Sitemap: https://zerotica.narusec.com/sitemap.xml

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { experienceSection, paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
@@ -21,21 +21,19 @@ function SkeletonBlock({
   title,
   active,
   dimmed,
-  onActivate,
 }: {
   title: string;
   active: boolean;
   dimmed: boolean;
-  onActivate: () => void;
 }) {
   return (
     <div
       className={cn(
-        "cursor-default rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3.5 transition-[box-shadow,border-color,opacity] duration-200",
+        "rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3.5 transition-[box-shadow,border-color,opacity] duration-200",
         active && "ring-2 ring-primary/70 ring-offset-2 ring-offset-white",
         dimmed && "opacity-35",
       )}
-      onMouseEnter={onActivate}
+      aria-hidden
     >
       <p className="text-[12px] font-semibold text-slate-500">{title}</p>
       <div className="mt-3 flex flex-col gap-3.5">
@@ -46,13 +44,7 @@ function SkeletonBlock({
   );
 }
 
-function ExperienceMockCard({
-  highlight,
-  onHighlightChange,
-}: {
-  highlight: HighlightId;
-  onHighlightChange: (id: HighlightId) => void;
-}) {
+function ExperienceMockCard({ highlight }: { highlight: HighlightId }) {
   const { mock } = experienceSection;
   const isDimmed = (id: HighlightId) => highlight !== id;
 
@@ -72,11 +64,10 @@ function ExperienceMockCard({
         <div className="flex min-h-0 flex-1 flex-col space-y-5 overflow-auto p-6 sm:p-7">
           <div>
             <div
-              className={cn(
-                "cursor-default p-3",
-                highlightClass(highlight === "01", isDimmed("01")),
-              )}
-              onMouseEnter={() => onHighlightChange("01")}
+              id="experience-panel-01"
+              role="region"
+              aria-label={experienceSection.points[0]?.title}
+              className={cn("p-3", highlightClass(highlight === "01", isDimmed("01")))}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <h3 className="max-w-[28rem] text-[17px] font-extrabold leading-snug tracking-tight text-slate-700 [word-break:keep-all] sm:text-[20px]">
@@ -118,11 +109,10 @@ function ExperienceMockCard({
 
           <div className="-mt-2">
             <div
-              className={cn(
-                "cursor-default p-3",
-                highlightClass(highlight === "02", isDimmed("02")),
-              )}
-              onMouseEnter={() => onHighlightChange("02")}
+              id="experience-panel-02"
+              role="region"
+              aria-label={experienceSection.points[1]?.title}
+              className={cn("p-3", highlightClass(highlight === "02", isDimmed("02")))}
             >
               <p className="text-[12px] font-bold text-zinc-800">분석 내용</p>
               <p className="mt-2 text-[12px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[13px]">
@@ -130,27 +120,28 @@ function ExperienceMockCard({
               </p>
             </div>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <SkeletonBlock
-                title="통신 흐름 분석"
-                active={highlight === "03"}
-                dimmed={isDimmed("03")}
-                onActivate={() => onHighlightChange("03")}
-              />
-              <SkeletonBlock
-                title="조치 방안"
-                active={highlight === "04"}
-                dimmed={isDimmed("04")}
-                onActivate={() => onHighlightChange("04")}
-              />
+              <div id="experience-panel-03" role="region" aria-label={experienceSection.points[2]?.title}>
+                <SkeletonBlock
+                  title="통신 흐름 분석"
+                  active={highlight === "03"}
+                  dimmed={isDimmed("03")}
+                />
+              </div>
+              <div id="experience-panel-04" role="region" aria-label={experienceSection.points[3]?.title}>
+                <SkeletonBlock
+                  title="조치 방안"
+                  active={highlight === "04"}
+                  dimmed={isDimmed("04")}
+                />
+              </div>
             </div>
           </div>
 
           <div
-            className={cn(
-              "cursor-default p-3",
-              highlightClass(highlight === "05", isDimmed("05")),
-            )}
-            onMouseEnter={() => onHighlightChange("05")}
+            id="experience-panel-05"
+            role="region"
+            aria-label={experienceSection.points[4]?.title}
+            className={cn("p-3", highlightClass(highlight === "05", isDimmed("05")))}
           >
             <p className="text-[12px] font-bold text-zinc-800">댓글 2</p>
             <div className="mt-2.5 space-y-2.5">
@@ -196,17 +187,58 @@ export function ExperienceSection() {
     footerNote,
     ctaLabel,
   } = experienceSection;
+  const headingId = useId();
   const [highlight, setHighlight] = useState<HighlightId>(DEFAULT_HIGHLIGHT);
+  const [hoveredId, setHoveredId] = useState<HighlightId | null>(null);
+  const activeId = hoveredId ?? highlight;
+
+  const selectPoint = (id: HighlightId) => {
+    setHighlight(id);
+    setHoveredId(null);
+  };
+
+  const onListKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+    const currentIndex = points.findIndex((p) => p.num === highlight);
+    if (currentIndex < 0) return;
+
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+      event.preventDefault();
+      nextIndex = (currentIndex + 1) % points.length;
+    } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      nextIndex = (currentIndex - 1 + points.length) % points.length;
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      event.preventDefault();
+      nextIndex = points.length - 1;
+    } else {
+      return;
+    }
+
+    const nextId = points[nextIndex]?.num as HighlightId | undefined;
+    if (nextId) {
+      selectPoint(nextId);
+      const btn = event.currentTarget.querySelector<HTMLButtonElement>(`#experience-q-${nextId}`);
+      btn?.focus();
+    }
+  };
 
   return (
     <section
       id="experience"
+      aria-labelledby={headingId}
       className="flex min-h-[calc(100dvh-4rem)] scroll-mt-16 border-b border-slate-200/80 bg-[#f8f9fb]"
     >
       <div className="zt-container-hero flex w-full min-h-[calc(100dvh-4rem)] flex-col py-16 sm:py-20 lg:py-24">
         <RevealOnScroll variant="fade-up" className="shrink-0">
           <p className="text-[16px] font-bold tracking-wide text-primary">{eyebrow}</p>
-          <h2 className="mt-[28px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight [word-break:keep-all] sm:mt-[38px] sm:text-[36px] lg:text-[46px]">
+          <h2
+            id={headingId}
+            className="mt-[28px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight [word-break:keep-all] sm:mt-[38px] sm:text-[36px] lg:text-[46px]"
+          >
             <span className="text-slate-400">{title}</span>
             <br />
             <span className="text-zinc-900">{titleLine2}</span>
@@ -218,7 +250,7 @@ export function ExperienceSection() {
 
         <div className="mt-[40px] grid min-h-0 flex-1 items-stretch gap-5 sm:mt-[48px] lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-8 xl:gap-10">
           <RevealOnScroll delay={80} variant="fade-up" className="h-full min-h-0">
-            <ExperienceMockCard highlight={highlight} onHighlightChange={setHighlight} />
+            <ExperienceMockCard highlight={activeId} />
           </RevealOnScroll>
 
           <RevealOnScroll delay={140} variant="fade-up" className="h-full min-h-0">
@@ -230,48 +262,58 @@ export function ExperienceSection() {
                 {listHint}
               </p>
 
-              <ul className="mt-6 flex flex-col gap-3 sm:mt-7 sm:gap-3.5">
+              <ul
+                className="mt-6 flex flex-col gap-3 sm:mt-7 sm:gap-3.5"
+                onKeyDown={onListKeyDown}
+              >
                 {points.map((point) => {
                   const id = point.num as HighlightId;
-                  const active = highlight === id;
+                  const selected = highlight === id;
+                  const preview = activeId === id;
                   return (
-                    <li
-                      key={point.num}
-                      className={cn(
-                        "cursor-default rounded-2xl px-3.5 py-3 transition-colors duration-200 sm:px-4 sm:py-3.5",
-                        active && "bg-primary/[0.07]",
-                      )}
-                      onMouseEnter={() => setHighlight(id)}
-                    >
-                      <div className="flex gap-3.5 sm:gap-4">
-                        <span
-                          className={cn(
-                            "w-7 shrink-0 text-[15px] font-bold tabular-nums sm:w-8 sm:text-[16px]",
-                            active ? "text-primary" : "text-slate-300",
-                          )}
-                        >
-                          {point.num}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="text-[16px] font-extrabold leading-snug text-zinc-900 [word-break:keep-all] sm:text-[17px]">
-                            {point.title}
-                          </p>
-                          <div
+                    <li key={point.num}>
+                      <button
+                        type="button"
+                        id={`experience-q-${id}`}
+                        aria-controls={`experience-panel-${id}`}
+                        aria-current={selected ? "true" : undefined}
+                        onClick={() => selectPoint(id)}
+                        onMouseEnter={() => setHoveredId(id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        onFocus={() => setHoveredId(id)}
+                        onBlur={() => setHoveredId(null)}
+                        className={cn(
+                          "w-full cursor-pointer rounded-2xl px-3.5 py-3 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:py-3.5",
+                          preview && "bg-primary/[0.07]",
+                          selected && !preview && "bg-slate-50",
+                        )}
+                      >
+                        <div className="flex gap-3.5 sm:gap-4">
+                          <span
                             className={cn(
-                              "grid transition-[grid-template-rows,opacity] duration-200 ease-out",
-                              active
-                                ? "grid-rows-[1fr] opacity-100"
-                                : "grid-rows-[0fr] opacity-0",
+                              "w-7 shrink-0 text-[15px] font-bold tabular-nums sm:w-8 sm:text-[16px]",
+                              preview ? "text-primary" : "text-slate-300",
                             )}
                           >
-                            <div className="overflow-hidden">
-                              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[14px]">
-                                {point.body}
-                              </p>
-                            </div>
+                            {point.num}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[16px] font-extrabold leading-snug text-zinc-900 [word-break:keep-all] sm:text-[17px]">
+                              {point.title}
+                            </p>
+                            <p
+                              className={cn(
+                                "mt-1.5 text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[14px]",
+                                preview ? "block" : "hidden",
+                              )}
+                            >
+                              {point.body}
+                            </p>
+                            {/* 비선택 시에도 스크린리더·검색용으로 본문 제공 */}
+                            {!preview ? <span className="sr-only">{point.body}</span> : null}
                           </div>
                         </div>
-                      </div>
+                      </button>
                     </li>
                   );
                 })}
@@ -283,7 +325,7 @@ export function ExperienceSection() {
                 </p>
                 <Link
                   to={paths.fullTour}
-                  className="mt-4 flex w-full items-center justify-center rounded-full bg-primary px-5 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-primary/90 sm:mt-5 sm:py-4 sm:text-[16px]"
+                  className="mt-4 flex w-full items-center justify-center rounded-full bg-primary px-5 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:mt-5 sm:py-4 sm:text-[16px]"
                 >
                   {ctaLabel}
                   <span className="ml-1.5" aria-hidden>

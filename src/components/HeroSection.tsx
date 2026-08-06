@@ -527,6 +527,7 @@ export function HeroSection() {
           </svg>
 
           {/* 키홀 확대 중 1번 문구 → 다크 배경 후 2번 문구 (줄별 순차 페이드인) */}
+          {/* 시각 모션용 레이어는 aria-hidden; 동일 문구는 아래 스크린리더용으로 제공 */}
           <div ref={bridgeRef} className="hero-keyhole-bridge" aria-hidden="true" style={{ opacity: 0 }}>
             <p
               ref={phrase1Ref}
@@ -551,6 +552,10 @@ export function HeroSection() {
               ))}
             </p>
           </div>
+          <div className="sr-only">
+            <p>{keyholeBridge.line1.replace(/\n/g, " ")}</p>
+            <p>{keyholeBridge.line2.replace(/\n/g, " ")}</p>
+          </div>
 
           {/* 2번 문구 이후: 좌우 원이 가운데로 모여 겹침 */}
           <div className="hero-merge-circles" aria-hidden="true">
@@ -561,9 +566,10 @@ export function HeroSection() {
           {/* 섹션2 콘텐츠 — 원 합류 시 1→2→3 순차 등장 */}
           <div
             ref={section2Ref}
-            id="section-2"
+            id="problem"
             className="pointer-events-none absolute inset-0 z-[7] flex items-center justify-center"
             style={{ transform: `translate3d(0, ${SECTION2_Y_OFFSET}px, 0)` }}
+            aria-labelledby="problem-heading"
           >
             <div className="zt-container-hero flex w-full flex-col items-stretch text-left">
               <div
@@ -574,7 +580,10 @@ export function HeroSection() {
                 <p className="text-[16px] font-bold tracking-wide text-primary">
                   {section2Gap.eyebrow}
                 </p>
-                <h2 className="hero-section2-title mt-[32px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+                <h2
+                  id="problem-heading"
+                  className="hero-section2-title mt-[32px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
+                >
                   {section2Gap.title}
                   <br />
                   {section2Gap.titleLine2}

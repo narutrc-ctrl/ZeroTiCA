@@ -11,6 +11,7 @@ export function ProblemDifferentiatorSection() {
   return (
     <section
       id="differentiator"
+      aria-labelledby="differentiator-heading"
       className="relative flex min-h-[80vh] scroll-mt-20 items-center overflow-hidden"
       style={{ background: INSIDE }}
     >
@@ -19,7 +20,10 @@ export function ProblemDifferentiatorSection() {
           <p className="text-[16px] font-bold tracking-wide text-[#7eb6ff]">
             {eyebrow}
           </p>
-          <h2 className="mt-[32px] max-w-[920px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-white [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+          <h2
+            id="differentiator-heading"
+            className="mt-[32px] max-w-[920px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-white [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
+          >
             {titleBefore}
             <br />
             <span className="text-primary">{titleAccent}</span>

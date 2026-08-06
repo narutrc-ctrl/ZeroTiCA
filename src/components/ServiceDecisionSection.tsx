@@ -3,11 +3,18 @@ import { serviceDecision, services } from "@/data/content";
 
 export function ServiceDecisionSection() {
   return (
-    <section id="choose" className="border-b border-slate-200/80 bg-gradient-to-b from-slate-50 to-white">
+    <section
+      id="choose"
+      aria-labelledby="choose-heading"
+      className="border-b border-slate-200/80 bg-gradient-to-b from-slate-50 to-white"
+    >
       <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up" className="text-center">
           <p className="text-[16px] font-bold tracking-wide text-primary">서비스 선택</p>
-          <h2 className="mx-auto mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+          <h2
+            id="choose-heading"
+            className="mx-auto mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
+          >
             {serviceDecision.title}
             <br />
             {serviceDecision.titleLine2}

@@ -17,11 +17,14 @@ export function CustomerOutcomesSection() {
   } = customerValueSection;
 
   return (
-    <section id="outcomes" className="border-b border-slate-200/80 bg-white">
+    <section id="outcomes" aria-labelledby="outcomes-heading" className="border-b border-slate-200/80 bg-white">
       <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up">
           <p className="text-[16px] font-bold tracking-wide text-primary">{eyebrow}</p>
-          <h2 className="mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]">
+          <h2
+            id="outcomes-heading"
+            className="mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
+          >
             <span className="text-zinc-900">{title}</span>
             <br />
             <span className="text-primary">{titleAccent}</span>

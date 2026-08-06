@@ -1,14 +1,17 @@
-import { closing, partnerIndustries, partnerTrustStats, socialProof } from "@/data/content";
+import { closing, partnerIndustries, partnerTrustStats } from "@/data/content";
 import { CountUp } from "@/components/CountUp";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 
 export function TrustStrip() {
   return (
-    <section className="bg-slate-50">
+    <section aria-labelledby="trust-heading" className="bg-slate-50">
       <div className="zt-container-hero zt-section">
         <RevealOnScroll variant="fade-up" className="max-w-3xl">
           <p className="text-[16px] font-semibold text-blue-600">함께하는 고객사</p>
-          <h2 className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]">
+          <h2
+            id="trust-heading"
+            className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]"
+          >
             {closing.title}
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -17,37 +20,20 @@ export function TrustStrip() {
           </p>
         </RevealOnScroll>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-12">
-          <RevealOnScroll variant="fade-left">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {partnerIndustries.map((item) => (
-                <div
-                  key={item.sector}
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm"
-                >
-                  <p className="text-sm font-bold text-zinc-800">{item.sector}</p>
-                  <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
-                </div>
-              ))}
-            </div>
-          </RevealOnScroll>
-
-          <RevealOnScroll variant="fade-right" delay={80}>
-            <div className="space-y-4">
-              {socialProof.map((item) => (
-                <blockquote
-                  key={item.quote}
-                  className="rounded-2xl border border-blue-100 bg-white px-5 py-4 shadow-sm"
-                >
-                  <p className="text-sm leading-relaxed text-slate-700">「{item.quote}」</p>
-                  <footer className="mt-2 text-xs text-slate-500">
-                    — {item.role} · {item.industry}
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
-          </RevealOnScroll>
-        </div>
+        {/* TODO(ops): 공개 가능한 고객 인용·로고가 확정되면 이 영역에 추가. 검증되지 않은 후기는 사용하지 않음. */}
+        <RevealOnScroll variant="fade-up" delay={60}>
+          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {partnerIndustries.map((item) => (
+              <div
+                key={item.sector}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm"
+              >
+                <p className="text-sm font-bold text-zinc-800">{item.sector}</p>
+                <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </RevealOnScroll>
 
         <RevealOnScroll variant="scale" delay={100} className="mt-14 sm:mt-16">
           <div className="mx-auto grid max-w-2xl gap-5 sm:grid-cols-2">

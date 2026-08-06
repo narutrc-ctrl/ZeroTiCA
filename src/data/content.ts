@@ -11,7 +11,7 @@ export const site = {
   companyCeo: "김혁준",
   companyAddress: "서울특별시 송파구 중대로 97, 6층 (가락동 효원빌딩) 05719",
   copyrightEntity: "NaruSecurity Inc.",
-  siteUrl: "https://zerotica.app",
+  siteUrl: "https://zerotica.narusec.com",
 };
 
 export const paths = {
@@ -35,18 +35,11 @@ export const statSources = [
   { label: "중소·중견 피해 비율", source: "동일 자료 기준 중소·중견기업 피해 비중" },
 ];
 
-export const socialProof = [
-  {
-    quote: "알람만 쌓이던 시절과 달리, 확인해야 할 이슈만 RUNA에 정리되어 옵니다.",
-    role: "국내 게임사 · 보안팀장",
-    industry: "Watch 고객",
-  },
-  {
-    quote: "내부에서 몰랐던 통신이 이슈로 올라오면서, 네트워크 가시성부터 확보됐습니다.",
-    role: "제조·IT 인프라 담당",
-    industry: "Insight → Watch",
-  },
-];
+/**
+ * TODO(ops): 공개 가능한 고객 인용문이 확정되면 Trust 섹션에 연결.
+ * 검증되지 않은 후기는 사용하지 않음.
+ */
+export const socialProof: { quote: string; role: string; industry: string }[] = [];
 
 /** 함께하는 고객사 — 산업군 단일 표기 (익명) */
 export const partnerIndustries = [
@@ -365,7 +358,7 @@ export const experienceSection = {
     badge: "고객 확인 요청",
   },
   listEyebrow: "하나의 이슈가 답하는 질문",
-  listHint: "마우스를 올려 해당 영역을 왼쪽 화면에서 확인해보세요.",
+  listHint: "항목을 선택하거나 올려두면 왼쪽 화면에서 대응 영역을 확인할 수 있습니다.",
   points: [
     {
       num: "01",
@@ -403,15 +396,16 @@ export const closing = {
   lines: ["보안은 더 똑똑하게, 운영은 더 간결하게.", "복잡한 보안의 반대말, 제로티카입니다."],
 };
 
-/** 앵커 네비게이션 */
+/** 앵커 네비게이션 — 랜딩 섹션 순서와 동일하게 유지 */
 export const storyAnchors = [
   { id: "top", label: "소개" },
   { id: "problem", label: "문제" },
-  { id: "journey", label: "작업 순서" },
+  { id: "journey", label: "검증 과정" },
   { id: "outcomes", label: "고객 가치" },
+  { id: "experience", label: "체험" },
   { id: "choose", label: "서비스 선택" },
   { id: "faq", label: "FAQ" },
-  { id: "experience", label: "체험" },
+  { id: "contact", label: "문의" },
 ];
 
 export const tourPhases = [

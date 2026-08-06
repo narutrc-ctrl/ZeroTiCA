@@ -185,6 +185,7 @@ export function InteractiveIssueJourneySection() {
     <section
       ref={sectionRef}
       id="journey"
+      aria-labelledby="journey-heading"
       className="relative overflow-hidden border-b border-slate-200/80 bg-[#f7f9fc]"
     >
       <div className="journey-bg-circles" aria-hidden>
@@ -206,14 +207,17 @@ export function InteractiveIssueJourneySection() {
       </div>
 
       <div className="zt-container-hero relative z-10 w-full pt-16 pb-28 sm:pt-20 sm:pb-36 lg:pt-28 lg:pb-44">
-        <div className="text-center will-change-transform" style={revealStyle(headerT)}>
+        <div className="text-center" style={revealStyle(headerT)}>
           <p className="text-[16px] font-bold text-primary">{simulationIntro.eyebrow}</p>
-          <h2 className="mx-auto mt-4 max-w-4xl text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[36px] lg:text-[42px]">
+          <h2
+            id="journey-heading"
+            className="mx-auto mt-4 max-w-4xl text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[36px] lg:text-[42px]"
+          >
             {simulationIntro.title}
           </h2>
         </div>
 
-        <div className="sim-journey-sticky mt-10 will-change-transform sm:mt-14" style={revealStyle(panelT)}>
+        <div className="sim-journey-sticky mt-10 sm:mt-14" style={revealStyle(panelT)}>
           <JourneyStepTabs activeIndex={chapterIndex} onSelect={sim.goToChapter} />
 
           <div className="sim-journey-panel mt-5 rounded-[28px] border border-slate-200/90 bg-white/90 p-4 shadow-[0_18px_50px_rgba(171,209,255,0.45)] backdrop-blur-sm sm:mt-6 sm:p-6 lg:p-7">

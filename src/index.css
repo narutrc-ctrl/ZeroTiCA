@@ -31,6 +31,17 @@
   body {
     @apply m-0 min-h-screen bg-white font-sans text-zinc-800 antialiased;
   }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @layer components {

@@ -32,6 +32,19 @@ export function Layout() {
     document.documentElement.lang = locale === "en-us" ? "en" : "ko";
   }, [locale]);
 
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.replace(/^#/, "");
+    const el = document.getElementById(id);
+    if (!el) return;
+    // 로고/#top은 새로고침처럼 즉시 이동, 그 외 앵커만 스무스
+    const behavior =
+      id === "top" || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth";
+    requestAnimationFrame(() => el.scrollIntoView({ behavior, block: "start" }));
+  }, [location.pathname, location.hash]);
+
   if (isDemo) {
     return (
       <div className="h-screen overflow-hidden bg-white">
@@ -52,12 +65,12 @@ export function Layout() {
         <div className="zt-container-hero flex h-16 items-center justify-between gap-4">
           <BrandLogo />
           {isHome && (
-            <nav className="hidden items-center gap-0.5 lg:flex">
+            <nav className="hidden items-center gap-0.5 lg:flex" aria-label="페이지 내 이동">
               {storyAnchors.slice(1).map((a) => (
                 <a
                   key={a.id}
                   href={`#${a.id}`}
-                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800"
+                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   {a.label}
                 </a>
@@ -79,39 +92,32 @@ export function Layout() {
             </Link>
             <button
               type="button"
-              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
+              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
               onClick={() => setOpen((v) => !v)}
-              aria-label="메뉴"
+              aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
             </button>
           </div>
         </div>
         {open && (
-          <div className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
-            {isHome &&
-              storyAnchors.map((a) => (
-                <a
-                  key={a.id}
-                  href={`#${a.id}`}
-                  className="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                  onClick={() => setOpen(false)}
-                >
-                  {a.label}
-                </a>
-              ))}
-            {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
-            <button
-              type="button"
-              className="zt-btn-primary mt-3 w-full text-sm"
-              onClick={() => {
-                setOpen(false);
-                openContactModal();
-              }}
-            >
-              도입 문의
-            </button>
-            */}
+          <div id="mobile-nav" className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
+            {isHome && (
+              <nav aria-label="페이지 내 이동">
+                {storyAnchors.map((a) => (
+                  <a
+                    key={a.id}
+                    href={`#${a.id}`}
+                    className="block rounded-lg px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    onClick={() => setOpen(false)}
+                  >
+                    {a.label}
+                  </a>
+                ))}
+              </nav>
+            )}
             <Link
               to={withLocale(paths.fullTour)}
               className="zt-btn-primary mt-3 w-full text-sm"

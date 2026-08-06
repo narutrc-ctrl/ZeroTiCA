@@ -30,10 +30,24 @@ export function RevealOnScroll({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReduceMotion(media.matches);
+    apply();
+    media.addEventListener?.("change", apply);
+
     const el = ref.current;
-    if (!el) return;
+    if (!el) {
+      return () => media.removeEventListener?.("change", apply);
+    }
+
+    if (media.matches) {
+      setShow(true);
+      return () => media.removeEventListener?.("change", apply);
+    }
+
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -44,18 +58,23 @@ export function RevealOnScroll({
       { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      media.removeEventListener?.("change", apply);
+    };
   }, []);
+
+  const revealed = show || reduceMotion;
 
   return (
     <div
       ref={ref}
       className={cn(
-        "transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        show ? visible[variant] : hidden[variant],
+        !reduceMotion && "transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        revealed ? visible[variant] : hidden[variant],
         className,
       )}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={!reduceMotion && revealed ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </div>

@@ -15,6 +15,6 @@
 ## 운영 체크
 
 - Google Search Console + 네이버 서치어드바이저에 도메인 등록
-- `https://zerotica.app/sitemap.xml` 제출
+- `https://zerotica.narusec.com/sitemap.xml` 제출
 - 브랜드 키워드(제로티카/ZeroTica)로 title/description CTR 모니터링
 - Core Web Vitals(LCP/CLS/INP) 월 1회 점검
