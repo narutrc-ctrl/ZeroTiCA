@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PlayCircle, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useSectionInView } from "@/components/JourneyProgress";
 import { paths } from "@/data/content";
 import { cn } from "@/lib/cn";
@@ -31,10 +31,10 @@ export function FloatingCTA() {
       )}
     >
       <p className="hidden flex-1 text-xs text-slate-600 sm:block [word-break:keep-all]">
-        3분 데모로 RUNA 화면을 확인해 보세요
+        실제 서비스 화면을 데모로 체험해 보세요
       </p>
       <Link to={paths.fullTour} className="zt-btn-primary shrink-0 px-3 py-2 text-xs sm:text-sm">
-        <PlayCircle className="h-4 w-4" /> 데모 시작
+        데모 체험하기
       </Link>
       <button
         type="button"

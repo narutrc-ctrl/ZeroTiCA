@@ -5,7 +5,7 @@ export const site = {
   runaDefinition:
     "제로티카 고객 포털(RUNA) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
   footerTagline: "네트워크 데이터와 전문가 분석을 기반으로\n기업의 침해 여부를 평가합니다.",
-  contactEmail: "mrlee@narusec.com",
+  contactEmail: "zerotica@narusec.com",
   contactPhone: "02-522-7912",
   companyLegalName: "나루씨큐리티",
   companyCeo: "김혁준",

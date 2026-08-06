@@ -14,7 +14,7 @@ export function getMailEnv(env = process.env) {
     user: env.EMAIL_HOST_USER || "",
     pass: env.EMAIL_HOST_PASSWORD || "",
     from: env.DEFAULT_FROM_EMAIL || env.EMAIL_HOST_USER || "",
-    to: env.CONTACT_INQUIRY_TO || "mrlee@narusec.com",
+    to: env.CONTACT_INQUIRY_TO || "zerotica@narusec.com",
   };
 }
 

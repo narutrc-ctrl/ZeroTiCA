@@ -88,7 +88,7 @@ export function Layout() {
             */}
             {/* 임시: 도입 문의 자리 → 데모 체험 */}
             <Link to={withLocale(paths.fullTour)} className="zt-btn-primary hidden text-sm sm:inline-flex">
-              데모 체험
+              데모 체험하기
             </Link>
             <button
               type="button"
@@ -123,7 +123,7 @@ export function Layout() {
               className="zt-btn-primary mt-3 w-full text-sm"
               onClick={() => setOpen(false)}
             >
-              데모 체험
+              데모 체험하기
             </Link>
           </div>
         )}
