@@ -488,9 +488,9 @@ export function HeroSection() {
                 <span className="hero-focus-headline">{hero.headline}</span>
                 <span className="hero-focus-brand" aria-label="ZeroTiCA">
                   ZeroT
-                  <span className="hero-focus-brand-i" aria-hidden="true">
+                  <span className="zt-brand-mark-i" aria-hidden="true">
                     ı
-                    <span className="hero-focus-brand-idot" />
+                    <span className="zt-brand-mark-idot" />
                   </span>
                   CA
                 </span>

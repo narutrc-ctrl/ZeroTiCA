@@ -74,13 +74,20 @@ export function BrandMark({
 }) {
   const sizeClass = size === "sm" ? "text-sm" : size === "lg" ? "text-2xl" : "text-base";
   const main = inverted ? "text-white" : "text-zinc-800";
-  const accent = inverted ? "text-cyan-300" : "text-blue-600";
 
   return (
-    <span className={cn("inline-flex font-extrabold tracking-tight", sizeClass, className)}>
-      <span className={main}>Zero</span>
-      <span className={accent}>Ti</span>
-      <span className={main}>CA</span>
+    <span
+      className={cn("zt-brand-mark inline-block", sizeClass, main, className)}
+      aria-label="ZeroTiCA"
+    >
+      ZeroT
+      <span className="zt-brand-mark-i" aria-hidden="true">
+        ı
+        <span
+          className={cn("zt-brand-mark-idot", inverted && "zt-brand-mark-idot-inverted")}
+        />
+      </span>
+      CA
     </span>
   );
 }

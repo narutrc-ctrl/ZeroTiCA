@@ -261,6 +261,33 @@
     text-wrap: balance;
   }
 
+  /* ZeroTiCA 워드마크 — i 점(tittle) primary (히어로·헤더 공통) */
+  .zt-brand-mark {
+    font-family: "Paperlogy", Pretendard, sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  .zt-brand-mark-i {
+    position: relative;
+    display: inline-block;
+  }
+
+  .zt-brand-mark-idot {
+    @apply bg-primary;
+    position: absolute;
+    left: 50%;
+    top: 0.20em;
+    width: 0.20em;
+    height: 0.20em;
+    border-radius: 999px;
+    transform: translateX(-50%);
+  }
+
+  .zt-brand-mark-idot-inverted {
+    @apply bg-cyan-300;
+  }
+
   .hero-focus-brand {
     @apply text-zinc-800;
     display: inline-block;
@@ -270,23 +297,6 @@
     font-weight: 800;
     letter-spacing: 0.02em;
     vertical-align: baseline;
-  }
-
-  .hero-focus-brand-i {
-    position: relative;
-    display: inline-block;
-  }
-
-  /* i 상단 원(tittle)만 primary */
-  .hero-focus-brand-idot {
-    @apply bg-primary;
-    position: absolute;
-    left: 50%;
-    top: 0.12em;
-    width: 0.20em;
-    height: 0.20em;
-    border-radius: 999px;
-    transform: translateX(-50%);
   }
 
   .hero-focus-headline {
@@ -349,7 +359,7 @@
     position: relative;
     /* 키홀 브릿지 문구(2단계) 구간 포함. dwell 없음 → 섹션2 후 자연 스크롤 */
     --hero-s2-dwell: 0vh;
-    height: calc(230vh + var(--hero-s2-dwell));
+    height: calc(260vh + var(--hero-s2-dwell));
     background: hsl(var(--background));
   }
 

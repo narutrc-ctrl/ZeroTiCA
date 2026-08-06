@@ -59,7 +59,7 @@ export const clientLogos = partnerIndustries.map((p) => ({
 }));
 
 export const hero = {
-  eyebrow: "보안은 검증이다.",
+  eyebrow: "보안은 검증이다",
   headline: "안전하다는 확신의 근거",
   ctaVideo: {
     label: "서비스 영상보기",
@@ -397,9 +397,9 @@ export const closing = {
 };
 
 export const contactBanner = {
-  eyebrow: "검증의 시작",
-  title: "우리 기업에 필요한 검증부터",
-  titleLine2: "함께 찾아볼까요?",
+  eyebrow: "검증하는 보안으로 시작",
+  title: "안전하다는 확신,",
+  titleLine2: "내부를 확인하는 것부터 시작됩니다.",
 };
 
 /** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */
