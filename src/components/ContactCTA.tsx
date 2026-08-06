@@ -1,5 +1,5 @@
 import { Mail, Phone } from "lucide-react";
-import { site } from "@/data/content";
+import { contactBanner, site } from "@/data/content";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -16,29 +16,34 @@ export function ContactCTA({ variant = "primary", className }: Props) {
       <section
         id="contact"
         aria-labelledby="contact-heading"
-        className={cn("border-t border-blue-100 bg-gradient-to-r from-blue-600 to-blue-500 text-white", className)}
+        className={cn("scroll-mt-20 bg-[#3b82f6] text-white", className)}
       >
-        <div className="zt-container-hero flex flex-col items-start justify-between gap-6 py-12 sm:flex-row sm:items-center">
-          <div>
-            <h2 id="contact-heading" className="text-2xl font-bold">
-              도입·상담 문의
-            </h2>
-            <p className="mt-2 max-w-xl text-sm text-blue-100">
-              Insight·Watch 서비스 도입, PoC, 견적 문의는 이메일 또는 전화로 연락해 주세요.
-            </p>
-          </div>
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+        <div className="zt-container-hero flex flex-col items-center px-6 py-14 text-center sm:py-16">
+          <p className="text-[15px] font-medium tracking-wide text-white/95 sm:text-[16px]">
+            {contactBanner.eyebrow}
+          </p>
+          <h2
+            id="contact-heading"
+            className="mt-4 max-w-[720px] text-[28px] font-extrabold leading-[1.4] tracking-tight text-white [word-break:keep-all] sm:mt-5 sm:text-[36px] lg:text-[42px]"
+          >
+            {contactBanner.title}
+            <br />
+            {contactBanner.titleLine2}
+          </h2>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-9 sm:gap-4">
             <a
               href={mailHref}
-              className="zt-btn w-full justify-center bg-white text-blue-700 hover:bg-blue-50 sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-semibold text-[#3b82f6] transition-colors hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:px-8 sm:py-3.5 sm:text-base"
             >
-              <Mail className="h-4 w-4" aria-hidden /> {site.contactEmail}
+              <Mail className="h-4 w-4" aria-hidden />
+              {site.contactEmail}
             </a>
             <a
               href={telHref}
-              className="zt-btn w-full justify-center border border-white/40 text-white hover:bg-white/10 sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white bg-transparent px-6 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:px-8 sm:py-3.5 sm:text-base"
             >
-              <Phone className="h-4 w-4" aria-hidden /> {site.contactPhone}
+              <Phone className="h-4 w-4" aria-hidden />
+              {site.contactPhone}
             </a>
           </div>
         </div>

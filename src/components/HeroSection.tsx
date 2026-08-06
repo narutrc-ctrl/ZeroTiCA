@@ -566,7 +566,6 @@ export function HeroSection() {
           {/* 섹션2 콘텐츠 — 원 합류 시 1→2→3 순차 등장 */}
           <div
             ref={section2Ref}
-            id="problem"
             className="pointer-events-none absolute inset-0 z-[7] flex items-center justify-center"
             style={{ transform: `translate3d(0, ${SECTION2_Y_OFFSET}px, 0)` }}
             aria-labelledby="problem-heading"

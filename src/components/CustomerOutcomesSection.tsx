@@ -17,7 +17,7 @@ export function CustomerOutcomesSection() {
   } = customerValueSection;
 
   return (
-    <section id="outcomes" aria-labelledby="outcomes-heading" className="border-b border-slate-200/80 bg-white">
+    <section id="outcomes" aria-labelledby="outcomes-heading" className="scroll-mt-20 border-b border-slate-200/80 bg-white">
       <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up">
           <p className="text-[16px] font-bold tracking-wide text-primary">{eyebrow}</p>

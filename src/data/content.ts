@@ -396,14 +396,18 @@ export const closing = {
   lines: ["보안은 더 똑똑하게, 운영은 더 간결하게.", "복잡한 보안의 반대말, 제로티카입니다."],
 };
 
-/** 앵커 네비게이션 — 랜딩 섹션 순서와 동일하게 유지 */
+export const contactBanner = {
+  eyebrow: "검증의 시작",
+  title: "우리 기업에 필요한 검증부터",
+  titleLine2: "함께 찾아볼까요?",
+};
+
+/** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */
 export const storyAnchors = [
-  { id: "top", label: "소개" },
-  { id: "problem", label: "문제" },
-  { id: "journey", label: "검증 과정" },
-  { id: "outcomes", label: "고객 가치" },
-  { id: "experience", label: "체험" },
-  { id: "choose", label: "서비스 선택" },
+  { id: "problem", label: "왜 검증인가" },
+  { id: "journey", label: "검증 방식" },
+  { id: "choose", label: "서비스" },
+  { id: "outcomes", label: "고객가치" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "문의" },
 ];

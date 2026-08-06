@@ -1,6 +1,6 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GlobalTour } from "@/components/GlobalTour";
 import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
@@ -15,9 +15,31 @@ import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { paths, storyAnchors } from "@/data/content";
 
+/** 히어로 sticky 안 섹션2가 거의 다 드러난 지점 (끝이면 검증 관점으로 넘어감) */
+const PROBLEM_SCENE_PROGRESS = 0.96;
+
+function scrollToStoryAnchor(id: string) {
+  const behavior =
+    id === "top" || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+
+  if (id === "problem") {
+    const scene = document.getElementById("top");
+    if (!scene) return;
+    const totalDistance = Math.max(scene.offsetHeight - window.innerHeight, 0);
+    const top = scene.offsetTop + totalDistance * PROBLEM_SCENE_PROGRESS;
+    window.scrollTo({ top, behavior });
+    return;
+  }
+
+  document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
+}
+
 export function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   // TODO: 도입 문의 CTA — 요청 시 주석 해제
   // const { openContactModal } = useContactModal();
   const parts = location.pathname.split("/").filter(Boolean);
@@ -28,6 +50,18 @@ export function Layout() {
   const isDemo = basePath.startsWith("/demo");
   const isHome = basePath === "/";
 
+  const goToAnchor = useCallback(
+    (id: string) => {
+      const hash = `#${id}`;
+      if (location.hash === hash) {
+        scrollToStoryAnchor(id);
+        return;
+      }
+      navigate({ pathname: location.pathname, search: location.search, hash: id });
+    },
+    [location.hash, location.pathname, location.search, navigate],
+  );
+
   useEffect(() => {
     document.documentElement.lang = locale === "en-us" ? "en" : "ko";
   }, [locale]);
@@ -35,14 +69,7 @@ export function Layout() {
   useEffect(() => {
     if (!location.hash) return;
     const id = location.hash.replace(/^#/, "");
-    const el = document.getElementById(id);
-    if (!el) return;
-    // 로고/#top은 새로고침처럼 즉시 이동, 그 외 앵커만 스무스
-    const behavior =
-      id === "top" || window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth";
-    requestAnimationFrame(() => el.scrollIntoView({ behavior, block: "start" }));
+    requestAnimationFrame(() => scrollToStoryAnchor(id));
   }, [location.pathname, location.hash]);
 
   if (isDemo) {
@@ -65,12 +92,16 @@ export function Layout() {
         <div className="zt-container-hero flex h-16 items-center justify-between gap-4">
           <BrandLogo />
           {isHome && (
-            <nav className="hidden items-center gap-0.5 lg:flex" aria-label="페이지 내 이동">
-              {storyAnchors.slice(1).map((a) => (
-                <a
-                  key={a.id}
-                  href={`#${a.id}`}
-                  className="rounded-lg px-2 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              <nav className="hidden items-center gap-2 lg:flex" aria-label="페이지 내 이동">
+                {storyAnchors.map((a) => (
+                  <a
+                    key={a.id}
+                    href={`#${a.id}`}
+                    className="rounded-lg px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goToAnchor(a.id);
+                  }}
                 >
                   {a.label}
                 </a>
@@ -111,7 +142,11 @@ export function Layout() {
                     key={a.id}
                     href={`#${a.id}`}
                     className="block rounded-lg px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    onClick={() => setOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpen(false);
+                      goToAnchor(a.id);
+                    }}
                   >
                     {a.label}
                   </a>

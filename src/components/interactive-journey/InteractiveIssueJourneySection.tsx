@@ -186,7 +186,7 @@ export function InteractiveIssueJourneySection() {
       ref={sectionRef}
       id="journey"
       aria-labelledby="journey-heading"
-      className="relative overflow-hidden border-b border-slate-200/80 bg-[#f7f9fc]"
+      className="relative scroll-mt-20 overflow-hidden border-b border-slate-200/80 bg-[#f7f9fc]"
     >
       <div className="journey-bg-circles" aria-hidden>
         {CIRCLE_TARGET_X.map((targetX, i) => {

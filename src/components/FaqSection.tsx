@@ -116,7 +116,7 @@ export function FaqSection() {
   }, []);
 
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="border-b border-slate-200/80 bg-slate-50">
+    <section id="faq" aria-labelledby="faq-heading" className="scroll-mt-20 border-b border-slate-200/80 bg-slate-50">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
