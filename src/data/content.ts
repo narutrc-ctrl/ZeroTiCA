@@ -358,7 +358,7 @@ export const experienceSection = {
     badge: "고객 확인 요청",
   },
   listEyebrow: "하나의 이슈가 답하는 질문",
-  listHint: "항목을 선택하거나 올려두면 왼쪽 화면에서 대응 영역을 확인할 수 있습니다.",
+  listHint: "항목에 마우스를 올리거나(모바일은 탭) 왼쪽 화면에서 대응 영역을 확인할 수 있습니다.",
   points: [
     {
       num: "01",

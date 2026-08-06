@@ -1,4 +1,4 @@
-import { useId, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useState, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { experienceSection, paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
@@ -8,10 +8,11 @@ type HighlightId = "01" | "02" | "03" | "04" | "05";
 
 const DEFAULT_HIGHLIGHT: HighlightId = "01";
 const SKELETON_LINE = "h-[4px] shrink-0 rounded-[2px] bg-slate-200";
+const HOVER_DEVICE_MQ = "(hover: hover) and (pointer: fine)";
 
 function highlightClass(active: boolean, dimmed: boolean) {
   return cn(
-    "rounded-xl transition-[box-shadow,border-color,opacity] duration-200",
+    "rounded-xl",
     active && "ring-2 ring-primary/70 ring-offset-2 ring-offset-white",
     dimmed && "opacity-35",
   );
@@ -29,7 +30,7 @@ function SkeletonBlock({
   return (
     <div
       className={cn(
-        "rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3.5 transition-[box-shadow,border-color,opacity] duration-200",
+        "rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-3.5",
         active && "ring-2 ring-primary/70 ring-offset-2 ring-offset-white",
         dimmed && "opacity-35",
       )}
@@ -188,17 +189,27 @@ export function ExperienceSection() {
     ctaLabel,
   } = experienceSection;
   const headingId = useId();
-  const [highlight, setHighlight] = useState<HighlightId>(DEFAULT_HIGHLIGHT);
-  const [hoveredId, setHoveredId] = useState<HighlightId | null>(null);
-  const activeId = hoveredId ?? highlight;
+  /** 마우스 hover 가능한 데스크톱 — 클릭 sticky 없이 hover만 */
+  const [isHoverDevice, setIsHoverDevice] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia(HOVER_DEVICE_MQ).matches : true,
+  );
+  /** 데스크톱: 마지막 hover 유지 / 모바일: 탭 선택 유지 */
+  const [activeId, setActiveId] = useState<HighlightId>(DEFAULT_HIGHLIGHT);
+
+  useEffect(() => {
+    const mq = window.matchMedia(HOVER_DEVICE_MQ);
+    const apply = () => setIsHoverDevice(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   const selectPoint = (id: HighlightId) => {
-    setHighlight(id);
-    setHoveredId(null);
+    setActiveId(id);
   };
 
   const onListKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
-    const currentIndex = points.findIndex((p) => p.num === highlight);
+    const currentIndex = points.findIndex((p) => p.num === activeId);
     if (currentIndex < 0) return;
 
     let nextIndex = currentIndex;
@@ -219,11 +230,11 @@ export function ExperienceSection() {
     }
 
     const nextId = points[nextIndex]?.num as HighlightId | undefined;
-    if (nextId) {
-      selectPoint(nextId);
-      const btn = event.currentTarget.querySelector<HTMLButtonElement>(`#experience-q-${nextId}`);
-      btn?.focus();
-    }
+    if (!nextId) return;
+
+    selectPoint(nextId);
+    const btn = event.currentTarget.querySelector<HTMLButtonElement>(`#experience-q-${nextId}`);
+    btn?.focus();
   };
 
   return (
@@ -262,30 +273,31 @@ export function ExperienceSection() {
                 {listHint}
               </p>
 
-              <ul
-                className="mt-6 flex flex-col gap-3 sm:mt-7 sm:gap-3.5"
-                onKeyDown={onListKeyDown}
-              >
+              <ul className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:gap-3" onKeyDown={onListKeyDown}>
                 {points.map((point) => {
                   const id = point.num as HighlightId;
-                  const selected = highlight === id;
                   const preview = activeId === id;
                   return (
-                    <li key={point.num}>
+                    <li
+                      key={point.num}
+                      onMouseEnter={() => {
+                        if (isHoverDevice) selectPoint(id);
+                      }}
+                    >
                       <button
                         type="button"
                         id={`experience-q-${id}`}
                         aria-controls={`experience-panel-${id}`}
-                        aria-current={selected ? "true" : undefined}
-                        onClick={() => selectPoint(id)}
-                        onMouseEnter={() => setHoveredId(id)}
-                        onMouseLeave={() => setHoveredId(null)}
-                        onFocus={() => setHoveredId(id)}
-                        onBlur={() => setHoveredId(null)}
+                        aria-current={preview ? "true" : undefined}
+                        onClick={() => {
+                          if (!isHoverDevice) selectPoint(id);
+                        }}
+                        onFocus={() => {
+                          if (isHoverDevice) selectPoint(id);
+                        }}
                         className={cn(
-                          "w-full cursor-pointer rounded-2xl px-3.5 py-3 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:py-3.5",
+                          "w-full cursor-pointer rounded-2xl px-3.5 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:py-3.5",
                           preview && "bg-primary/[0.07]",
-                          selected && !preview && "bg-slate-50",
                         )}
                       >
                         <div className="flex gap-3.5 sm:gap-4">
