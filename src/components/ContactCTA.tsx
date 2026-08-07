@@ -1,4 +1,4 @@
-import { Mail, Phone } from "lucide-react";
+import { Download, Mail, Phone } from "lucide-react";
 import { contactBanner, site } from "@/data/content";
 import { cn } from "@/lib/cn";
 
@@ -46,6 +46,17 @@ export function ContactCTA({ variant = "primary", className }: Props) {
               {site.contactPhone}
             </a>
           </div>
+
+          <a
+            href={contactBanner.brochureUrl}
+            download="ZeroTiCA-Pamphlet.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-9 inline-flex items-center gap-1.5 text-[14px] font-medium text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:text-[15px]"
+          >
+            <Download className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            {contactBanner.brochureLabel}
+          </a>
         </div>
       </section>
     );

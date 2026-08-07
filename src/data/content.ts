@@ -7,7 +7,7 @@ export const site = {
   footerTagline: "네트워크 데이터와 전문가 분석을 기반으로\n기업의 침해 여부를 평가합니다.",
   contactEmail: "zerotica@narusec.com",
   contactPhone: "02-522-7912",
-  companyLegalName: "나루씨큐리티",
+  companyLegalName: "(주)나루씨큐리티",
   companyCeo: "김혁준",
   companyAddress: "서울특별시 송파구 중대로 97, 6층 (가락동 효원빌딩) 05719",
   copyrightEntity: "NaruSecurity Inc.",
@@ -400,6 +400,10 @@ export const contactBanner = {
   eyebrow: "검증하는 보안으로 시작",
   title: "안전하다는 확신,",
   titleLine2: "내부를 확인하는 것부터 시작됩니다.",
+  brochureLabel: "브로슈어로 먼저 확인하기",
+  /** GitHub raw PDF — 클릭 시 바로 다운로드 */
+  brochureUrl:
+    "https://github.com/NaruSecurity-TRC/naru.trc_brochure/blob/main/ZeroTiCA/ZeroTiCA%20Pamphlet.pdf?raw=true",
 };
 
 /** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */

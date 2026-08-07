@@ -15,120 +15,27 @@ import { SimulationStageShell } from "@/components/interactive-journey/Simulatio
 import { SimulationReport } from "@/components/interactive-journey/SimulationReport";
 import { SimulationRunaTaskView } from "@/components/interactive-journey/SimulationRunaTaskView";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
+import { ObserveDirectionsPanel } from "@/components/interactive-journey/ObserveDirectionsPanel";
 import { KanbanColumn, TaskCard, taskStatusClass } from "@/components/MockRunaShell";
 import type { IssueSimulationState } from "@/hooks/useIssueSimulation";
 import { KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { cn } from "@/lib/cn";
-
-function MetricCard({
-  label,
-  value,
-  highlight,
-  pulse,
-}: {
-  label: string;
-  value: string | number;
-  highlight?: boolean;
-  pulse?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-lg border bg-white px-3 py-2 transition-all duration-700",
-        highlight ? "border-amber-300 bg-amber-50 shadow-md shadow-amber-100" : "border-slate-100",
-        pulse && "sim-risk-pulse",
-      )}
-    >
-      <p className="text-[10px] font-medium text-slate-400">{label}</p>
-      <p className={cn("mt-0.5 text-lg font-bold tabular-nums", highlight ? "text-amber-700" : "text-slate-800")}>
-        {value}
-      </p>
-    </div>
-  );
-}
 
 export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   const {
     activeCase,
     phase,
     analystStep,
-    logCount,
-    eventCount,
-    issueCount,
-    riskLevel,
     current,
-    monitoringLogs,
     analystSteps,
   } = sim;
   const isThreat = activeCase === "threat";
 
+  // 관측 단계: Outbound / Inbound / Lateral 카드 (첨부 1번째 화면)
   if (phase === "monitoring" || phase === "anomaly") {
-    const isAnomaly = phase === "anomaly";
-    const logs = monitoringLogs.slice(0, isAnomaly ? monitoringLogs.length : logCount);
-
     return (
       <SimulationStageShell>
-        <div className={cn("flex h-full flex-col bg-slate-950", isThreat ? "border-red-900/60" : "")}>
-          <div className="shrink-0 border-b border-slate-800 bg-slate-900/90 px-4 py-2">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-slate-300">네트워크 모니터링 · 실시간</p>
-              <span className="flex items-center gap-1.5 text-[10px] text-emerald-400">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-                LIVE
-              </span>
-            </div>
-          </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-3">
-            <div className="grid grid-cols-3 gap-2">
-              <MetricCard label="오늘 이벤트" value={eventCount.toLocaleString()} highlight={isAnomaly} />
-              <MetricCard label="오픈 이슈" value={issueCount} highlight={isAnomaly} pulse={isAnomaly} />
-              <MetricCard label="위험도" value={riskLevel} highlight={isAnomaly} pulse={isAnomaly} />
-            </div>
-
-            {isAnomaly ? (
-              <div
-                className={cn(
-                  "sim-slide-in mt-2 flex items-center gap-2 rounded-lg border px-3 py-2",
-                  isThreat ? "border-red-500/40 bg-red-500/10" : "border-amber-500/40 bg-amber-500/10",
-                )}
-              >
-                <AlertTriangle className={cn("h-4 w-4 shrink-0", isThreat ? "text-red-400" : "text-amber-400")} />
-                <p className={cn("text-[11px] font-medium", isThreat ? "text-red-100" : "text-amber-100")}>
-                  <span className={cn("font-mono", isThreat ? "text-red-300" : "text-amber-300")}>{current.srcIp}</span> →{" "}
-                  {current.dstIp} · {current.monitoringAlertText}
-                </p>
-              </div>
-            ) : null}
-
-            <div className="mt-3 space-y-1">
-              <p className="text-[9px] font-semibold uppercase tracking-wider text-slate-500">로그 스트림</p>
-              {logs.map((ev, i) => {
-                const isAlert = ev.level === "alert";
-                const showGlow = isAnomaly && isAlert;
-                return (
-                  <div
-                    key={ev.time}
-                    className={cn(
-                      "rounded-md border px-2 py-1.5 font-mono text-[10px] transition-all duration-500",
-                      ev.level === "alert"
-                        ? isThreat
-                          ? "border-red-500/50 bg-red-950/60 text-red-100"
-                          : "border-amber-500/50 bg-amber-950/60 text-amber-100"
-                        : ev.level === "warn"
-                          ? "border-slate-700 bg-slate-900 text-slate-300"
-                          : "border-slate-800 bg-slate-900/50 text-slate-400",
-                      showGlow && "sim-spotlight-glow",
-                      !isAnomaly && "sim-log-in",
-                    )}
-                    style={{ animationDelay: `${i * 60}ms` }}
-                  >
-                    <span className="text-slate-500">{ev.time}</span> {ev.text}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <ObserveDirectionsPanel />
       </SimulationStageShell>
     );
   }
