@@ -2,7 +2,8 @@
 
 export const simulationIntro = {
   eyebrow: "ZeroTiCA의 검증 과정",
-  title: "정상 · 위협 통신의 검증 과정을 따라가 보세요",
+  title: "관측된 변화를,",
+  titleLine2: "조치할 수 있는 판단으로 바꿉니다.",
   titleAccent: "",
   description:
     "Zerotica/RUNA가 이상 징후를 발견하고, 고객 업무 맥락을 확인한 뒤, 분석팀 검증과 조치 보고서까지 연결하는 과정을 짧게 체험합니다.",
@@ -38,7 +39,7 @@ export const storyChapters = [
       { text: "를" },
       { text: "\n선별합니다." },
     ] satisfies StoryTitlePart[],
-    description: "평소와 새로운 연결, 다른 시간, 빈도처럼 우선적으로 분석이 필요한 통신을 구분합니다.",
+    description: "새롭게 나타난 연결과 반복되는 활동, 이전과 달라진 패턴을 찾아내\n우선적으로 분석이 필요한 통신을 구분합니다.",
   },
   {
     id: "verify" as const,
@@ -47,27 +48,27 @@ export const storyChapters = [
       { text: "전문가가 직접", accent: true },
       { text: "\n변화의 의미를 검증합니다." },
     ] satisfies StoryTitlePart[],
-    description: "관련 자산, 고객의 업무 맥락을 분석해\n정상인지 위협인지 판단합니다.",
+    description: "관측된 활동의 관련 자산과 고객의 업무 맥락을 분석해\n정상인지 위협인지 판단합니다.",
   },
   {
     id: "customer-action" as const,
     label: "고객 조치",
     titleParts: [
-      { text: "조치사항을 안내하고\n" },
+      { text: "확인할 대상과 조치 방향을\n" },
       { text: "하나의 이슈", accent: true },
-      { text: "로 관리합니다." },
+      { text: "로 전달합니다." },
     ] satisfies StoryTitlePart[],
-    description: "필요한 조치 방향을 안내합니다.\n고객이 조치를 수행하고 완료 될 때까지 관리합니다.",
+    description: "무엇이 관측됐고 어떻게 조치해야 하는지 안내하고,\n고객이 조치를 수행하고 완료 될 때까지 관리합니다.",
   },
   {
     id: "report" as const,
     label: "침해평가 보고서",
     titleParts: [
-      { text: "모든 분석과정은\n" },
-      { text: "보고서에 정리", accent: true },
-      { text: "됩니다." },
+      { text: "판단과 조치의 결과를\n" },
+      { text: "근거로", accent: true },
+      { text: " 남깁니다." },
     ] satisfies StoryTitlePart[],
-    description: "일정 기간동안 분석한 내용과\n침해평가 결과가 정리되어 보고서로 제공됩니다.",
+    description: "일정 기간동안 분석한 내용과 고객의 확인, 조치 결과를\n보고서로 정리해 이후에도 참고할 수 있도록 합니다.",
   },
 ] as const;
 

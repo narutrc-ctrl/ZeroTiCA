@@ -291,14 +291,12 @@
   }
 
   .hero-focus-brand {
-    @apply text-zinc-800;
-    display: inline-block;
-    margin-top: 0.08em;
-    font-family: "Paperlogy", Pretendard, sans-serif;
-    font-size: clamp(44px, 5.4vw, 68px);
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    vertical-align: baseline;
+    display: block;
+    width: auto;
+    height: clamp(40px, 5vw, 62px);
+    margin-top: 0.52em;
+    object-fit: contain;
+    object-position: center;
   }
 
   .hero-focus-headline {
@@ -571,7 +569,7 @@
     }
 
     .hero-focus-brand {
-      font-size: 44px;
+      height: 40px;
     }
 
     .hero-focus-headline {
@@ -936,9 +934,6 @@ body .hero-focus-title {
   letter-spacing: -0.04em !important;
 }
 
-body .hero-focus-brand {
-  letter-spacing: 0.02em !important;
-}
 
 body .hero-focus-headline,
 body .hero-focus-headline-accent {

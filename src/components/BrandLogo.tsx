@@ -32,9 +32,14 @@ export function BrandLogo({ className, linked = true }: { className?: string; li
     (home === "/" && location.pathname === "/");
 
   const inner = (
-    <span className={cn("inline-flex items-center", className)}>
-      <BrandMark size="lg" />
-    </span>
+    <img
+      src="/ZeroTiCA-BI-02.svg"
+      alt="ZeroTiCA"
+      width={88}
+      height={16}
+      className={cn("h-5 w-auto sm:h-[1.375rem]", className)}
+      decoding="async"
+    />
   );
 
   if (!linked) return inner;
@@ -42,7 +47,7 @@ export function BrandLogo({ className, linked = true }: { className?: string; li
   return (
     <Link
       to={home}
-      className="shrink-0"
+      className="inline-flex shrink-0 items-center"
       aria-label="맨 위로"
       onClick={(e) => {
         e.preventDefault();
@@ -63,6 +68,7 @@ export function BrandLogo({ className, linked = true }: { className?: string; li
   );
 }
 
+/** 데모·목업 UI용 텍스트 워드마크 (헤더/히어로/푸터 BI 이미지와 별개) */
 export function BrandMark({
   className,
   size = "md",

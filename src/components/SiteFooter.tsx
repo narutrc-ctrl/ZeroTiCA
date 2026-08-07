@@ -16,9 +16,14 @@ export function SiteFooter() {
       <div className="zt-container-hero py-7 sm:py-8 lg:py-10">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
           <div className="max-w-md shrink-0">
-            <p className="text-[28px] font-extrabold tracking-tight text-white sm:text-[32px]">
-              ZeroTiCA
-            </p>
+            <img
+              src="/ZeroTiCA-BI-01.svg"
+              alt="ZeroTiCA"
+              width={88}
+              height={16}
+              className="h-6 w-auto sm:h-[1.625rem]"
+              decoding="async"
+            />
             <p className="mt-4 whitespace-pre-line text-[14px] leading-relaxed text-[#9ca3af] [word-break:keep-all] sm:text-[15px]">
               {site.footerTagline}
             </p>

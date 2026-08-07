@@ -486,14 +486,15 @@ export function HeroSection() {
                   {hero.eyebrow}
                 </span>
                 <span className="hero-focus-headline">{hero.headline}</span>
-                <span className="hero-focus-brand" aria-label="ZeroTiCA">
-                  ZeroT
-                  <span className="zt-brand-mark-i" aria-hidden="true">
-                    ı
-                    <span className="zt-brand-mark-idot" />
-                  </span>
-                  CA
-                </span>
+                <img
+                  src="/ZeroTiCA-BI-web.svg"
+                  alt="ZeroTiCA"
+                  width={238}
+                  height={44}
+                  className="hero-focus-brand"
+                  decoding="async"
+                  fetchPriority="high"
+                />
               </h1>
 
               <div className="hero-focus-actions">

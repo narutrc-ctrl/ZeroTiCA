@@ -214,6 +214,8 @@ export function InteractiveIssueJourneySection() {
             className="mx-auto mt-4 max-w-4xl text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[36px] lg:text-[42px]"
           >
             {simulationIntro.title}
+            <br />
+            {simulationIntro.titleLine2}
           </h2>
         </div>
 
