@@ -1,28 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
-import {
-  getSimulationNarrative,
-  simulationIntro,
-  storyChapters,
-  type NarrativeAction,
-  type SimCase,
-} from "@/data/issue-story";
-import {
-  getWaitingLabel,
-  SIM_STAGE_HEIGHT_PX,
-  SimulationCtaBar,
-} from "@/components/interactive-journey/SimulationConsole";
+import { simulationIntro, storyChapters } from "@/data/issue-story";
+import { SIM_STAGE_HEIGHT_PX } from "@/components/interactive-journey/SimulationConsole";
 import { SimulationStage } from "@/components/interactive-journey/SimulationStage";
 import { useIssueSimulation } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
-
-const USER_ACTIONS: NarrativeAction[] = [
-  "click-card",
-  "click-reply",
-  "click-submit",
-  "click-next-case",
-  "click-report",
-];
 
 /** 원 4개 — 시작은 왼쪽 끝에 겹침, 펼침 완료 시 좌우 끝 기준으로 전체 왼쪽 시프트 */
 const CIRCLE_SHIFT_X = -8;
@@ -36,27 +18,6 @@ const CIRCLE_TARGET_X = [
 
 function easeOutCubic(t: number) {
   return 1 - (1 - t) ** 3;
-}
-
-function getCtaLabel(actionType: NarrativeAction | undefined, activeCase: SimCase): string | null {
-  switch (actionType) {
-    case "click-card":
-      return "강조된 「확인 요청」 카드를 클릭하세요";
-    case "click-reply":
-      return activeCase === "threat"
-        ? "Sheet 하단 「조치 내용 답변하기」를 누르세요"
-        : "Sheet 하단 「맥락 답변하기」를 누르세요";
-    case "click-submit":
-      return activeCase === "threat"
-        ? "조치 내용 입력 후 「답변 등록」을 누르세요"
-        : "답변 입력 후 「답변 등록」을 누르세요";
-    case "click-next-case":
-      return "「다음」으로 고객 조치 단계를 이어보세요";
-    case "click-report":
-      return "「다음」으로 침해평가 보고서를 확인하세요";
-    default:
-      return null;
-  }
 }
 
 function JourneyStepTabs({
@@ -106,15 +67,12 @@ function revealStyle(t: number) {
 
 export function InteractiveIssueJourneySection() {
   const sim = useIssueSimulation();
-  const { activeCase, phase, chapterIndex } = sim;
+  const { phase, chapterIndex, isAtStart, isAtEnd, subProgress, analystStep, analystSteps } = sim;
   const chapter = storyChapters[chapterIndex] ?? storyChapters[0];
-  const narrative = getSimulationNarrative(phase, activeCase);
-  const actionType = narrative?.actionType;
-  const needsUserAction = actionType && USER_ACTIONS.includes(actionType);
-  const isAutoPhase = !needsUserAction && phase !== "report";
-  const ctaLabel = needsUserAction ? getCtaLabel(actionType, activeCase) : null;
-  const isFirst = chapterIndex <= 0;
-  const isLast = chapterIndex >= storyChapters.length - 1;
+  const chapterDescription =
+    phase === "analyst"
+      ? (analystSteps[analystStep]?.detail ?? chapter.description)
+      : chapter.description;
 
   const sectionRef = useRef<HTMLElement>(null);
   const flowStartedRef = useRef(false);
@@ -231,12 +189,16 @@ export function InteractiveIssueJourneySection() {
               </div>
 
               <div className="relative min-w-0" style={{ height: SIM_STAGE_HEIGHT_PX }}>
-                <div className="h-full overflow-y-auto pb-16">
-                  <p className="text-[15px] font-semibold tabular-nums text-primary sm:text-[16px]">
-                    {chapterIndex + 1} / {storyChapters.length}
+                <div className="h-full overflow-y-auto pb-16 pt-5 sm:pt-6">
+                  <p className="text-[15px] font-semibold text-slate-700 sm:text-[16px]">
+                    <span className="text-primary">{chapter.label}</span>{" "}
+                    <span className="tabular-nums">
+                      <span className="text-primary">{subProgress.current + 1}</span>
+                      <span className="text-slate-400">/{subProgress.total}</span>
+                    </span>
                   </p>
 
-                  <h3 className="mt-4 text-[22px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[26px] lg:text-[28px]">
+                  <h3 className="mt-2.5 text-[22px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-3 sm:text-[26px] lg:text-[28px]">
                     {chapter.titleParts.map((part, i) =>
                       part.text.includes("\n") ? (
                         <span key={i} className={part.accent ? "text-primary" : undefined}>
@@ -256,53 +218,72 @@ export function InteractiveIssueJourneySection() {
                   </h3>
 
                   <p className="mt-3 whitespace-pre-line text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-4 sm:text-[15px]">
-                    {chapter.description}
+                    {chapterDescription}
                   </p>
-
-                  <div className="mt-5 sm:mt-6">
-                    {phase === "report" ? (
-                      <div className="min-h-[52px] rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm text-slate-500" />
-                    ) : (
-                      <SimulationCtaBar waiting={isAutoPhase} waitingLabel={getWaitingLabel(phase, activeCase)}>
-                        {ctaLabel}
-                      </SimulationCtaBar>
-                    )}
-                  </div>
                 </div>
 
-                <div className="absolute bottom-0 right-0 flex items-center justify-end gap-2.5">
-                  {isLast ? (
-                    <button
-                      type="button"
-                      onClick={sim.restart}
-                      className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3">
+                  {subProgress.total > 1 && !isAtEnd ? (
+                    <div
+                      className="flex items-center gap-1.5"
+                      aria-label={`${chapter.label} ${subProgress.current + 1}/${subProgress.total}`}
                     >
-                      처음으로 돌아가기
-                    </button>
+                      {Array.from({ length: subProgress.total }, (_, i) => (
+                        <span
+                          key={i}
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full transition-colors",
+                            i === subProgress.current ? "bg-primary" : "bg-slate-300",
+                          )}
+                        />
+                      ))}
+                    </div>
                   ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={sim.goPrevChapter}
-                        disabled={isFirst}
-                        aria-hidden={isFirst}
-                        tabIndex={isFirst ? -1 : undefined}
-                        className={cn(
-                          "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
-                          isFirst && "invisible pointer-events-none",
-                        )}
-                      >
-                        이전
-                      </button>
-                      <button
-                        type="button"
-                        onClick={sim.goNextChapter}
-                        className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
-                      >
-                        다음
-                      </button>
-                    </>
+                    <span />
                   )}
+                  <div className="flex items-center justify-end gap-2.5">
+                    {isAtEnd ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={sim.goPrev}
+                          className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50"
+                        >
+                          이전
+                        </button>
+                        <button
+                          type="button"
+                          onClick={sim.restart}
+                          className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+                        >
+                          처음으로 돌아가기
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={sim.goPrev}
+                          disabled={isAtStart}
+                          aria-hidden={isAtStart}
+                          tabIndex={isAtStart ? -1 : undefined}
+                          className={cn(
+                            "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
+                            isAtStart && "invisible pointer-events-none",
+                          )}
+                        >
+                          이전
+                        </button>
+                        <button
+                          type="button"
+                          onClick={sim.goNext}
+                          className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+                        >
+                          다음
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

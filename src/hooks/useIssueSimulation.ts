@@ -4,6 +4,7 @@ import {
   getCaseAnalystSteps,
   getCaseIncident,
   getCaseMonitoringLogs,
+  getChapterSubProgress,
   storyChapters,
   type SimCase,
   type SimPhase,
@@ -18,7 +19,7 @@ type Comment = {
 
 export type SimKanbanColumn = "hidden" | "pre_request" | "in_request" | "done";
 
-/** 단계 전환·타이핑 속도(ms) — 시뮬레이션 페이스는 여기서 조절 */
+/** @deprecated 자동 진행 제거 — 타이밍 상수는 호환용으로만 유지 */
 export const SIM_TIMING = {
   monitoringToAnomaly: 4800,
   logTick: 1750,
@@ -45,6 +46,26 @@ const initialComments = (activeCase: SimCase): Comment[] => {
   ];
 };
 
+const clientComment = (activeCase: SimCase): Comment => {
+  const caseData = getCaseIncident(activeCase);
+  return {
+    author: "demo_admin",
+    role: "client",
+    body: caseData.presetReply,
+    at: activeCase === "normal" ? "2026-05-13 09:40" : "2026-05-22 10:15",
+  };
+};
+
+const staffReplyComment = (activeCase: SimCase): Comment => {
+  const caseData = getCaseIncident(activeCase);
+  return {
+    author: "분석팀",
+    role: "staff",
+    at: activeCase === "normal" ? "2026-05-13 14:00" : "2026-05-22 15:30",
+    body: caseData.staffReply,
+  };
+};
+
 export function useIssueSimulation() {
   const [started, setStarted] = useState(false);
   const [activeCase, setActiveCase] = useState<SimCase>("normal");
@@ -69,24 +90,23 @@ export function useIssueSimulation() {
 
   const chapterIndex = chapterForPhase(phase, activeCase);
   const progress = Math.round(((chapterIndex + 1) / storyChapters.length) * 100);
+  const subProgress = getChapterSubProgress(phase, activeCase, analystStep);
+  const isAtStart = activeCase === "normal" && (phase === "monitoring" || phase === "anomaly");
+  const isAtEnd = phase === "report";
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach((t) => window.clearTimeout(t));
     timersRef.current = [];
   }, []);
 
-  const schedule = useCallback((fn: () => void, ms: number) => {
-    const id = window.setTimeout(fn, ms);
-    timersRef.current.push(id);
+  const applyAnomalyStats = useCallback((nextCase: SimCase) => {
+    const logs = getCaseMonitoringLogs(nextCase);
+    const caseData = getCaseIncident(nextCase);
+    setLogCount(logs.length);
+    setEventCount(caseData.initialEventCount + 12);
+    setIssueCount(caseData.initialIssueCount + 1);
+    setRiskLevel(caseData.riskAfter);
   }, []);
-
-  const goTo = useCallback(
-    (next: SimPhase) => {
-      clearTimers();
-      setPhase(next);
-    },
-    [clearTimers],
-  );
 
   const resetCaseState = useCallback((nextCase: SimCase, options?: { startAtKanban?: boolean }) => {
     const caseData = getCaseIncident(nextCase);
@@ -132,10 +152,13 @@ export function useIssueSimulation() {
     setKanbanColumn("done");
     setSheetOpen(false);
     setEventDetailOpen(false);
+    setReplyDraft("");
+    setReplyTyping(false);
+    setComments([...initialComments("threat"), clientComment("threat"), staffReplyComment("threat")]);
     setPhase("report");
   }, [clearTimers]);
 
-  /** 5단계 UI 챕터로 점프 (이전/다음·탭) */
+  /** 5단계 UI 챕터로 점프 (탭) — 자동 진행 없이 해당 챕터 시작 상태 */
   const goToChapter = useCallback(
     (index: number) => {
       const clamped = Math.max(0, Math.min(storyChapters.length - 1, index));
@@ -150,10 +173,7 @@ export function useIssueSimulation() {
         const caseData = getCaseIncident("normal");
         setActiveCase("normal");
         setAnalystStep(0);
-        setLogCount(2);
-        setEventCount(caseData.initialEventCount + 12);
-        setIssueCount(caseData.initialIssueCount + 1);
-        setRiskLevel(caseData.riskAfter);
+        applyAnomalyStats("normal");
         setKanbanColumn("hidden");
         setSheetOpen(false);
         setEventDetailOpen(false);
@@ -161,6 +181,9 @@ export function useIssueSimulation() {
         setReplyTyping(false);
         setTaskStatus("확인 요청");
         setComments(initialComments("normal"));
+        setEventCount(caseData.initialEventCount + 12);
+        setIssueCount(caseData.initialIssueCount + 1);
+        setRiskLevel(caseData.riskAfter);
         setPhase("analyst");
         return;
       }
@@ -172,30 +195,17 @@ export function useIssueSimulation() {
         resetCaseState("threat", { startAtKanban: true });
         return;
       }
-      setActiveCase("threat");
-      setTaskStatus("완료");
-      setKanbanColumn("done");
-      setSheetOpen(false);
-      setEventDetailOpen(false);
-      setPhase("report");
+      jumpToReport();
     },
-    [clearTimers, resetCaseState],
+    [applyAnomalyStats, clearTimers, jumpToReport, resetCaseState],
   );
-
-  const goNextChapter = useCallback(() => {
-    goToChapter(chapterIndex + 1);
-  }, [chapterIndex, goToChapter]);
-
-  const goPrevChapter = useCallback(() => {
-    goToChapter(chapterIndex - 1);
-  }, [chapterIndex, goToChapter]);
 
   const openTask = useCallback(() => {
     setKanbanColumn("in_request");
     setSheetOpen(true);
     setEventDetailOpen(false);
-    goTo("task");
-  }, [goTo]);
+    setPhase("task");
+  }, []);
 
   const openEventDetail = useCallback(() => {
     setEventDetailOpen(true);
@@ -206,102 +216,211 @@ export function useIssueSimulation() {
   }, []);
 
   const startReply = useCallback(() => {
-    setEventDetailOpen(false);
-    goTo("reply");
-    setReplyTyping(true);
-    setReplyDraft("");
     const text = getCaseIncident(activeCase).presetReply;
-    let i = 0;
-    const type = () => {
-      if (i <= text.length) {
-        setReplyDraft(text.slice(0, i));
-        i += 1;
-        schedule(type, SIM_TIMING.replyTypeChar);
-      } else {
-        setReplyTyping(false);
-      }
-    };
-    schedule(type, SIM_TIMING.replyTypeStart);
-  }, [goTo, schedule, activeCase]);
+    setEventDetailOpen(false);
+    setReplyTyping(false);
+    setReplyDraft(text);
+    setPhase("reply");
+  }, [activeCase]);
 
   const submitReply = useCallback(() => {
-    if (replyTyping || !replyDraft) return;
-    const caseData = getCaseIncident(activeCase);
-    setComments((prev) => [
-      ...prev,
-      {
-        author: "demo_admin",
-        role: "client",
-        body: caseData.presetReply,
-        at: activeCase === "normal" ? "2026-05-13 09:40" : "2026-05-22 10:15",
-      },
+    setComments([
+      ...initialComments(activeCase),
+      clientComment(activeCase),
+      staffReplyComment(activeCase),
     ]);
-    setTaskStatus("확인 중");
-    goTo("verifying");
-    schedule(() => {
-      setComments((prev) => [
-        ...prev,
-        {
-          author: "분석팀",
-          role: "staff",
-          at: activeCase === "normal" ? "2026-05-13 14:00" : "2026-05-22 15:30",
-          body: caseData.staffReply,
-        },
-      ]);
-      setTaskStatus("완료");
-      goTo("staff-reply");
-      schedule(() => {
-        setSheetOpen(false);
-        setEventDetailOpen(false);
-        setKanbanColumn("done");
-        goTo("complete");
-      }, SIM_TIMING.staffReplyToComplete);
-    }, SIM_TIMING.verifyToStaffReply);
-  }, [goTo, schedule, replyDraft, replyTyping, activeCase]);
+    setTaskStatus("완료");
+    setPhase("staff-reply");
+  }, [activeCase]);
 
-  const openReport = useCallback(() => goTo("report"), [goTo]);
+  const openReport = useCallback(() => {
+    setPhase("report");
+  }, []);
 
-  useEffect(() => {
-    if (!started || phase !== "monitoring") return;
-    const logs = getCaseMonitoringLogs(activeCase);
-    const caseData = getCaseIncident(activeCase);
-    const logInterval = window.setInterval(() => {
-      setLogCount((c) => Math.min(c + 1, logs.length - 1));
-      setEventCount((c) => c + 2);
-    }, SIM_TIMING.logTick);
-    schedule(() => {
-      setLogCount(logs.length);
-      setEventCount(caseData.initialEventCount + 12);
-      setIssueCount(caseData.initialIssueCount + 1);
-      setRiskLevel(caseData.riskAfter);
-      goTo("anomaly");
-    }, SIM_TIMING.monitoringToAnomaly);
-    return () => window.clearInterval(logInterval);
-  }, [started, phase, activeCase, goTo, schedule]);
+  const goNext = useCallback(() => {
+    clearTimers();
+    setStarted(true);
 
-  useEffect(() => {
-    if (!started || phase !== "anomaly") return;
-    schedule(() => {
+    if (phase === "monitoring" || phase === "anomaly") {
+      applyAnomalyStats(activeCase);
       setAnalystStep(0);
-      goTo("analyst");
-    }, SIM_TIMING.anomalyToAnalyst);
-  }, [started, phase, goTo, schedule]);
-
-  useEffect(() => {
-    if (!started || phase !== "analyst") return;
-    const steps = getCaseAnalystSteps(activeCase);
-    if (analystStep >= steps.length - 1) {
-      schedule(() => goTo("delivery"), SIM_TIMING.analystToDelivery);
+      setPhase("analyst");
       return;
     }
-    schedule(() => setAnalystStep((s) => s + 1), SIM_TIMING.analystStep);
-  }, [started, phase, analystStep, activeCase, goTo, schedule]);
+    if (phase === "analyst") {
+      const steps = getCaseAnalystSteps(activeCase);
+      if (analystStep < steps.length - 1) {
+        setAnalystStep((s) => s + 1);
+        return;
+      }
+      setKanbanColumn("pre_request");
+      setSheetOpen(false);
+      setEventDetailOpen(false);
+      setPhase("kanban");
+      return;
+    }
+    if (phase === "delivery") {
+      // 알림 단계 제거 — 바로 칸반으로
+      setKanbanColumn("pre_request");
+      setPhase("kanban");
+      return;
+    }
+    if (phase === "kanban") {
+      openTask();
+      return;
+    }
+    if (phase === "task") {
+      startReply();
+      return;
+    }
+    if (phase === "reply") {
+      submitReply();
+      return;
+    }
+    if (phase === "verifying") {
+      // 분석중 단계 제거 — 바로 회신으로
+      setComments([
+        ...initialComments(activeCase),
+        clientComment(activeCase),
+        staffReplyComment(activeCase),
+      ]);
+      setTaskStatus("완료");
+      setPhase("staff-reply");
+      return;
+    }
+    if (phase === "staff-reply") {
+      // 검증 단계: 완료 화면 없이 바로 고객 조치로
+      if (activeCase === "normal") {
+        resetCaseState("threat", { startAtKanban: true });
+        return;
+      }
+      setSheetOpen(false);
+      setEventDetailOpen(false);
+      setKanbanColumn("done");
+      setPhase("complete");
+      return;
+    }
+    if (phase === "complete") {
+      setPhase("report");
+      return;
+    }
+  }, [
+    activeCase,
+    analystStep,
+    applyAnomalyStats,
+    clearTimers,
+    openTask,
+    phase,
+    resetCaseState,
+    startReply,
+    submitReply,
+  ]);
 
-  useEffect(() => {
-    if (!started || phase !== "delivery") return;
-    schedule(() => setKanbanColumn("pre_request"), SIM_TIMING.deliveryKanbanCard);
-    schedule(() => goTo("kanban"), SIM_TIMING.deliveryToKanban);
-  }, [started, phase, goTo, schedule]);
+  const goPrev = useCallback(() => {
+    clearTimers();
+    setStarted(true);
+
+    if (phase === "report") {
+      setActiveCase("threat");
+      setTaskStatus("완료");
+      setKanbanColumn("done");
+      setSheetOpen(false);
+      setEventDetailOpen(false);
+      setReplyDraft("");
+      setReplyTyping(false);
+      setComments([...initialComments("threat"), clientComment("threat"), staffReplyComment("threat")]);
+      setPhase("complete");
+      return;
+    }
+    if (phase === "complete") {
+      if (activeCase === "threat") {
+        setSheetOpen(true);
+        setKanbanColumn("in_request");
+        setTaskStatus("완료");
+        setComments([...initialComments("threat"), clientComment("threat"), staffReplyComment("threat")]);
+        setReplyDraft(getCaseIncident("threat").presetReply);
+        setPhase("staff-reply");
+        return;
+      }
+      setSheetOpen(true);
+      setKanbanColumn("in_request");
+      setTaskStatus("완료");
+      setComments([...initialComments("normal"), clientComment("normal"), staffReplyComment("normal")]);
+      setReplyDraft(getCaseIncident("normal").presetReply);
+      setPhase("staff-reply");
+      return;
+    }
+    if (phase === "staff-reply" || phase === "verifying") {
+      setComments(initialComments(activeCase));
+      setTaskStatus("확인 요청");
+      setReplyDraft(getCaseIncident(activeCase).presetReply);
+      setReplyTyping(false);
+      setSheetOpen(true);
+      setKanbanColumn("in_request");
+      setPhase("reply");
+      return;
+    }
+    if (phase === "reply") {
+      setReplyDraft("");
+      setReplyTyping(false);
+      setEventDetailOpen(false);
+      setSheetOpen(true);
+      setKanbanColumn("in_request");
+      setTaskStatus("확인 요청");
+      setComments(initialComments(activeCase));
+      setPhase("task");
+      return;
+    }
+    if (phase === "task") {
+      setSheetOpen(false);
+      setEventDetailOpen(false);
+      setKanbanColumn("pre_request");
+      setPhase("kanban");
+      return;
+    }
+    if (phase === "kanban" || phase === "delivery") {
+      if (activeCase === "threat") {
+        // 위협 사례 칸반 이전 = 정상 사례 분석팀 회신
+        setActiveCase("normal");
+        setTaskStatus("완료");
+        setKanbanColumn("in_request");
+        setSheetOpen(true);
+        setEventDetailOpen(false);
+        setReplyDraft(getCaseIncident("normal").presetReply);
+        setComments([...initialComments("normal"), clientComment("normal"), staffReplyComment("normal")]);
+        setPhase("staff-reply");
+        return;
+      }
+      const steps = getCaseAnalystSteps(activeCase);
+      setKanbanColumn("hidden");
+      setSheetOpen(false);
+      setAnalystStep(steps.length - 1);
+      setPhase("analyst");
+      return;
+    }
+    if (phase === "analyst") {
+      if (analystStep > 0) {
+        setAnalystStep((s) => s - 1);
+        return;
+      }
+      const caseData = getCaseIncident(activeCase);
+      setLogCount(2);
+      setEventCount(caseData.initialEventCount);
+      setIssueCount(caseData.initialIssueCount);
+      setRiskLevel(caseData.riskBefore);
+      setPhase("monitoring");
+    }
+  }, [activeCase, analystStep, clearTimers, phase]);
+
+  /** @deprecated goNext 사용 */
+  const goNextChapter = goNext;
+  /** @deprecated goPrev 사용 */
+  const goPrevChapter = goPrev;
+
+  const goTo = useCallback((next: SimPhase) => {
+    clearTimers();
+    setPhase(next);
+  }, [clearTimers]);
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
@@ -311,6 +430,7 @@ export function useIssueSimulation() {
     phase,
     chapterIndex,
     progress,
+    subProgress,
     analystStep,
     logCount,
     eventCount,
@@ -326,12 +446,16 @@ export function useIssueSimulation() {
     current,
     monitoringLogs,
     analystSteps,
+    isAtStart,
+    isAtEnd,
     startSimulation,
     restart,
     startThreatCase,
     jumpToReport,
     goTo,
     goToChapter,
+    goNext,
+    goPrev,
     goNextChapter,
     goPrevChapter,
     openTask,

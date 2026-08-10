@@ -61,8 +61,6 @@ const MERGE_END_X_OF_CIRCLE = 0.34;
 /** 하단 잘림(원 높이 %). 50≈절반, 클수록 더 많이 보임 / 작을수록 더 잘림 */
 const MERGE_Y_PERCENT = 68;
 const MERGE_Y_PERCENT_MOBILE = 40;
-/** 섹션2 콘텐츠 세로 위치(아래 +, px) — 가운데 기준에서 얼마나 내릴지 */
-const SECTION2_Y_OFFSET = 100;
 /** 섹션2 등장 시 추가로 올라오는 거리 */
 const SECTION2_ENTER_RISE = 28;
 /** 섹션2 1번(eyebrow+title) 등장 시작 — 기존 contentT와 동일 */
@@ -567,8 +565,7 @@ export function HeroSection() {
           {/* 섹션2 콘텐츠 — 원 합류 시 1→2→3 순차 등장 */}
           <div
             ref={section2Ref}
-            className="pointer-events-none absolute inset-0 z-[7] flex items-center justify-center"
-            style={{ transform: `translate3d(0, ${SECTION2_Y_OFFSET}px, 0)` }}
+            className="hero-section2-panel pointer-events-none absolute inset-0 z-[7] flex justify-center"
             aria-labelledby="problem-heading"
           >
             <div className="zt-container-hero flex w-full flex-col items-stretch text-left">
@@ -577,12 +574,12 @@ export function HeroSection() {
                 className="opacity-0"
                 style={{ transform: `translate3d(0, ${SECTION2_ENTER_RISE}px, 0)` }}
               >
-                <p className="text-[16px] font-bold tracking-wide text-primary">
+                <p className="text-[15px] font-bold tracking-wide text-primary sm:text-[16px]">
                   {section2Gap.eyebrow}
                 </p>
                 <h2
                   id="problem-heading"
-                  className="hero-section2-title mt-[32px] max-w-[820px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
+                  className="hero-section2-title mt-5 max-w-[820px] text-[24px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
                 >
                   {section2Gap.title}
                   <br />
@@ -595,32 +592,32 @@ export function HeroSection() {
                 className="opacity-0"
                 style={{ transform: `translate3d(0, ${SECTION2_ENTER_RISE}px, 0)` }}
               >
-                <p className="mt-3 max-w-[640px] text-[20px] leading-relaxed text-slate-500 sm:mt-4">
+                <p className="mt-2.5 max-w-[640px] text-[16px] leading-relaxed text-slate-500 sm:mt-4 sm:text-[20px]">
                   {section2Gap.lead}
                 </p>
               </div>
 
               <div
                 ref={section2CardsRef}
-                className="mt-[56px] w-full overflow-hidden rounded-[28px] bg-white/85 opacity-0 shadow-[0_18px_50px_rgba(171,209,255,0.55)] sm:mt-[72px] sm:rounded-[32px]"
+                className="hero-section2-cards mt-6 w-full overflow-hidden rounded-[24px] bg-white/85 opacity-0 shadow-[0_18px_50px_rgba(171,209,255,0.55)] sm:mt-[72px] sm:rounded-[32px]"
                 style={{ transform: `translate3d(0, ${SECTION2_ENTER_RISE}px, 0)` }}
               >
                 <div className="grid grid-cols-1 divide-y divide-slate-200/90 md:grid-cols-3 md:divide-y-0">
                   {section2Gap.cards.map((card) => (
                     <article
                       key={card.num}
-                      className="relative flex w-full min-w-0 flex-col items-stretch p-8 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
+                      className="hero-section2-card relative flex w-full min-w-0 flex-col items-stretch p-5 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
                     >
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
+                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
                         {card.num}
                       </span>
-                      <h3 className="mt-5 w-full text-[18px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[26px]">
+                      <h3 className="mt-3 w-full text-[16px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[26px]">
                         {card.title}
                         <br />
                         <span className="text-primary">{card.titleLine2Accent}</span>
                         {card.titleLine2Rest}
                       </h3>
-                      <p className="mt-6 w-full min-w-0 self-stretch text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
+                      <p className="mt-3 w-full min-w-0 self-stretch text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
                         {card.body}
                       </p>
                     </article>

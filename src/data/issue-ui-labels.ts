@@ -8,6 +8,13 @@ export const KANBAN_COLUMNS = {
   done: "완료",
 } as const;
 
+/** 랜딩 검증 과정(관측~보고서) 칸반 컬럼 라벨 */
+export const JOURNEY_KANBAN_COLUMNS = {
+  pre_request: "확인 요청",
+  in_request: "확인 중",
+  done: "확인 완료",
+} as const;
+
 export const ISSUE_STATUS = {
   draft: "요청 전",
   requested: "확인 요청",

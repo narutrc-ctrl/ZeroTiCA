@@ -548,6 +548,13 @@
     min-height: 100vh;
   }
 
+  /* 섹션2 — 데스크톱: 가운데 + 살짝 하향 / 모바일: 상단 정렬 + 내부 스크롤 */
+  .hero-section2-panel {
+    align-items: center;
+    overflow: hidden;
+    transform: translate3d(0, 100px, 0);
+  }
+
   @media (max-width: 640px) {
     .hero-transition-scene {
       --hero-s2-dwell: 0vh;
@@ -561,6 +568,16 @@
 
     .hero-sticky-stage {
       min-height: 580px;
+    }
+
+    .hero-section2-panel {
+      align-items: flex-start;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-top: 5.5rem; /* sticky header + breathing room */
+      padding-bottom: 1.5rem;
+      transform: translate3d(0, 16px, 0);
     }
 
     .hero-focus-inner {
@@ -599,6 +616,18 @@
       position: relative;
       height: auto;
       min-height: calc(100svh - 4rem);
+      overflow: visible;
+    }
+
+    .hero-section2-panel {
+      position: relative;
+      inset: auto;
+      height: auto;
+      overflow: visible;
+      transform: none;
+      padding-top: 2rem;
+      padding-bottom: 2.5rem;
+      align-items: flex-start;
     }
 
     .hero-indicator {

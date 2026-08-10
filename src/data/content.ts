@@ -400,7 +400,7 @@ export const contactBanner = {
   eyebrow: "검증하는 보안으로 시작",
   title: "안전하다는 확신,",
   titleLine2: "내부를 확인하는 것부터 시작됩니다.",
-  brochureLabel: "브로슈어로 먼저 확인하기",
+  brochureLabel: "브로슈어 다운호드",
   /** GitHub raw PDF — 클릭 시 바로 다운로드 */
   brochureUrl:
     "https://github.com/NaruSecurity-TRC/naru.trc_brochure/blob/main/ZeroTiCA/ZeroTiCA%20Pamphlet.pdf?raw=true",
@@ -409,9 +409,9 @@ export const contactBanner = {
 /** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */
 export const storyAnchors = [
   { id: "problem", label: "왜 검증인가" },
-  { id: "journey", label: "검증 방식" },
-  { id: "choose", label: "서비스" },
+  { id: "journey", label: "검증 과정" },
   { id: "outcomes", label: "고객가치" },
+  { id: "choose", label: "서비스" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "문의" },
 ];

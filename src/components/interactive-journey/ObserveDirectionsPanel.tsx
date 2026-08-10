@@ -1,27 +1,77 @@
+import { ArrowLeft, ArrowLeftRight, ArrowRight } from "lucide-react";
+
+type FlowNode = "내부" | "외부";
+type FlowArrow = "right" | "left" | "both";
+
 /** 관측 단계 — 방향별 관측 카드 */
 export const observeDirectionCards = [
   {
     en: "Outbound",
     title: "아웃바운드",
-    direction: "내부 → 외부",
-    body: "내부 자산이 외부 서비스나 인터넷으로 나가는 통신을 확인합니다.",
-    tags: ["악성 IP·URL 접근", "기계적 비콘·C2 의심", "장기 외부 연결", "대용량 전송"],
+    from: "내부" as FlowNode,
+    to: "외부" as FlowNode,
+    arrow: "right" as FlowArrow,
+    body: "외부로 나가는 통신의 변화",
+    models: ["에이전트 통신(패킷/바이트)", "User-Agent 위협", "IOC 연결"],
   },
   {
     en: "Inbound",
     title: "인바운드",
-    direction: "외부 → 내부",
-    body: "외부에서 내부 자산으로 들어오는 접근과 통신을 확인합니다.",
-    tags: ["비정상 URI·웹 요청", "외부 스캔", "연결 거절 이상", "관리 콘솔 노출"],
+    from: "내부" as FlowNode,
+    to: "외부" as FlowNode,
+    arrow: "left" as FlowArrow,
+    body: "내부로 들어오는 통신의 변화",
+    models: ["응답 실패율 이상", "URI 위협", "목적지 연결 거절 이상"],
   },
   {
     en: "Lateral",
     title: "측면이동",
-    direction: "내부 ↔ 내부",
-    body: "내부 자산 사이에서 발생하는 통신과 반복되는 접근 관계를 확인합니다.",
-    tags: ["다수 포트 스캔", "인증·접근 이상", "반복 내부 통신", "횡적 이동 정황"],
+    from: "내부" as FlowNode,
+    to: "내부" as FlowNode,
+    arrow: "both" as FlowArrow,
+    body: "내부 자산 사이 통신의 변화",
+    models: ["URI 위협", "응답 실패율 이상", "목적지 연결 거절 이상"],
   },
 ] as const;
+
+function FlowNodeCircle({ label }: { label: FlowNode }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-white text-[12px] font-semibold text-primary sm:h-11 sm:w-11 sm:text-[13px]">
+      {label}
+    </span>
+  );
+}
+
+function FlowArrowIcon({ arrow }: { arrow: FlowArrow }) {
+  const className = "h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5";
+  if (arrow === "both") {
+    return <ArrowLeftRight className={className} strokeWidth={2.25} aria-hidden />;
+  }
+  if (arrow === "left") {
+    return <ArrowLeft className={className} strokeWidth={2.25} aria-hidden />;
+  }
+  return <ArrowRight className={className} strokeWidth={2.25} aria-hidden />;
+}
+
+function DirectionFlow({
+  from,
+  to,
+  arrow,
+}: {
+  from: FlowNode;
+  to: FlowNode;
+  arrow: FlowArrow;
+}) {
+  return (
+    <div className="mt-2 flex items-center justify-center rounded-2xl bg-[#eef4fb] px-3 py-4 sm:mt-2.5 sm:px-4 sm:py-5">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        <FlowNodeCircle label={from} />
+        <FlowArrowIcon arrow={arrow} />
+        <FlowNodeCircle label={to} />
+      </div>
+    </div>
+  );
+}
 
 export function ObserveDirectionsPanel() {
   return (
@@ -33,24 +83,22 @@ export function ObserveDirectionsPanel() {
             className="flex flex-col rounded-2xl border border-slate-200/80 bg-white px-4 py-5 shadow-sm sm:px-5 sm:py-6"
           >
             <p className="text-[13px] font-bold tracking-wide text-primary sm:text-[14px]">{card.en}</p>
-            <h4 className="mt-1.5 text-[20px] font-extrabold tracking-tight text-zinc-900 sm:text-[22px]">
+            <h4 className="mt-0.5 text-[20px] font-extrabold tracking-tight text-zinc-900 sm:text-[22px]">
               {card.title}
             </h4>
-            <span className="mt-3 inline-flex w-fit rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500 sm:text-[12px]">
-              {card.direction}
-            </span>
-            <p className="mt-4 text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[14px]">
+            <p className="mt-2 text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[14px]">
               {card.body}
             </p>
-            <div className="mt-5 pt-1">
-              <p className="text-[11px] font-medium text-slate-400 sm:text-[12px]">대표 관측 유형</p>
-              <ul className="mt-2.5 flex flex-wrap gap-1.5">
-                {card.tags.map((tag) => (
+            <DirectionFlow from={card.from} to={card.to} arrow={card.arrow} />
+            <div className="mt-8">
+              <p className="text-[12px] font-medium text-slate-400 sm:text-[12px]">대표 모델 예시</p>
+              <ul className="mt-2.5 flex flex-col gap-2">
+                {card.models.map((model) => (
                   <li
-                    key={tag}
-                    className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600 [word-break:keep-all] sm:text-[12px]"
+                    key={model}
+                    className="rounded-xl border border-slate-200/90 bg-white px-3.5 py-1.5 text-[10px] font-semibold text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] [word-break:keep-all] sm:text-[12px]"
                   >
-                    {tag}
+                    {model}
                   </li>
                 ))}
               </ul>

@@ -1,6 +1,6 @@
 import { Mail } from "lucide-react";
 import { getCaseEmail, getCaseIncident, type CaseIncident } from "@/data/issue-story";
-import { ISSUE_MENU, KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
+import { JOURNEY_KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { SimulationEmbeddedSheet } from "@/components/interactive-journey/SimulationEmbeddedSheet";
 import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
 import { MiniRunaFrame } from "@/components/interactive-journey/MiniRunaFrame";
@@ -28,7 +28,6 @@ function KanbanTaskCard({
       <TaskCard
         title={incident.title}
         code={incident.code}
-        author="제로티카 분석팀"
         status={status}
         statusClass={taskStatusClass(statusKey)}
         highlight={highlight}
@@ -53,37 +52,34 @@ export function SimulationRunaTaskView({
     kanbanColumn,
     sheetOpen,
     eventDetailOpen,
-    openTask,
-    openEventDetail,
     closeEventDetail,
   } = sim;
   const email = getCaseEmail(activeCase);
   const previousIncident = activeCase === "threat" ? getCaseIncident("normal") : null;
 
   const showActiveCard = kanbanColumn !== "hidden";
-  const waitCardClick = phase === "kanban" && kanbanColumn === "pre_request";
-  const highlightNewCard = phase === "delivery" || waitCardClick;
+  const highlightNewCard = phase === "delivery" || (phase === "kanban" && kanbanColumn === "pre_request");
 
+  const isDoneColumn = kanbanColumn === "done" || phase === "complete";
   const activeStatus =
     phase === "verifying"
       ? ISSUE_STATUS.checking
-      : kanbanColumn === "done" || phase === "staff-reply"
+      : isDoneColumn || phase === "staff-reply"
         ? ISSUE_STATUS.completed
         : ISSUE_STATUS.requested;
   const activeStatusKey =
-    phase === "verifying" ? "checking" : kanbanColumn === "done" || phase === "staff-reply" ? "completed" : "requested";
+    phase === "verifying" ? "checking" : isDoneColumn || phase === "staff-reply" ? "completed" : "requested";
 
-  const activeCard = showActiveCard ? (
+  const activeCard = showActiveCard || phase === "complete" ? (
     <KanbanTaskCard
       incident={current}
       status={activeStatus}
       statusKey={activeStatusKey}
-      highlight={waitCardClick || highlightNewCard}
-      onClick={waitCardClick ? openTask : undefined}
+      highlight={highlightNewCard}
       className={cn(
+        "min-w-0",
         kanbanColumn === "pre_request" && (phase === "delivery" || phase === "kanban") && "sim-card-enter",
-        highlightNewCard && "sim-spotlight-ring rounded-xl",
-        kanbanColumn === "done" && "sim-card-enter",
+        isDoneColumn && "sim-card-enter",
       )}
     />
   ) : null;
@@ -114,39 +110,38 @@ export function SimulationRunaTaskView({
 
       <MiniRunaFrame activeNav="tasks" showNotification variant="cropped" className="h-full border-0 shadow-none">
         <div className="flex h-full flex-col">
-          <p className="mb-2 text-[10px] font-semibold text-slate-500">{ISSUE_MENU} · 칸반</p>
-          <div className="flex min-h-0 flex-1 gap-2 overflow-x-auto">
+          <div className="flex min-h-0 w-full flex-1 gap-1.5 p-1">
             <KanbanColumn
-              title={KANBAN_COLUMNS.pre_request}
+              title={JOURNEY_KANBAN_COLUMNS.pre_request}
               titleClass="text-slate-600"
               headerClass="bg-slate-100"
-              count={kanbanColumn === "pre_request" ? 1 : 0}
+              count={kanbanColumn === "pre_request" && phase !== "complete" ? 1 : 0}
               showArrow
               compact
             >
-              {kanbanColumn === "pre_request" ? activeCard : emptySlot}
+              {kanbanColumn === "pre_request" && phase !== "complete" ? activeCard : emptySlot}
             </KanbanColumn>
             <KanbanColumn
-              title={KANBAN_COLUMNS.in_request}
+              title={JOURNEY_KANBAN_COLUMNS.in_request}
               titleClass="text-blue-600"
               headerClass="bg-sky-50"
-              count={kanbanColumn === "in_request" ? 1 : 0}
+              count={kanbanColumn === "in_request" && phase !== "complete" ? 1 : 0}
               showArrow
               compact
             >
-              {kanbanColumn === "in_request" ? activeCard : emptySlot}
+              {kanbanColumn === "in_request" && phase !== "complete" ? activeCard : emptySlot}
             </KanbanColumn>
             <KanbanColumn
-              title={KANBAN_COLUMNS.done}
+              title={JOURNEY_KANBAN_COLUMNS.done}
               titleClass="text-green-600"
               headerClass="bg-emerald-50"
-              count={kanbanColumn === "done" ? (previousIncident ? 2 : 1) : previousIncident ? 1 : 0}
+              count={isDoneColumn ? (previousIncident ? 2 : 1) : previousIncident ? 1 : 0}
               compact
             >
-              {kanbanColumn === "done" || previousIncident ? (
+              {isDoneColumn || previousIncident ? (
                 <div className="space-y-2">
                   {previousDoneCard}
-                  {kanbanColumn === "done" ? activeCard : null}
+                  {isDoneColumn ? activeCard : null}
                 </div>
               ) : (
                 emptySlot
@@ -156,7 +151,7 @@ export function SimulationRunaTaskView({
         </div>
       </MiniRunaFrame>
 
-      <SimulationEmbeddedSheet sim={sim} open={sheetOpen} onEventClick={openEventDetail} />
+      <SimulationEmbeddedSheet sim={sim} open={sheetOpen} />
       {eventDetailOpen ? (
         <SimulationEventDetailPanel detail={current.eventDetail} onClose={closeEventDetail} />
       ) : null}

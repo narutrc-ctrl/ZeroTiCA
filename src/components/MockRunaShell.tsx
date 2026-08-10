@@ -130,14 +130,14 @@ export function KanbanColumn({
 }) {
   return (
     <>
-      <div className={cn("flex flex-1 flex-col", compact ? "min-w-0" : "min-w-[300px]")}>
-        <div className={cn("mb-3 flex items-center gap-2 rounded-xl px-4 py-2.5", headerClass)}>
-          <span className={cn("text-sm font-semibold", titleClass)}>{title}</span>
+      <div className={cn("flex min-w-0 flex-1 flex-col", !compact && "min-w-[300px]")}>
+        <div className={cn("mb-3 flex items-center gap-2 rounded-xl px-4 py-2.5", headerClass, compact && "px-2.5 py-2")}>
+          <span className={cn("text-sm font-semibold", compact ? "text-[11px]" : "", titleClass)}>{title}</span>
           <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-slate-600">
             {count}
           </span>
         </div>
-        <div className="space-y-3">{children}</div>
+        <div className={cn("min-w-0 space-y-3", compact && "p-0.5")}>{children}</div>
       </div>
       {showArrow && (
         <div className="flex shrink-0 items-center self-center text-slate-300">
@@ -160,7 +160,7 @@ export function TaskCard({
 }: {
   title: string;
   code: string;
-  author: string;
+  author?: string;
   status: string;
   statusClass: string;
   highlight?: boolean;
@@ -173,19 +173,19 @@ export function TaskCard({
       data-task-open-switch={dataTaskOpenSwitch ? "" : undefined}
       onClick={onClick}
       className={cn(
-        "runa-card w-full p-4 text-left transition hover:shadow-lg",
-        highlight && "ring-2 ring-blue-500/40",
+        "runa-card box-border w-full p-4 text-left transition hover:shadow-lg",
+        highlight && "ring-2 ring-inset ring-blue-500/50",
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <h4 className="text-sm font-semibold text-zinc-800">{title}</h4>
+        <h4 className="min-w-0 text-sm font-semibold text-zinc-800 [word-break:keep-all]">{title}</h4>
         <span className={cn("shrink-0 rounded-xl border px-2 py-0.5 text-[11px] font-semibold", statusClass)}>
           {status}
         </span>
       </div>
       <p className="mt-2 flex flex-wrap gap-x-3 text-sm">
         <span className="font-medium tabular-nums text-blue-500">{code}</span>
-        <span className="text-slate-600">{author}</span>
+        {author ? <span className="text-slate-600">{author}</span> : null}
       </p>
     </button>
   );

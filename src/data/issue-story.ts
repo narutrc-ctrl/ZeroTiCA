@@ -110,6 +110,48 @@ export function chapterForPhase(phase: SimPhase, activeCase: SimCase = "normal")
   return 2;
 }
 
+const VERIFY_SUB_PHASES: SimPhase[] = [
+  "kanban",
+  "task",
+  "reply",
+  "staff-reply",
+];
+
+const THREAT_SUB_PHASES: SimPhase[] = [
+  "kanban",
+  "task",
+  "reply",
+  "staff-reply",
+  "complete",
+];
+
+/** 현재 챕터의 하위 단계 진행 (0-based current) */
+export function getChapterSubProgress(
+  phase: SimPhase,
+  activeCase: SimCase,
+  analystStep: number,
+): { total: number; current: number } {
+  const chapter = chapterForPhase(phase, activeCase);
+
+  if (chapter === 1) {
+    const total = getCaseAnalystSteps(activeCase).length;
+    return { total, current: Math.min(analystStep, Math.max(total - 1, 0)) };
+  }
+
+  if (chapter === 2) {
+    const current = VERIFY_SUB_PHASES.indexOf(phase);
+    return { total: VERIFY_SUB_PHASES.length, current: Math.max(current, 0) };
+  }
+
+  if (chapter === 3) {
+    const current = THREAT_SUB_PHASES.indexOf(phase);
+    return { total: THREAT_SUB_PHASES.length, current: Math.max(current, 0) };
+  }
+
+  // 관측 · 침해평가 보고서 — 하위 단계 1개
+  return { total: 1, current: 0 };
+}
+
 export type NarrativeAction =
   | "wait"
   | "click-card"
@@ -227,12 +269,6 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     "staff-reply": {
       situation: "정상 업무 통신으로 검증되었습니다.",
       why: "분석팀 회신이 댓글에 기록되었습니다.",
-      action: "곧 Sheet가 닫히고 「완료」로 이동합니다.",
-      actionType: "wait",
-    },
-    complete: {
-      situation: "사례 1 · 정상 검증이 끝났습니다.",
-      why: "완료 이슈는 칸반 「완료」에서 이력으로 관리됩니다.",
       action: "「다음」으로 고객 조치 단계를 이어가세요.",
       actionType: "click-next-case",
     },
@@ -346,61 +382,35 @@ export type CaseIncident = {
   actionNotes?: string;
 };
 
+/** 선별 단계 하위 화면 (이전/다음 · analystStep 0–3) — detail은 오른쪽 설명 문구 */
 export const analystSteps = [
   {
-    label: "로그 수집",
-    title: "네트워크 미러링 · 로그 수집",
-    detail: "SPAN/TAP 미러링 → Zeek conn·HTTP 로그. 10.24.18.52 ↔ 10.24.20.10 패턴 확인.",
+    label: "전체 이벤트",
+    title: "01 전체 이벤트",
+    detail:
+      "다양한 모델에서 여러 이벤트가 관측됩니다. 처음에는 전체 이벤트를 그대로 확인합니다.",
   },
   {
-    label: "행동 탐지",
-    title: "행위 기반 탐지",
-    detail: "agent communication 규칙 매칭 — 주기적 HTTP 기계적 통신 후보 등록.",
+    label: "정상 활동 제외",
+    title: "02 정상 활동 제외",
+    detail:
+      "기존에 정상으로 확인된 활동과 화이트리스트를 반영해 분석할 필요가 없는 이벤트를 제외합니다.",
   },
   {
-    label: "IOC 점검",
-    title: "악성 패턴 · IOC 점검",
-    detail: "전 고객 IocIP 일일 매칭 — 해당 통신 IOC 미매칭.",
+    label: "분석가 우선 검토",
+    title: "03 분석가 우선 검토",
+    detail:
+      "새롭게 나타난 연결과 반복되는 활동, 이전과 달라진 패턴을 찾아내\n우선적으로 분석이 필요한 통신을 구분합니다.",
   },
   {
-    label: "정제",
-    title: "후보 정제 · 화이트리스트",
-    detail: "알려진 업무 통신 후보 분리 — 고객 확인 필요로 판단.",
-  },
-  {
-    label: "등록",
-    title: "고객 확인 이슈로 등록",
-    detail: "RUNA 이슈 생성 · 메일 알림 발송.",
+    label: "검증 대상 사례",
+    title: "04 검증 대상 사례",
+    detail: "선별된 두 활동은 왜 확인이 필요한지 근거와 함께 검증 대상으로 정리됩니다.",
   },
 ];
 
-export const threatAnalystSteps = [
-  {
-    label: "로그 수집",
-    title: "네트워크 미러링 · Notice·conn 집계",
-    detail: "SPAN/TAP 미러링 → Zeek conn·notice. 10.88.12.5 → 10.200.0.0/16 REJ/S0 급증 확인.",
-  },
-  {
-    label: "행동 탐지",
-    title: "conn dst reject outlier 탐지",
-    detail: "측면이동 Stage — 단일 호스트의 내부망 다수 포트 스캔 정황 등록.",
-  },
-  {
-    label: "위협 확정",
-    title: "유효 위협(checked=5)으로 확정",
-    detail: "업무 스크립트·배포 자동화 후보 제외 — 분석팀이 「유효 위협」으로 분류.",
-  },
-  {
-    label: "정제",
-    title: "위협 내역 · ThreatHistory 연결",
-    detail: "유효 위협 이벤트를 이슈에 연결 · 고객 조치 요청 준비.",
-  },
-  {
-    label: "등록",
-    title: "고객 확인 이슈로 등록",
-    detail: "RUNA 이슈 생성 · 메일 알림 발송.",
-  },
-];
+/** 선별 UI는 사례와 무관하게 동일 4단계 */
+export const threatAnalystSteps = analystSteps;
 
 export const monitoringLogs = [
   { time: "10:41:02", level: "info" as const, text: "conn · 10.88.12.5 → 203.0.113.44 :443 · 정상" },
@@ -426,7 +436,7 @@ export const incident: CaseIncident = {
   dstIp: "10.24.20.10",
   dstLabel: "내부 패치 미러 서버",
   detectedAt: "2026-05-12 10:55",
-  eventType: "agent communication pkts bytes lateral",
+  eventType: "에이전트 통신(패킷/바이트)",
   riskBefore: "낮음",
   riskAfter: "주의",
   staffQuestion:
@@ -460,7 +470,7 @@ export const incident: CaseIncident = {
   relatedThreatAt: "2026-05-12 10:55",
   threatDescription: "폐쇄망 호스트 기계적 HTTP 통신 (80/tcp)",
   eventDetail: {
-    eventName: "agent communication pkts bytes lateral",
+    eventName: "에이전트 통신(패킷/바이트)",
     date: "2026-05-12",
     srcIp: "10.24.18.52",
     dstIp: "10.24.20.10",
@@ -486,14 +496,14 @@ export const threatIncident: CaseIncident = {
   dstIp: "10.200.0.0/16",
   dstLabel: "내부망 다수 호스트",
   detectedAt: "2026-05-21 08:48",
-  eventType: "conn dst reject outlier lateral",
+  eventType: "목적지 연결 거절 이상",
   riskBefore: "낮음",
   riskAfter: "높음",
   staffQuestion:
     "10.88.12.5에서 내부망(10.200.0.0/16) 다수 포트로 연결 거절·스캔 패턴이 확인되었습니다. 분석팀은 해당 이벤트를 「유효 위협」으로 확정했습니다. 원인 확인 및 필요 조치를 회신해 주세요.",
   customerChecks: [
     "이벤트 상태 — 유효 위협 (checked=5)",
-    "의심 통신 — conn dst reject outlier lateral",
+    "의심 통신 — 목적지 연결 거절 이상",
     "출발지 — 10.88.12.5 · 내부 /16 REJ 집중",
     "조치 요청 — 원인 확인·차단·삭제 등 조치 회신",
   ],
@@ -522,7 +532,7 @@ export const threatIncident: CaseIncident = {
   threatDescription: "내부망 다수 포트 스캔 정황 · REJ/S0 집중",
   actionNotes: "고객 조치: 스캔 도구 삭제·격리. 분석팀: 48시간 재탐지 모니터링 후 완료.",
   eventDetail: {
-    eventName: "conn dst reject outlier lateral",
+    eventName: "목적지 연결 거절 이상",
     date: "2026-05-21",
     srcIp: "10.88.12.5",
     dstIp: "10.200.0.0/16",

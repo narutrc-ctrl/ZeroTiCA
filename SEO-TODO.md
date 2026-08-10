@@ -7,7 +7,7 @@
   - OG/Twitter 이미지 URL가 실제 파일과 일치하는지 확인
 - `public/robots.txt`
   - 운영 도메인 sitemap URL 반영
-- `public/sitemap.xml`
+- `public/sitemap.xml` 
   - 운영 중인 모든 공개 URL 포함 (`/`, `/ko-kr`, `/en-us`, 데모 페이지)
 - `vercel.json`
   - SPA 라우팅 새로고침 404 방지를 위한 rewrite 유지

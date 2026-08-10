@@ -1,5 +1,4 @@
 import { Bell, ClipboardList } from "lucide-react";
-import { BrandMark } from "@/components/BrandLogo";
 import { cn } from "@/lib/cn";
 
 export function MiniRunaFrame({
@@ -31,9 +30,7 @@ export function MiniRunaFrame({
             cropped && "opacity-35 blur-[0.3px]",
           )}
         >
-          <div className="flex h-10 items-center justify-center">
-            <BrandMark size="sm" inverted />
-          </div>
+          <div className="h-10 shrink-0" aria-hidden />
           <nav className="flex flex-1 flex-col gap-1 px-1 py-2">
             {[
               { id: "dashboard" as const, icon: Bell },
@@ -63,7 +60,7 @@ export function MiniRunaFrame({
               cropped && "opacity-60",
             )}
           >
-            <span className="text-[10px] font-medium text-slate-500">RUNA · 이슈 관리</span>
+            <span className="text-[10px] font-medium text-slate-500">고객 이슈 관리</span>
             <span className="relative rounded-full p-1 text-slate-400">
               <Bell className="h-3.5 w-3.5" />
               {showNotification ? (
