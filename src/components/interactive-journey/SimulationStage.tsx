@@ -14,7 +14,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   // 관측 단계: Outbound / Inbound / Lateral 카드
   if (phase === "monitoring" || phase === "anomaly") {
     return (
-      <SimulationStageShell>
+      <SimulationStageShell scrollable>
         <ObserveDirectionsPanel />
       </SimulationStageShell>
     );

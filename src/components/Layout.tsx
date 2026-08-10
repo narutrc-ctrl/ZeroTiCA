@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GlobalTour } from "@/components/GlobalTour";
 import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
@@ -14,6 +14,7 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { paths, storyAnchors } from "@/data/content";
+import { cn } from "@/lib/cn";
 
 /** 히어로 sticky 안 섹션2가 거의 다 드러난 지점 (끝이면 검증 관점으로 넘어감) */
 const PROBLEM_SCENE_PROGRESS = 0.96;
@@ -43,6 +44,9 @@ function scrollToStoryAnchor(id: string) {
 
 export function Layout() {
   const [open, setOpen] = useState(false);
+  /** 모바일: 아래로 스크롤 중 헤더 숨김 / 위로 스크롤 시 다시 표시 */
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
   const location = useLocation();
   const navigate = useNavigate();
   // TODO: 도입 문의 CTA — 요청 시 주석 해제
@@ -77,6 +81,47 @@ export function Layout() {
     requestAnimationFrame(() => scrollToStoryAnchor(id));
   }, [location.pathname, location.hash]);
 
+  useEffect(() => {
+    const mobileMq = window.matchMedia("(max-width: 640px)");
+    lastScrollY.current = window.scrollY;
+    let raf = 0;
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        if (!mobileMq.matches || open) {
+          setHeaderHidden(false);
+          lastScrollY.current = window.scrollY;
+          return;
+        }
+        const y = window.scrollY;
+        const delta = y - lastScrollY.current;
+        if (y < 16) {
+          setHeaderHidden(false);
+        } else if (delta > 6) {
+          setHeaderHidden(true);
+        } else if (delta < -6) {
+          setHeaderHidden(false);
+        }
+        lastScrollY.current = y;
+      });
+    };
+
+    const onMqChange = () => {
+      setHeaderHidden(false);
+      lastScrollY.current = window.scrollY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    mobileMq.addEventListener?.("change", onMqChange);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      mobileMq.removeEventListener?.("change", onMqChange);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [open]);
+
   if (isDemo) {
     return (
       <div className="h-screen overflow-hidden bg-white">
@@ -92,8 +137,13 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <ScrollProgress />
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+      <ScrollProgress retracted={headerHidden} />
+      <header
+        className={cn(
+          "sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-xl transition-transform duration-300 ease-out will-change-transform",
+          headerHidden && "max-sm:-translate-y-full",
+        )}
+      >
         <div className="zt-container-hero flex h-16 items-center justify-between gap-4">
           <BrandLogo />
           {isHome && (

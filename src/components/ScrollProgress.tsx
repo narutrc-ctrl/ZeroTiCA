@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/cn";
 
-export function ScrollProgress() {
+export function ScrollProgress({ retracted = false }: { retracted?: boolean }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -24,7 +25,11 @@ export function ScrollProgress() {
 
   return (
     <div
-      className="fixed left-0 top-16 z-50 h-0.5 bg-blue-500 transition-[width] duration-150 motion-reduce:transition-none"
+      className={cn(
+        "fixed left-0 top-16 z-50 h-0.5 bg-blue-500 transition-[width,transform] duration-150 motion-reduce:transition-none",
+        "duration-300 ease-out",
+        retracted && "max-sm:-translate-y-[4.25rem]",
+      )}
       style={{ width: `${progress}%` }}
       aria-hidden
     />

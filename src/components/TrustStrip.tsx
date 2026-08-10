@@ -4,17 +4,17 @@ import { RevealOnScroll } from "@/components/RevealOnScroll";
 
 export function TrustStrip() {
   return (
-    <section aria-labelledby="trust-heading" className="bg-slate-50">
-      <div className="zt-container-hero zt-section">
-        <RevealOnScroll variant="fade-up" className="max-w-3xl">
-          <p className="text-[16px] font-semibold text-blue-600">함께하는 고객사</p>
+    <section aria-labelledby="trust-heading" className="border-b border-slate-200/80 bg-white">
+      <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
+        <RevealOnScroll variant="fade-up">
+          <p className="text-[16px] font-bold tracking-wide text-primary">함께하는 고객사</p>
           <h2
             id="trust-heading"
-            className="mt-2 text-3xl font-bold text-zinc-800 sm:text-4xl [word-break:keep-all]"
+            className="mt-[32px] max-w-[900px] text-[28px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-[40px] sm:text-[36px] lg:text-[46px]"
           >
             {closing.title}
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+          <p className="mt-4 w-full max-w-none text-[16px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-5 sm:text-[18px]">
             금융·게임·제조·공공까지, 실제 망을 분석해 운영하고 있습니다. 아래 산업군 고객사 네트워크에서
             의심 통신을 탐지·검증·조치해 왔습니다.
           </p>

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { simulationIntro, storyChapters } from "@/data/issue-story";
-import { SIM_STAGE_HEIGHT_PX } from "@/components/interactive-journey/SimulationConsole";
 import { SimulationStage } from "@/components/interactive-journey/SimulationStage";
 import { useIssueSimulation } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
@@ -107,15 +106,31 @@ export function InteractiveIssueJourneySection() {
       const sectionH = Math.max(section.offsetHeight, 1);
       // 섹션이 뷰포트 하단에서부터 들어온 양
       const entered = vh - rect.top;
+      const isMobile = window.matchMedia("(max-width: 640px)").matches;
 
       // 원 펼침: 섹션 진입 ~ 끝까지 (콘텐츠와 독립)
       const circle = Math.min(1, Math.max(0, entered / sectionH));
 
-      // 콘텐츠: 섹션 1/2부터 시작, 상단 → 단계+박스 순차 등장
-      const contentSpan = sectionH * 0.32;
-      const contentT = Math.min(1, Math.max(0, (entered - sectionH * (1 / 2)) / contentSpan));
-      const header = Math.min(1, contentT / 0.52);
-      const panel = Math.min(1, Math.max(0, (contentT - 0.3) / 0.55));
+      /**
+       * 콘텐츠 등장
+       * — 기존: 섹션 높이 1/2 지점부터 시작 → 모바일에서 빈 화면이 길게 유지됨
+       * — 모바일: 섹션이 들어오자마자 타이틀→패널이 짧게 등장
+       */
+      let contentT: number;
+      let header: number;
+      let panel: number;
+      if (isMobile) {
+        const startAt = vh * 0.08;
+        const contentSpan = Math.min(vh * 0.4, sectionH * 0.2);
+        contentT = Math.min(1, Math.max(0, (entered - startAt) / Math.max(contentSpan, 1)));
+        header = Math.min(1, contentT / 0.35);
+        panel = Math.min(1, Math.max(0, (contentT - 0.12) / 0.5));
+      } else {
+        const contentSpan = sectionH * 0.32;
+        contentT = Math.min(1, Math.max(0, (entered - sectionH * (1 / 2)) / contentSpan));
+        header = Math.min(1, contentT / 0.52);
+        panel = Math.min(1, Math.max(0, (contentT - 0.3) / 0.55));
+      }
 
       setCircleT(circle);
       setHeaderT(header);
@@ -182,14 +197,15 @@ export function InteractiveIssueJourneySection() {
 
           <div className="sim-journey-panel mt-5 rounded-[28px] border border-slate-200/90 bg-white/90 p-4 shadow-[0_18px_50px_rgba(171,209,255,0.45)] backdrop-blur-sm sm:mt-6 sm:p-6 lg:p-7">
             <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
-              <div className="min-w-0">
+              {/* 모바일: 설명·버튼이 단계 탭 바로 아래 → 시뮬레이션은 그 다음 */}
+              <div className="order-2 min-w-0 lg:order-1">
                 <div className="overflow-hidden rounded-2xl bg-[#eef2f7]">
                   <SimulationStage sim={sim} />
                 </div>
               </div>
 
-              <div className="relative min-w-0" style={{ height: SIM_STAGE_HEIGHT_PX }}>
-                <div className="h-full overflow-y-auto pb-16 pt-5 sm:pt-6">
+              <div className="relative order-1 min-w-0 sm:h-[600px] lg:order-2">
+                <div className="pb-4 pt-0 sm:h-full sm:overflow-y-auto sm:pb-16 sm:pt-6">
                   <p className="text-[15px] font-semibold text-slate-700 sm:text-[16px]">
                     <span className="text-primary">{chapter.label}</span>{" "}
                     <span className="tabular-nums">
@@ -222,7 +238,7 @@ export function InteractiveIssueJourneySection() {
                   </p>
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3">
+                <div className="relative mt-4 flex items-center justify-between gap-3 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0">
                   {subProgress.total > 1 && !isAtEnd ? (
                     <div
                       className="flex items-center gap-1.5"

@@ -1003,9 +1003,9 @@
   }
 
   @media (max-width: 640px) {
-    .journey-bg-circle {
-      width: min(170vw, 900px);
-      height: min(170vw, 900px);
+    /* 모바일: 검증 과정 배경 원 펼침 효과 제거 */
+    .journey-bg-circles {
+      display: none;
     }
   }
 

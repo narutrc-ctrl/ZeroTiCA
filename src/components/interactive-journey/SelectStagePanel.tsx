@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 
 const SELECT_STEPS = [
@@ -18,7 +19,7 @@ type ModelRow = {
   clearedStatus: "화이트" | "정상";
 };
 
-/** 9개 고정. kept 4개는 위·가운데 묶음·아래로 자연스럽게 흩뿌림 */
+/** 데스크톱: 9개. kept 4개는 위·가운데 묶음·아래로 자연스럽게 흩뿌림 */
 const MODEL_ROWS: ModelRow[] = [
   { model: "Kerberos 인증 이상", date: "2026-05-11", kept: false, caseFocus: false, clearedStatus: "정상" },
   { model: "URI 위협", date: "2026-05-12", kept: true, caseFocus: false, clearedStatus: "화이트" },
@@ -30,6 +31,26 @@ const MODEL_ROWS: ModelRow[] = [
   { model: "RDP 접속 시도 이상", date: "2026-05-08", kept: false, caseFocus: false, clearedStatus: "정상" },
   { model: "응답 실패율 이상", date: "2026-05-15", kept: true, caseFocus: false, clearedStatus: "정상" },
 ];
+
+/** 모바일: 4개로 축소해 1→4 단계가 한 화면에 보이게 */
+const MODEL_ROWS_MOBILE: ModelRow[] = [
+  { model: "Kerberos 인증 이상", date: "2026-05-11", kept: false, caseFocus: false, clearedStatus: "정상" },
+  { model: "URI 위협", date: "2026-05-12", kept: false, caseFocus: false, clearedStatus: "화이트" },
+  { model: "목적지 연결 거절 이상", date: "2026-05-13", kept: true, caseFocus: true, clearedStatus: "정상" },
+  { model: "에이전트 통신(패킷/바이트)", date: "2026-05-12", kept: true, caseFocus: true, clearedStatus: "화이트" },
+];
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return mobile;
+}
 
 const VERIFY_CASES = [
   {
@@ -124,7 +145,7 @@ function StatusPill({
   return clearedBadge;
 }
 
-function ModelTable({ step }: { step: number }) {
+function ModelTable({ step, rows }: { step: number; rows: ModelRow[] }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
       <div className="flex shrink-0 items-center gap-2 border-b border-slate-100 px-4 py-3">
@@ -138,14 +159,16 @@ function ModelTable({ step }: { step: number }) {
         <table className="w-full table-fixed text-left">
           <thead>
             <tr className="border-b border-slate-100 text-[11px] font-semibold text-slate-400">
-              <th className="w-[34%] px-4 py-2.5 font-semibold">모델</th>
-              <th className="w-[18%] px-3 py-2.5 font-semibold">날짜</th>
-              <th className="w-[28%] px-3 py-2.5 font-semibold">메세지</th>
-              <th className="w-[20%] px-4 py-2.5 font-semibold">상태</th>
+              <th className="w-[62%] px-4 py-2.5 font-semibold sm:w-[34%]">모델</th>
+              <th className="hidden w-[18%] px-3 py-2.5 font-semibold sm:table-cell">날짜</th>
+              <th className="hidden w-[28%] px-3 py-2.5 font-semibold sm:table-cell">메세지</th>
+              <th className="w-[38%] py-2.5 pl-2.5 pr-3 text-left font-semibold sm:w-[20%] sm:px-4">
+                상태
+              </th>
             </tr>
           </thead>
           <tbody>
-            {MODEL_ROWS.map((row) => {
+            {rows.map((row) => {
               const excluded =
                 (step === 1 && !row.kept) || (step === 2 && !row.caseFocus);
               const priorityFocus = step === 2 && row.caseFocus;
@@ -172,16 +195,16 @@ function ModelTable({ step }: { step: number }) {
                   </td>
                   <td
                     className={cn(
-                      "px-3 py-2.5 font-mono text-[11px] tabular-nums",
+                      "hidden px-3 py-2.5 font-mono text-[11px] tabular-nums sm:table-cell",
                       excluded ? "text-slate-400" : "text-slate-600",
                     )}
                   >
                     {row.date}
                   </td>
-                  <td className="px-3 py-2.5">
+                  <td className="hidden px-3 py-2.5 sm:table-cell">
                     <MessageSkeleton muted={excluded} />
                   </td>
-                  <td className="px-4 py-2.5">
+                  <td className="py-2.5 pl-2.5 pr-3 sm:px-4">
                     <StatusPill
                       step={step}
                       kept={row.kept}
@@ -202,12 +225,13 @@ function ModelTable({ step }: { step: number }) {
 function VerifyCases() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2">
+      {/* 모바일: 사례 카드 가로 스크롤 / sm+: 2열 그리드 */}
+      <div className="flex min-h-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-y-auto sm:overflow-x-visible sm:pb-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block">
         {VERIFY_CASES.map((item) => (
           <article
             key={item.key}
             className={cn(
-              "flex flex-col rounded-2xl bg-white p-4 shadow-sm",
+              "flex w-[min(82vw,20rem)] shrink-0 snap-center flex-col rounded-2xl bg-white p-4 shadow-sm sm:w-auto sm:min-w-0 sm:shrink",
               item.highlight ? "border-2 border-primary/70" : "border border-slate-200/90",
             )}
           >
@@ -246,10 +270,13 @@ function VerifyCases() {
 
 export function SelectStagePanel({ step }: { step: number }) {
   const active = Math.min(Math.max(step, 0), SELECT_STEPS.length - 1);
+  const isMobile = useIsMobile();
+  const rows = isMobile ? MODEL_ROWS_MOBILE : MODEL_ROWS;
 
   return (
     <div className="flex h-full flex-col gap-3 bg-[#f3f6fa] p-3 sm:p-4">
-      <div className="grid shrink-0 grid-cols-2 gap-2 lg:grid-cols-4">
+      {/* 모바일: 상단 1~4 단계 뱃지 숨김 (설명은 우측/상단 내러티브로 충분) */}
+      <div className="hidden shrink-0 grid-cols-2 gap-2 sm:grid lg:grid-cols-4">
         {SELECT_STEPS.map((s, i) => {
           const on = i === active;
           return (
@@ -268,7 +295,7 @@ export function SelectStagePanel({ step }: { step: number }) {
         })}
       </div>
 
-      {active < 3 ? <ModelTable step={active} /> : <VerifyCases />}
+      {active < 3 ? <ModelTable step={active} rows={rows} /> : <VerifyCases />}
     </div>
   );
 }

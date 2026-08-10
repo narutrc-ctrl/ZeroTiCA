@@ -75,12 +75,15 @@ function DirectionFlow({
 
 export function ObserveDirectionsPanel() {
   return (
-    <div className="flex h-full items-center justify-center overflow-y-auto px-3 py-10 sm:px-4 sm:py-12 lg:px-5 lg:py-14">
-      <div className="grid w-full grid-cols-1 items-stretch gap-3 sm:grid-cols-3 sm:gap-3 lg:gap-4">
+    <div className="flex h-auto items-stretch justify-center overflow-visible py-4 sm:h-full sm:items-center sm:overflow-y-auto sm:px-4 sm:py-12 lg:px-5 lg:py-14">
+      {/* 모바일: 가로 스크롤 / sm+: 3열 그리드 */}
+      <div
+        className="flex w-full snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-3 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] lg:gap-4 [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block"
+      >
         {observeDirectionCards.map((card) => (
           <article
             key={card.en}
-            className="flex flex-col rounded-2xl border border-slate-200/80 bg-white px-4 py-5 shadow-sm sm:px-5 sm:py-6"
+            className="flex w-[min(78vw,20rem)] shrink-0 snap-center flex-col rounded-2xl border border-slate-200/80 bg-white px-4 py-5 shadow-sm sm:w-auto sm:min-w-0 sm:shrink sm:px-5 sm:py-6"
           >
             <p className="text-[13px] font-bold tracking-wide text-primary sm:text-[14px]">{card.en}</p>
             <h4 className="mt-0.5 text-[20px] font-extrabold tracking-tight text-zinc-900 sm:text-[22px]">
@@ -89,8 +92,10 @@ export function ObserveDirectionsPanel() {
             <p className="mt-2 text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[14px]">
               {card.body}
             </p>
-            <DirectionFlow from={card.from} to={card.to} arrow={card.arrow} />
-            <div className="mt-8">
+            <div className="hidden sm:block">
+              <DirectionFlow from={card.from} to={card.to} arrow={card.arrow} />
+            </div>
+            <div className="mt-5 sm:mt-8">
               <p className="text-[12px] font-medium text-slate-400 sm:text-[12px]">대표 모델 예시</p>
               <ul className="mt-2.5 flex flex-col gap-2">
                 {card.models.map((model) => (

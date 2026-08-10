@@ -17,13 +17,14 @@ export function SimulationStageShell({
   return (
     <div
       className={cn(
-        "sim-stage-shell relative overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50",
-        scrollable && "overflow-y-auto",
+        // 모바일: 고정 높이·내부 스크롤 없이 콘텐츠만큼 늘어남
+        "sim-stage-shell relative h-auto overflow-visible rounded-2xl border border-slate-200/70 bg-slate-50",
+        "sm:h-[600px] sm:overflow-hidden",
+        scrollable && "sm:overflow-y-auto",
         className,
       )}
-      style={{ height: SIM_STAGE_HEIGHT_PX }}
     >
-      <div className={cn("h-full", !scrollable && "overflow-hidden")}>{children}</div>
+      <div className={cn("sm:h-full", !scrollable && "sm:overflow-hidden")}>{children}</div>
     </div>
   );
 }
