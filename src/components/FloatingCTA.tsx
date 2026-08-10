@@ -26,7 +26,7 @@ export function FloatingCTA() {
   return (
     <div
       className={cn(
-        "fixed bottom-5 left-1/2 z-30 flex w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/95 p-2 pl-4 shadow-xl shadow-slate-900/10 backdrop-blur-md transition-all duration-300 lg:bottom-6",
+        "fixed bottom-5 left-1/2 z-30 flex w-auto max-w-lg -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-md transition-all duration-300 sm:w-[calc(100%-2rem)] sm:gap-2 sm:p-2 sm:pl-4 lg:bottom-6",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >

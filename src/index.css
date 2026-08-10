@@ -348,6 +348,7 @@
 
   .hero-focus-btn-secondary {
     @apply border-transparent bg-background text-primary;
+    box-shadow: 0 8px 24px rgba(171, 209, 255, 0.45);
   }
 
   .hero-focus-btn-secondary:hover {
@@ -548,17 +549,23 @@
     min-height: 100vh;
   }
 
-  /* 섹션2 — 데스크톱: 가운데 + 살짝 하향 / 모바일: 상단 정렬 + 내부 스크롤 */
+  /* 섹션2 — 데스크톱 sticky 오버레이 */
   .hero-section2-panel {
     align-items: center;
     overflow: hidden;
     transform: translate3d(0, 100px, 0);
   }
 
+  /* 모바일 전용: sticky 밖 일반 흐름 섹션2 (다크 + 원 합류) */
+  .hero-section2-flow {
+    display: none;
+  }
+
   @media (max-width: 640px) {
+    /* sticky: 히어로 이탈 + 키홀 완만 확대 여유 */
     .hero-transition-scene {
       --hero-s2-dwell: 0vh;
-      height: calc(200vh + var(--hero-s2-dwell));
+      height: calc(210vh + var(--hero-s2-dwell));
     }
 
     .hero-keyhole-bridge-line {
@@ -566,23 +573,76 @@
       font-size: clamp(1.3rem, 5.8vw, 1.75rem);
     }
 
+    /*
+     * 첫 화면 = 헤더 + 히어로가 한 뷰포트에 들어가야 함.
+     * stage를 100vh로 두면 헤더(4rem)만큼 「서비스 영상보기」가 아래로 잘림.
+     */
     .hero-sticky-stage {
-      min-height: 580px;
+      top: 4rem; /* sticky 헤더 아래 */
+      height: calc(100svh - 4rem);
+      min-height: calc(100svh - 4rem);
     }
 
+    .hero-sticky-stage .hero-focus {
+      z-index: 2;
+      align-items: stretch;
+      justify-content: flex-end;
+      /* 불투명 배경으로 뒤 키홀이 CTA에 비치지 않게 */
+      background:
+        radial-gradient(circle at 50% 45%, hsl(205 90% 52% / 0.12), transparent 45%),
+        hsl(var(--background));
+    }
+
+    /* 모바일: sticky 안 섹션2·원 합류 없음 */
     .hero-section2-panel {
-      align-items: flex-start;
-      overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-top: 5.5rem; /* sticky header + breathing room */
-      padding-bottom: 1.5rem;
-      transform: translate3d(0, 16px, 0);
+      display: none !important;
+    }
+
+    .hero-sticky-stage .hero-merge-circles {
+      display: none;
+    }
+
+    .hero-section2-flow {
+      display: block;
+      position: relative;
+      z-index: 1;
+      margin-top: -2.5rem;
+      padding-top: 1.75rem;
+      padding-bottom: 2.5rem;
+      background: #10141d;
+    }
+
+    .hero-section2-flow .hero-section2-title {
+      color: #fff;
+      text-shadow: none;
     }
 
     .hero-focus-inner {
-      padding-top: 86px;
-      padding-bottom: 72px;
+      box-sizing: border-box;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      /* 헤더는 stage 위에 있으므로 큰 top 패딩 불필요 */
+      padding-top: 0.75rem;
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+      transform: none;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-end;
+    }
+
+    /* 문구: 헤더~CTA 사이 영역 중앙 */
+    .hero-focus-title {
+      position: absolute;
+      left: 1.5rem;
+      right: 1.5rem;
+      top: 42%;
+      width: auto;
+      max-width: none;
+      margin: 0;
+      transform: translateY(-50%);
     }
 
     .hero-focus-brand {
@@ -594,16 +654,41 @@
     }
 
     .hero-focus-headline-accent {
-      font-size: 22px;
+      font-size: 20px;
     }
 
+    /* CTA 두 개 모두 첫 화면 하단에 보이도록 */
     .hero-focus-actions {
+      position: relative;
+      z-index: 1;
       width: 100%;
+      max-width: none;
+      margin-top: auto;
+      margin-bottom: 0;
       grid-template-columns: 1fr;
+      gap: 12px;
     }
 
+    .hero-focus-btn {
+      min-height: 48px;
+      font-size: 16px;
+    }
+
+    /*
+     * 모바일 키홀은 expand SVG 하나만 사용.
+     * wheel+expand가 동시에 보이면 키홀이 두 개로 보임.
+     * 초기엔 hero 아래(클립)에 두어 CTA와 분리.
+     */
     .hero-indicator {
-      bottom: 72px;
+      display: none;
+    }
+
+    .hero-indicator-capsule {
+      display: none;
+    }
+
+    .hero-sticky-stage .hero-indicator-expand {
+      z-index: 0;
     }
   }
 

@@ -66,7 +66,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-2 text-[12px] sm:mt-9 sm:text-[13px]">
+        <div className="mt-8 flex flex-col items-start gap-2 text-[12px] sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-10 sm:gap-y-2 sm:text-[13px]">
           <Link to="/legal/privacy" className="text-[#9ca3af] transition-colors hover:text-white">
             개인정보 처리방침
           </Link>

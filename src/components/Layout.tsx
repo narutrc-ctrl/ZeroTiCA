@@ -25,6 +25,11 @@ function scrollToStoryAnchor(id: string) {
       : "smooth";
 
   if (id === "problem") {
+    // 모바일: 섹션2가 sticky 밖 #problem — 일반 스크롤
+    if (window.matchMedia("(max-width: 640px)").matches) {
+      document.getElementById("problem")?.scrollIntoView({ behavior, block: "start" });
+      return;
+    }
     const scene = document.getElementById("top");
     if (!scene) return;
     const totalDistance = Math.max(scene.offsetHeight - window.innerHeight, 0);
@@ -123,7 +128,7 @@ export function Layout() {
             </Link>
             <button
               type="button"
-              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
+              className="-mr-1 rounded-lg p-1 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
               aria-expanded={open}

@@ -37,7 +37,7 @@ export function BrandLogo({ className, linked = true }: { className?: string; li
       alt="ZeroTiCA"
       width={88}
       height={16}
-      className={cn("h-5 w-auto sm:h-[1.375rem]", className)}
+      className={cn("h-4 w-auto sm:h-5", className)}
       decoding="async"
     />
   );

@@ -29,7 +29,7 @@ export function ProblemDifferentiatorSection() {
             <span className="text-primary">{titleAccent}</span>
             {titleAfter}
           </h2>
-          <p className="mt-3 w-full max-w-none text-[20px] leading-relaxed text-slate-300 sm:mt-4">
+          <p className="mt-3 w-full max-w-none text-[16px] leading-relaxed text-slate-300 [word-break:keep-all] sm:mt-4 sm:text-[18px]">
             {lead}
           </p>
         </RevealOnScroll>

@@ -60,7 +60,6 @@ const MERGE_START_X_OF_CIRCLE = 1.32;
 const MERGE_END_X_OF_CIRCLE = 0.34;
 /** 하단 잘림(원 높이 %). 50≈절반, 클수록 더 많이 보임 / 작을수록 더 잘림 */
 const MERGE_Y_PERCENT = 68;
-const MERGE_Y_PERCENT_MOBILE = 40;
 /** 섹션2 등장 시 추가로 올라오는 거리 */
 const SECTION2_ENTER_RISE = 28;
 /** 섹션2 1번(eyebrow+title) 등장 시작 — 기존 contentT와 동일 */
@@ -110,6 +109,7 @@ export function HeroSection() {
   const phrase2Ref = useRef<HTMLParagraphElement>(null);
   const circleLeftRef = useRef<HTMLDivElement>(null);
   const circleRightRef = useRef<HTMLDivElement>(null);
+  const section2FlowRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const section2Ref = useRef<HTMLDivElement>(null);
   const section2HeadRef = useRef<HTMLDivElement>(null);
@@ -155,6 +155,7 @@ export function HeroSection() {
     }
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileLayout = window.matchMedia("(max-width: 640px)");
     let ticking = false;
 
     // viewBox 6×12, 원 중심 (3,3) → 높이의 25%
@@ -204,6 +205,10 @@ export function HeroSection() {
       circleRight.style.opacity = "0";
       circleLeft.style.transform = "";
       circleRight.style.transform = "";
+      circleLeft.style.width = "";
+      circleRight.style.width = "";
+      circleLeft.style.height = "";
+      circleRight.style.height = "";
       stage.style.background = "";
     };
 
@@ -266,24 +271,29 @@ export function HeroSection() {
       applyReveal(section2Cards, 0);
     };
 
+    /** 모션 감소: sticky 연출 없이 섹션2까지 고정 노출 (데스크톱 패널) */
+    const applyStaticLayout = () => {
+      heroEl.style.opacity = "1";
+      heroEl.style.transform = "";
+      heroEl.style.filter = "";
+      indicator.style.transform = "translateX(-50%)";
+      capsule.style.opacity = "1";
+      capsule.style.filter = "";
+      capsule.style.transform = "";
+      wheel.style.opacity = "1";
+      resetExpand();
+      resetBridge();
+      resetCircles();
+      applyReveal(section2Head, 1);
+      applyReveal(section2Lead, 1);
+      applyReveal(section2Cards, 1);
+      section2.style.pointerEvents = "auto";
+    };
+
     const render = () => {
       ticking = false;
       if (reducedMotion.matches) {
-        heroEl.style.opacity = "1";
-        heroEl.style.transform = "";
-        heroEl.style.filter = "";
-        indicator.style.transform = "translateX(-50%)";
-        capsule.style.opacity = "1";
-        capsule.style.filter = "";
-        capsule.style.transform = "";
-        wheel.style.opacity = "1";
-        resetExpand();
-        resetBridge();
-        resetCircles();
-        applyReveal(section2Head, 1);
-        applyReveal(section2Lead, 1);
-        applyReveal(section2Cards, 1);
-        section2.style.pointerEvents = "auto";
+        applyStaticLayout();
         return;
       }
 
@@ -299,17 +309,31 @@ export function HeroSection() {
       }
 
       const scrolling = p > 0.008;
+      const isMobile = mobileLayout.matches;
       indicator.classList.toggle("is-scrolling", scrolling);
+
+      /**
+       * 모바일
+       * — 히어로와 키홀 레이어 분리(CTA 위 겹침 없음)
+       * — 중간 전까지 크기 거의 고정 → 이후 완만하게 확대
+       * — 확대 progress는 상승 종료 이후 스크롤로만 계산(급확대 방지)
+       */
+      const KEY_START_W = 12;
+      const KEY_MID_W = 18;
+      const KEY_GROW_W = 72; // 중간 직후 1차 목표(갑자기 풀스크린 X)
 
       if (!scrolling) {
         heroEl.style.opacity = "";
         heroEl.style.transform = "";
         heroEl.style.filter = "";
-        indicator.style.transform = "";
+        heroEl.style.pointerEvents = "";
         capsule.style.opacity = "";
         capsule.style.filter = "";
         capsule.style.transform = "";
+        indicator.style.opacity = "";
+        indicator.style.transform = "";
         wheel.style.opacity = "";
+        expand.style.zIndex = "";
         resetExpand();
         resetBridge();
         resetCircles();
@@ -317,51 +341,169 @@ export function HeroSection() {
         return;
       }
 
-      // ── 상승 구간(→ 화면 1/2): hero 타이틀은 기존 유지
-      const riseT = easeInOutCubic(clamp(p / RISE_END));
+      const riseEnd = RISE_END;
+      const expandMid = EXPAND_MID;
+      const expandEnd = EXPAND_END;
+      const riseT = easeInOutCubic(clamp(p / riseEnd));
       const riseY = -riseT * riseDistance();
       const indicatorScale = 1 + riseT * (RISE_SCALE - 1);
 
-      // 키홀+캡슐: 상승하며 함께 커짐
-      indicator.style.transform = `translateX(-50%) translateY(${riseY}px) scale(${indicatorScale})`;
+      const stageRect = stage.getBoundingClientRect();
+      const startWidth = WHEEL_DIAMETER;
+      const halfWidth = Math.max(KEYHOLE_DIAMETER_AT_HALF, startWidth);
+      const vmin = Math.min(window.innerWidth, window.innerHeight);
 
+      let centerX: number;
+      let centerY: number;
+      let localX: number;
+      let localY: number;
+      let width: number;
+
+      if (isMobile) {
+        const stageH = stage.offsetHeight;
+        const animDistance = Math.max(scene.offsetHeight - window.innerHeight, 1);
+        const scrolled = Math.max(0, -sceneRect.top);
+
+        // 키홀 시작점: stage 밖(아래) → 중앙. hero CTA와 겹치지 않음
+        const startY = stageH + 36;
+        const endY = stageH * 0.5;
+        const risePx = startY - endY;
+        const keyRise = clamp(scrolled / Math.max(risePx, 1));
+
+        // 히어로: 위치(1:1 상승)는 유지 + 올라가면서 페이드아웃만 추가
+        const heroY = -Math.min(scrolled, stageH);
+        const heroFadeT = easeInOutCubic(clamp(scrolled / Math.max(stageH, 1)));
+        heroEl.style.opacity = (1 - heroFadeT).toFixed(3);
+        heroEl.style.filter = "";
+        heroEl.style.transform = `translate3d(0, ${heroY}px, 0)`;
+        heroEl.style.pointerEvents = heroFadeT > 0.45 ? "none" : "";
+
+        indicator.style.opacity = "0";
+        wheel.style.opacity = "0";
+        capsule.style.opacity = "0";
+
+        localX = stageRect.width / 2;
+        localY = startY + (endY - startY) * keyRise;
+        centerX = stageRect.left + localX;
+        centerY = stageRect.top + localY;
+
+        const endWidth = coverDiameter(centerX, centerY);
+        const midWidth = Math.min(FILL_AT_MID * vmin, endWidth);
+
+        // 상승 이후 스크롤만으로 확대 (p 절대값 충돌로 급점프 하던 문제 제거)
+        const expandScrolled = Math.max(0, scrolled - risePx);
+        const expandDistance = Math.max(animDistance - risePx, 1);
+        const expandT = clamp(expandScrolled / expandDistance);
+
+        if (keyRise < 1) {
+          width = KEY_START_W + keyRise * (KEY_MID_W - KEY_START_W);
+        } else if (expandT < 0.38) {
+          // 1차: 아주 천천히 커짐
+          const t = easeInOutCubic(expandT / 0.38);
+          width = KEY_MID_W + t * (KEY_GROW_W - KEY_MID_W);
+        } else if (expandT < 0.72) {
+          // 2차: 화면을 거의 채움 (문구1 구간)
+          const t = easeInOutCubic((expandT - 0.38) / 0.34);
+          width = KEY_GROW_W + t * (midWidth - KEY_GROW_W);
+        } else {
+          // 3차: 코너까지 덮어 다크
+          const t = clamp((expandT - 0.72) / 0.28);
+          width = midWidth + t * (endWidth - midWidth);
+        }
+
+        // 첫 화면(스크롤 전)엔 완전 숨김 — CTA와 분리
+        const appearT = scrolled <= 2 ? 0 : easeOutCubic(clamp(scrolled / 28));
+        // 히어로가 충분히 떠난 뒤에만 키홀을 앞으로
+        expand.style.zIndex = keyRise > 0.75 ? "5" : "0";
+
+        const height = width * SYMBOL_ASPECT;
+        expand.style.left = `${localX}px`;
+        expand.style.top = `${localY}px`;
+        expand.style.width = `${width}px`;
+        expand.style.height = `${height}px`;
+        expand.style.opacity = appearT.toFixed(3);
+
+        const coverRatio = width / Math.max(endWidth, 1);
+        const screenFill = width / Math.max(vmin, 1);
+        stage.style.background = coverRatio > 0.96 ? INSIDE : "";
+
+        /**
+         * 문구 타이밍 (원인/수정)
+         * 1) 예전: expandT 초반(키홀 작을 때)에 phraseT가 올라감 → 문구가 너무 일찍 등장
+         *    → 키홀이 화면을 충분히 채운 뒤(screenFill)에만 시작
+         * 2) 예전: 페이드아웃을 phraseT 1→0으로 되감음 → applyPhrase가 피크로 역재생되며
+         *    문구1이 문구2와 겹쳐 다시 보임
+         *    → 각 문구 localT는 0→1 단방향만. 끝나면 1로 고정(완전 투명)
+         */
+        const P1_FILL0 = 0.92;
+        const P1_FILL1 = 1.32;
+        const P2_FILL0 = 1.4; // 문구1 완전 종료 후 간격
+        const P2_FILL1 = 1.78;
+
+        let phrase1T = 0;
+        let phrase2T = 0;
+        if (screenFill < P1_FILL0) {
+          phrase1T = 0;
+          phrase2T = 0;
+        } else if (screenFill < P1_FILL1) {
+          phrase1T = (screenFill - P1_FILL0) / (P1_FILL1 - P1_FILL0);
+          phrase2T = 0;
+        } else if (screenFill < P2_FILL0) {
+          phrase1T = 1; // 종료 상태 유지 (되감기 금지)
+          phrase2T = 0;
+        } else if (screenFill < P2_FILL1) {
+          phrase1T = 1;
+          phrase2T = (screenFill - P2_FILL0) / (P2_FILL1 - P2_FILL0);
+        } else {
+          phrase1T = 1;
+          phrase2T = 1;
+        }
+
+        applyPhrase(phrase1, phrase1T);
+        applyPhrase(phrase2, phrase2T);
+
+        const bridgeVisible =
+          (phrase1T > 0 && phrase1T < 1) || (phrase2T > 0 && phrase2T < 1);
+        bridge.style.opacity = bridgeVisible ? "1" : "0";
+        bridge.style.zIndex = "6";
+
+        circleLeft.style.opacity = "0";
+        circleRight.style.opacity = "0";
+        circleLeft.style.transform = "";
+        circleRight.style.transform = "";
+        resetSection2();
+        return;
+      }
+
+      // ── 데스크톱
+      indicator.style.opacity = "";
+      indicator.style.transform = `translateX(-50%) translateY(${riseY}px) scale(${indicatorScale})`;
       heroEl.style.opacity = map(riseT, 0.08, 1, 1, 0).toFixed(3);
       heroEl.style.filter = `blur(${map(riseT, 0.08, 1, 0, 14)}px)`;
       heroEl.style.transform = `translate3d(0, ${riseY + map(riseT, 0, 1, 0, -48)}px, 0) scale(${map(riseT, 0, 1, 1, 0.94)})`;
+      heroEl.style.pointerEvents = "";
 
-      // 캡슐: 커지면서(부모 scale) 자연스럽게 페이드만
       capsule.style.transform = "";
       capsule.style.filter = "";
-      // 기존(0.18→0.88) 대비 약 2배 빠르게 페이드아웃
       capsule.style.opacity = map(riseT, 0.12, 0.48, 1, 0).toFixed(3);
 
-      const stageRect = stage.getBoundingClientRect();
       const wheelRect = wheel.getBoundingClientRect();
-      const centerX = wheelRect.left + wheelRect.width / 2;
-      const centerY = wheelRect.top + wheelRect.height / 2;
-      // absolute 확대 레이어는 stage 기준 좌표
-      const localX = centerX - stageRect.left;
-      const localY = centerY - stageRect.top;
+      centerX = wheelRect.left + wheelRect.width / 2;
+      centerY = wheelRect.top + wheelRect.height / 2;
+      localX = centerX - stageRect.left;
+      localY = centerY - stageRect.top;
 
-      // 상승: 로그
-      // 확대: 화면 채움(screenFill) 기준 선형 → 체감상 고르게 커지고, 중간에 문구 노출
-      const startWidth = WHEEL_DIAMETER;
-      const halfWidth = Math.max(KEYHOLE_DIAMETER_AT_HALF, startWidth);
       const endWidth = coverDiameter(centerX, centerY);
-      const vmin = Math.min(window.innerWidth, window.innerHeight);
       const midWidth = Math.min(FILL_AT_MID * vmin, endWidth);
 
-      let width: number;
-      if (p <= RISE_END) {
-        const t = clamp(p / RISE_END);
+      if (p <= riseEnd) {
+        const t = clamp(p / riseEnd);
         width = lerpLog(startWidth, halfWidth, t);
-      } else if (p <= EXPAND_MID) {
-        // 작은 키홀 → 화면을 거의 채울 때까지 (라이트 배경이 주변에 남음)
-        const t = clamp((p - RISE_END) / (EXPAND_MID - RISE_END));
+      } else if (p <= expandMid) {
+        const t = clamp((p - riseEnd) / (expandMid - riseEnd));
         width = halfWidth + t * (midWidth - halfWidth);
-      } else if (p <= EXPAND_END) {
-        // 코너까지 덮어 완전 다크
-        const t = clamp((p - EXPAND_MID) / (EXPAND_END - EXPAND_MID));
+      } else if (p <= expandEnd) {
+        const t = clamp((p - expandMid) / (expandEnd - expandMid));
         width = midWidth + t * (endWidth - midWidth);
       } else {
         width = endWidth;
@@ -398,48 +540,54 @@ export function HeroSection() {
         (phrase1T > 0 && phrase1T < 1) || (phrase2T > 0 && phrase2T < 1);
       bridge.style.opacity = bridgeVisible ? "1" : "0";
 
-      // ── 섹션2: 2번 문구 페이드아웃이 끝날 때 바로 원 합류
-      const circleStartP =
-        PHRASE2_START + CIRCLE_AT_PHRASE2 * (PHRASE2_END - PHRASE2_START);
-      const circleT =
-        p <= circleStartP
-          ? 0
-          : easeOutCubic(clamp((p - circleStartP) / Math.max(1 - circleStartP, 0.001)));
+      // ── 원 합류 (데스크톱 sticky만 — 모바일은 섹션2로 바로 이어짐)
+      if (mobileLayout.matches) {
+        // 모바일: 원 합류 없음 — 키홀 다크 직후 섹션2로 이어짐
+        circleLeft.style.opacity = "0";
+        circleRight.style.opacity = "0";
+        circleLeft.style.transform = "";
+        circleRight.style.transform = "";
+        resetSection2();
+      } else {
+        const circleStartP =
+          PHRASE2_START + CIRCLE_AT_PHRASE2 * (PHRASE2_END - PHRASE2_START);
+        const circleT =
+          p <= circleStartP
+            ? 0
+            : easeOutCubic(clamp((p - circleStartP) / Math.max(1 - circleStartP, 0.001)));
 
-      // 해상도 무관: 크기는 vmin 기준, 좌우 이동·겹침은 원 지름 비율
-      const circleSize =
-        Math.min(vmin * MERGE_CIRCLE_VMIN, window.innerWidth * MERGE_CIRCLE_MAX_VW) *
-        MERGE_COMPOSITION_SCALE;
-      // 중심 거리도 지름 비율 → 스케일과 함께 커져 겹침 비율 유지
-      const startMergeX = circleSize * MERGE_START_X_OF_CIRCLE;
-      const endMergeX = circleSize * MERGE_END_X_OF_CIRCLE;
-      const mergeX = startMergeX + circleT * (endMergeX - startMergeX);
-      const isMobile = window.innerWidth <= 640;
-      const mergeY = `-${isMobile ? MERGE_Y_PERCENT_MOBILE : MERGE_Y_PERCENT}%`;
-      const circleVisible = circleT > 0.001 ? "1" : "0";
-      const sizePx = `${circleSize}px`;
+        const vmin = Math.min(window.innerWidth, window.innerHeight);
+        const circleSize =
+          Math.min(vmin * MERGE_CIRCLE_VMIN, window.innerWidth * MERGE_CIRCLE_MAX_VW) *
+          MERGE_COMPOSITION_SCALE;
+        const startMergeX = circleSize * MERGE_START_X_OF_CIRCLE;
+        const endMergeX = circleSize * MERGE_END_X_OF_CIRCLE;
+        const mergeX = startMergeX + circleT * (endMergeX - startMergeX);
+        const mergeY = `-${MERGE_Y_PERCENT}%`;
+        const circleVisible = circleT > 0.001 ? "1" : "0";
+        const sizePx = `${circleSize}px`;
 
-      circleLeft.style.width = sizePx;
-      circleLeft.style.height = sizePx;
-      circleRight.style.width = sizePx;
-      circleRight.style.height = sizePx;
-      circleLeft.style.opacity = circleVisible;
-      circleRight.style.opacity = circleVisible;
-      circleLeft.style.transform = `translate(-50%, ${mergeY}) translateX(${-mergeX}px)`;
-      circleRight.style.transform = `translate(-50%, ${mergeY}) translateX(${mergeX}px)`;
+        circleLeft.style.width = sizePx;
+        circleLeft.style.height = sizePx;
+        circleRight.style.width = sizePx;
+        circleRight.style.height = sizePx;
+        circleLeft.style.opacity = circleVisible;
+        circleRight.style.opacity = circleVisible;
+        circleLeft.style.transform = `translate(-50%, ${mergeY}) translateX(${-mergeX}px)`;
+        circleRight.style.transform = `translate(-50%, ${mergeY}) translateX(${mergeX}px)`;
 
-      // 원 합류 중후반 — 1 헤드 → 2 리드 → 3 박스 순차 등장
-      const headT = clamp((circleT - S2_REVEAL_START) / S2_REVEAL_DURATION);
-      const leadT = clamp(
-        (circleT - (S2_REVEAL_START + S2_REVEAL_STAGGER)) / S2_REVEAL_DURATION,
-      );
-      const cardsT = clamp(
-        (circleT - (S2_REVEAL_START + S2_REVEAL_STAGGER * 2)) / S2_REVEAL_DURATION,
-      );
-      applyReveal(section2Head, headT);
-      applyReveal(section2Lead, leadT);
-      applyReveal(section2Cards, cardsT);
-      section2.style.pointerEvents = headT > 0.55 ? "auto" : "none";
+        const headT = clamp((circleT - S2_REVEAL_START) / S2_REVEAL_DURATION);
+        const leadT = clamp(
+          (circleT - (S2_REVEAL_START + S2_REVEAL_STAGGER)) / S2_REVEAL_DURATION,
+        );
+        const cardsT = clamp(
+          (circleT - (S2_REVEAL_START + S2_REVEAL_STAGGER * 2)) / S2_REVEAL_DURATION,
+        );
+        applyReveal(section2Head, headT);
+        applyReveal(section2Lead, leadT);
+        applyReveal(section2Cards, cardsT);
+        section2.style.pointerEvents = headT > 0.55 ? "auto" : "none";
+      }
     };
 
     const requestRender = () => {
@@ -452,12 +600,14 @@ export function HeroSection() {
     window.addEventListener("scroll", requestRender, { passive: true });
     window.addEventListener("resize", requestRender);
     reducedMotion.addEventListener?.("change", requestRender);
+    mobileLayout.addEventListener?.("change", requestRender);
     render();
 
     return () => {
       window.removeEventListener("scroll", requestRender);
       window.removeEventListener("resize", requestRender);
       reducedMotion.removeEventListener?.("change", requestRender);
+      mobileLayout.removeEventListener?.("change", requestRender);
     };
   }, []);
 
@@ -556,16 +706,16 @@ export function HeroSection() {
             <p>{keyholeBridge.line2.replace(/\n/g, " ")}</p>
           </div>
 
-          {/* 2번 문구 이후: 좌우 원이 가운데로 모여 겹침 */}
+          {/* 2번 문구 이후: 좌우 원 합류 (데스크톱 sticky) */}
           <div className="hero-merge-circles" aria-hidden="true">
             <div ref={circleLeftRef} className="hero-merge-circle" />
             <div ref={circleRightRef} className="hero-merge-circle" />
           </div>
 
-          {/* 섹션2 콘텐츠 — 원 합류 시 1→2→3 순차 등장 */}
+          {/* 섹션2 — 데스크톱: sticky 안 오버레이 */}
           <div
             ref={section2Ref}
-            className="hero-section2-panel pointer-events-none absolute inset-0 z-[7] flex justify-center"
+            className="hero-section2-panel pointer-events-none absolute inset-0 z-[7] hidden justify-center sm:flex"
             aria-labelledby="problem-heading"
           >
             <div className="zt-container-hero flex w-full flex-col items-stretch text-left">
@@ -606,26 +756,75 @@ export function HeroSection() {
                   {section2Gap.cards.map((card) => (
                     <article
                       key={card.num}
-                      className="hero-section2-card relative flex w-full min-w-0 flex-col items-stretch p-5 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
+                      className="hero-section2-card relative flex w-full min-w-0 flex-col items-stretch p-3.5 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
                     >
-                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
+                      <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
                         {card.num}
                       </span>
-                      <h3 className="mt-3 w-full text-[16px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[26px]">
+                      <h3 className="mt-2 w-full text-[15px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[26px]">
                         {card.title}
                         <br />
                         <span className="text-primary">{card.titleLine2Accent}</span>
                         {card.titleLine2Rest}
                       </h3>
-                      <p className="mt-3 w-full min-w-0 self-stretch text-[13px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
+                      <p className="mt-1.5 w-full min-w-0 self-stretch text-[12px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
                         {card.body}
                       </p>
                     </article>
                   ))}
                 </div>
               </div>
-
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 섹션2 — 모바일: 다크 배경 + 일반 페이지 스크롤 (원 합류 없음) */}
+      <section
+        ref={section2FlowRef}
+        id="problem"
+        className="hero-section2-flow"
+        aria-labelledby="problem-heading-mobile"
+      >
+        <div className="zt-container-hero flex w-full flex-col items-stretch text-left">
+          <div>
+            <p className="text-[15px] font-bold tracking-wide text-[#7eb6ff]">
+              {section2Gap.eyebrow}
+            </p>
+            <h2
+              id="problem-heading-mobile"
+              className="hero-section2-title mt-3 max-w-[820px] text-[22px] font-extrabold leading-[1.3] tracking-tight text-white [word-break:keep-all]"
+            >
+              {section2Gap.title}
+              <br />
+              {section2Gap.titleLine2}
+            </h2>
+          </div>
+          <p className="mt-2 max-w-[640px] text-[14px] leading-relaxed text-slate-300">
+            {section2Gap.lead}
+          </p>
+          <div className="hero-section2-cards mt-4 w-full overflow-hidden rounded-[20px] bg-white/85 shadow-[0_18px_50px_rgba(171,209,255,0.55)]">
+                <div className="grid grid-cols-1 divide-y divide-slate-200/90 md:grid-cols-3 md:divide-y-0">
+                  {section2Gap.cards.map((card) => (
+                    <article
+                      key={card.num}
+                      className="hero-section2-card relative flex w-full min-w-0 flex-col items-stretch p-3.5 text-left sm:p-12 md:[&:not(:first-child)]:before:absolute md:[&:not(:first-child)]:before:bottom-12 md:[&:not(:first-child)]:before:left-0 md:[&:not(:first-child)]:before:top-12 md:[&:not(:first-child)]:before:w-px md:[&:not(:first-child)]:before:bg-slate-200/90"
+                    >
+                      <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold tracking-wide text-white sm:h-10 sm:w-10 sm:text-[14px]">
+                        {card.num}
+                      </span>
+                      <h3 className="mt-2 w-full text-[15px] font-bold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-5 sm:text-[26px]">
+                        {card.title}
+                        <br />
+                        <span className="text-primary">{card.titleLine2Accent}</span>
+                        {card.titleLine2Rest}
+                      </h3>
+                      <p className="mt-1.5 w-full min-w-0 self-stretch text-[12px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-10 sm:text-[18px]">
+                        {card.body}
+                      </p>
+                    </article>
+                  ))}
+                </div>
           </div>
         </div>
       </section>

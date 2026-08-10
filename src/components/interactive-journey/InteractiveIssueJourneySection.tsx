@@ -217,7 +217,7 @@ export function InteractiveIssueJourneySection() {
                     )}
                   </h3>
 
-                  <p className="mt-3 whitespace-pre-line text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-4 sm:text-[15px]">
+                  <p className="mt-3 whitespace-pre-line text-[16px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-4 sm:text-[18px]">
                     {chapterDescription}
                   </p>
                 </div>
