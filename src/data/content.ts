@@ -397,7 +397,7 @@ export const closing = {
 };
 
 export const contactBanner = {
-  eyebrow: "검증하는 보안으로 시작",
+  eyebrow: "검증하는 보안으로 시작으로",
   title: "안전하다는 확신,",
   titleLine2: "내부를 확인하는 것부터 시작됩니다.",
   brochureLabel: "브로슈어 다운호드",
