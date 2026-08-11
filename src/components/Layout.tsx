@@ -208,13 +208,6 @@ export function Layout() {
                 ))}
               </nav>
             )}
-            <Link
-              to={withLocale(paths.fullTour)}
-              className="zt-btn-primary mt-3 w-full text-sm"
-              onClick={() => setOpen(false)}
-            >
-              데모 체험하기
-            </Link>
           </div>
         )}
       </header>
