@@ -3,7 +3,7 @@ export const site = {
   brandEn: "ZeroTiCA",
   productPortal: "ZeroTica Watch",
   runaDefinition:
-    "제로티카 고객 포털(RUNA) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
+    "제로티카 고객 포털(ZeroTica Watch) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
   footerTagline: "네트워크 데이터와 전문가 분석을 기반으로\n기업의 침해 여부를 평가합니다.",
   contactEmail: "zerotica@narusec.com",
   contactPhone: "02-522-7912",
@@ -62,17 +62,17 @@ export const hero = {
   eyebrow: "보안은 검증이다",
   headline: "안전하다는 확신의 근거",
   ctaVideo: {
-    label: "서비스 영상보기",
+    label: "서비스 영상 보기",
     youtubeId: "EeKxCfILC58",
   },
-  ctaFlow: { label: "침해평가 흐름보기", href: paths.fullTour },
+  ctaFlow: { label: "침해 평가 흐름 보기", href: paths.fullTour },
   scrollHref: "#problem",
 };
 
-export const heroFlowSteps = ["탐지", "RUNA 확인", "고객 답변", "전문가 검증", "보고서"] as const;
+export const heroFlowSteps = ["탐지", "확인 요청", "고객 답변", "전문가 검증", "보고서"] as const;
 
 export const heroDashboardPreview = {
-  alertTitle: "RUNA 확인 요청",
+  alertTitle: "확인 요청",
   taskTitle: "의심 통신 확인 요청",
   internalIp: "10.24.18.52",
   externalIp: "203.0.113.44",
@@ -81,7 +81,7 @@ export const heroDashboardPreview = {
   staffMessage:
     "폐쇄망 IP에서 기계적 통신 패턴이 감지되었습니다. 정기 배포·패치 미러 서버 등 업무 통신인지 확인 부탁드립니다.",
   replyCta: "업무 맥락 답변하기",
-  caption: "RUNA가 의심 통신을 고객 업무 맥락과 연결해 확인 요청으로 전환합니다.",
+  caption: "ZeroTica Watch가 의심 통신을 고객 업무 맥락과 연결해 확인 요청으로 전환합니다.",
 };
 
 export const problemSection = {
@@ -114,7 +114,7 @@ export const whatsDifferentSection = {
           { text: "은 없는가" },
         ],
         [
-          { text: "알려진" },
+          { text: "알려진 " },
           { text: "공격 패턴이나 이상 신호", accent: true },
           { text: "가 탐지되었는가" },
         ],
@@ -161,7 +161,7 @@ export const keyholeBridge = {
 export const section2Gap = {
   eyebrow: "보안 운영에 남는 공백",
   title: "기업 내부에는 여전히,",
-  titleLine2: "확인되지 않은 영역이 남아있습니다.",
+  titleLine2: "확인되지 않은 영역이 남아 있습니다.",
   lead: "무엇이 있는지 · 무슨 의미인지 · 무엇을 해야 하는지.",
   cards: [
     {
@@ -190,7 +190,7 @@ export const section2Gap = {
 
 export const runaSection = {
   stepEyebrow: "STEP 03",
-  title: "RUNA는 단순 알림봇이 아닙니다",
+  title: "ZeroTica Watch는 단순 알림봇이 아닙니다",
   lead: "의심 통신의 맥락을 고객과 함께 확인하는 보안 어시스턴트입니다.",
   points: [
     "의심 통신 발생 시 고객에게 선별 알림",
@@ -235,14 +235,14 @@ export const serviceFlowSteps: {
   },
   {
     step: "06",
-    title: "RUNA 알림",
+    title: "확인 요청",
     body: "고객에게 중요한 이벤트만 선별해 알립니다. 쏟아지는 로그가 아닌, 검토가 필요한 이슈만 전달합니다.",
     visual: "notify",
   },
   {
     step: "07",
     title: "고객 상호작용",
-    body: "RUNA와 분석팀이 업무 맥락을 질문하고, 고객 답변을 바탕으로 사건을 구체화합니다.",
+    body: "ZeroTica Watch와 분석팀이 업무 맥락을 질문하고, 고객 답변을 바탕으로 사건을 구체화합니다.",
     visual: "interact",
   },
   {
@@ -327,7 +327,7 @@ export const services = [
     id: "insight",
     name: "Insight",
     title: "현재 내부 상태를",
-    titleLine2: "한번 정확히 점검해야 해요.",
+    titleLine2: "한 번 정확히 점검해야 해요.",
     description: "최근 보안 상태가 우려되거나,\n현재 침해 정황과 우선 조치 과제를 확인해야 할 때",
     meta: [
       { label: "목적", value: "현재 상태를 먼저 확인" },
@@ -397,7 +397,7 @@ export const closing = {
 };
 
 export const contactBanner = {
-  eyebrow: "검증하는 보안으로 시작으로",
+  eyebrow: "검증하는 보안의 시작",
   title: "안전하다는 확신,",
   titleLine2: "내부를 확인하는 것부터 시작됩니다.",
   brochureLabel: "브로슈어 다운로드",
@@ -410,7 +410,7 @@ export const contactBanner = {
 export const storyAnchors = [
   { id: "problem", label: "왜 검증인가" },
   { id: "journey", label: "검증 과정" },
-  { id: "outcomes", label: "고객가치" },
+  { id: "outcomes", label: "고객 가치" },
   { id: "choose", label: "서비스" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "문의" },

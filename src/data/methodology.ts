@@ -66,7 +66,7 @@ export const communicationDirections: {
 export const directionAnalysisNote = {
   title: "같은 유형도 방향마다 따로 분석합니다",
   body:
-    "분석 엔진은 conn 로그의 src_local·dst_local로 통신 방향을 나눈 뒤, 각 탐지 스크립트를 아웃바운드·인바운드·측면이동에 맞게 실행합니다. RUNA 대시보드에서도 방향·이벤트 유형별 발생·의심·유효 건수로 우선순위를 정합니다.",
+    "분석 엔진은 conn 로그의 src_local·dst_local로 통신 방향을 나눈 뒤, 각 탐지 스크립트를 아웃바운드·인바운드·측면이동에 맞게 실행합니다. 대시보드에서도 방향·이벤트 유형별 발생·의심·유효 건수로 우선순위를 정합니다.",
 };
 
 export const ndrComparison = {
@@ -82,7 +82,7 @@ export const ndrComparison = {
     },
     {
       typical: "탐지 후 고객이 직접 판단",
-      zerotica: "분석팀 선별 → RUNA 알림 → 고객 맥락 확인 → 전문가 검증 → 보고",
+      zerotica: "분석팀 선별 → 확인 요청 → 고객 맥락 확인 → 전문가 검증 → 보고",
     },
     {
       typical: "고객별로 고립된 위협 정보",
@@ -115,7 +115,7 @@ export const analysisPipeline = [
   {
     step: "⑤",
     title: "전문가 검증",
-    body: "분석팀 선별 → RUNA · 고객 협업",
+    body: "분석팀 선별 → 고객 협업",
   },
 ];
 
@@ -178,7 +178,7 @@ export const detectionTopics: DetectionTopic[] = [
       "한 가지 유형만 보면 스캔·인증 이상·웹쉘·IOC 연결 등 다른 징후가 누락됩니다.",
     approach:
       "기계적 통신, 장기 세션, 스캔, SSH·RDP·SMB·Kerberos·NTLM 인증 이상, C2 URL, 웹쉘, IOC, DNS·ICMP·FTP 이상 등 30+ 규칙을 아웃바운드·인바운드·측면이동 각각 실행하고, 발생·의심·유효 건수로 집계합니다.",
-    outcome: "분석팀이 우선순위를 정하고, 보고서·RUNA 알림에 반영할 후보만 추립니다.",
+    outcome: "분석팀이 우선순위를 정하고, 보고서·확인 요청에 반영할 후보만 추립니다.",
     screenNote: "대시보드 Stage별·이벤트별 집계 테이블 — 발생·의심·유효 건수로 우선순위 판단",
     visual: "event-dashboard",
   },

@@ -44,7 +44,7 @@ export const journeyPhaseMeta: Record<
   },
   collaborate: {
     label: "협업",
-    desc: "RUNA로 고객과 맥락을 맞추는 단계",
+    desc: "ZeroTica Watch로 고객과 맥락을 맞추는 단계",
     tone: "from-blue-50/80 to-white",
   },
   close: {
@@ -74,7 +74,7 @@ export const journeyStepShortLabel: Record<string, string> = {
   "02": "행동 기반 탐지",
   "03": "IOC 일괄 점검",
   "04": "화이트리스트",
-  "05": "RUNA 알림",
+  "05": "확인 요청",
   "06": "고객 맥락 답변",
   "07": "검증·조치",
   "08": "침해 평가 보고",
@@ -88,7 +88,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     actorLabel: "제로티카 · 센서",
     title: "네트워크 미러링 · 로그 수집",
     body:
-      "고객망 스위치·라우터 SPAN/TAP으로 복제된 트래픽을 Zeek 센서가 패시브로 관측합니다. conn·HTTP·DNS·SSL 등 로그가 RUNA 서버로 전달됩니다.",
+      "고객망 스위치·라우터 SPAN/TAP으로 복제된 트래픽을 Zeek 센서가 패시브로 관측합니다. conn·HTTP·DNS·SSL 등 로그가 분석 서버로 전달됩니다.",
     detail: "대시보드 「데이터 수집 상태」에서 센서별 conn 수집 여부를 확인합니다.",
     visual: "sensor",
   },
@@ -101,7 +101,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     body:
       "30개 이상의 탐지 스크립트가 Zeek 로그를 매일 돌립니다. conn의 src_local·dst_local로 아웃바운드·인바운드·측면이동을 나눈 뒤, 같은 유형의 규칙도 방향마다 따로 실행해 빠뜨리지 않습니다. 기계적 통신·장기 세션·프로토콜 이상·웹 위협 등을 시간 패턴으로 봅니다.",
     detail:
-      "분석팀은 RUNA 이벤트 상세(networkMap, bytesTimeline, conn 로그 테이블)에서 방향·근거를 확인합니다.",
+      "분석팀은 이벤트 상세(networkMap, bytesTimeline, conn 로그 테이블)에서 방향·근거를 확인합니다.",
     visual: "event-detail-agent",
   },
   {
@@ -122,7 +122,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     actorLabel: "분석팀",
     title: "후보 정제 · 화이트리스트",
     body:
-      "자동 탐지 후보 중 알려진 업무 통신은 IP·도메인·그룹 단위로 화이트리스트에 반영합니다. 분석팀이 검토해 RUNA로 넘길 이슈만 남깁니다.",
+      "자동 탐지 후보 중 알려진 업무 통신은 IP·도메인·그룹 단위로 화이트리스트에 반영합니다. 분석팀이 검토해 포털로 넘길 이슈만 남깁니다.",
     detail: "고객은 이 단계에서 직접 조작하지 않습니다. 결과는 이후 알림으로 전달됩니다.",
     visual: "task-whitelist",
   },
@@ -131,9 +131,9 @@ export const unifiedJourneySteps: JourneyStep[] = [
     phase: "collaborate",
     actor: "both",
     actorLabel: "분석팀 → 고객",
-    title: "RUNA 알림 · 확인 요청",
+    title: "확인 요청",
     body:
-      "검토가 필요한 이슈만 RUNA 이슈로 등록됩니다. 쏟아지는 로그가 아니라, 분석팀이 선별한 확인 요청이 고객에게 도착합니다.",
+      "검토가 필요한 항목만 이슈로 등록됩니다. 쏟아지는 로그가 아니라, 분석팀이 선별한 확인 요청이 고객에게 도착합니다.",
     detail: "고객 화면: 이슈 관리 칸반 · 알림. 분석팀: 위협 내역·근거 데이터 첨부.",
     visual: "notify",
   },
@@ -144,7 +144,7 @@ export const unifiedJourneySteps: JourneyStep[] = [
     actorLabel: "고객",
     title: "업무 맥락 답변",
     body:
-      "「정기 배포 통신인가요?」「해당 서버 용도는?」— RUNA 이슈 상세와 댓글로 업무 맥락을 답합니다. 분석팀은 이 답변을 검증 근거에 포함합니다.",
+      "「정기 배포 통신인가요?」「해당 서버 용도는?」— 이슈 상세와 댓글로 업무 맥락을 답합니다. 분석팀은 이 답변을 검증 근거에 포함합니다.",
     detail: "고객이 하는 일: 맥락 확인·답변. 분석팀이 하는 일: 질문 정리·추가 확인.",
     visual: "interact",
   },
@@ -205,12 +205,12 @@ export const journeyActs: JourneyAct[] = [
   {
     id: "collaborate",
     act: 2,
-    title: "RUNA 협업 · 맥락 확인",
+    title: "고객 협업 · 맥락 확인",
     stepRange: ["05", "06"],
     stepIndices: [4, 5],
     summary:
-      "선별된 이슈만 RUNA 이슈로 등록됩니다. 분석팀이 확인을 요청하면, 고객은 이슈 상세·댓글로 「정기 배포 통신입니다」처럼 맥락을 답합니다.",
-    customerNote: "고객님이 하시는 일: RUNA 알림 확인 → 댓글로 맥락 답변.",
+      "선별된 항목만 이슈로 등록됩니다. 분석팀이 확인을 요청하면, 고객은 이슈 상세·댓글로 「정기 배포 통신입니다」처럼 맥락을 답합니다.",
+    customerNote: "고객님이 하시는 일: 확인 요청을 열고 → 댓글로 맥락 답변.",
     highlights: ["선별 알림 (로그 폭탄 없음)", "이슈 상세·칸반", "분석팀 ↔ 고객 댓글", "맥락이 검증 근거로 반영"],
     visual: "interact",
   },

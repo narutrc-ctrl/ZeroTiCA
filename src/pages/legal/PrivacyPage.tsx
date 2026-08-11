@@ -4,7 +4,7 @@ import { site } from "@/data/content";
 export function PrivacyPage() {
   return (
     <div className="zt-container zt-section max-w-3xl">
-      <h1 className="text-3xl font-bold text-zinc-800">개인정보처리방침</h1>
+      <h1 className="text-3xl font-bold text-zinc-800">개인정보 처리방침</h1>
       <p className="mt-4 text-sm text-slate-500">시행일: 2026년 1월 1일</p>
       <div className="prose prose-slate mt-8 max-w-none text-sm leading-relaxed text-slate-700">
         <p>

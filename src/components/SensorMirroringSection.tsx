@@ -45,7 +45,7 @@ export function SensorMirroringSection() {
           <RevealOnScroll delay={160}>
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                RUNA에서 확인하는 화면
+                ZeroTica Watch에서 확인하는 화면
               </p>
               <SensorIngestionPreview />
               <p className="mt-3 text-xs text-slate-500">

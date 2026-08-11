@@ -89,7 +89,7 @@ export function DetectionTopicCard({
       <div className="mt-5 space-y-5">
         <InsightPair problem={topic.problem} approach={topic.approach} />
         <KeyTakeaway>{topic.outcome}</KeyTakeaway>
-        <p className="text-sm leading-relaxed text-slate-400">RUNA 화면: {topic.screenNote}</p>
+        <p className="text-sm leading-relaxed text-slate-400">서비스 화면: {topic.screenNote}</p>
       </div>
     </div>
   );

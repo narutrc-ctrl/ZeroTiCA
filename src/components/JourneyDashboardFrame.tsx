@@ -39,7 +39,7 @@ export function JourneyDashboardFrame({
       <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_-12px_rgba(15,23,42,0.18),0_8px_24px_-8px_rgba(15,23,42,0.12)]">
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-3.5">
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">RUNA 대시보드</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">대시보드</p>
             <p className="mt-0.5 text-sm font-semibold leading-snug text-[#212529] sm:text-[15px]">{title}</p>
           </div>
 

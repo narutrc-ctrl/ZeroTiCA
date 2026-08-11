@@ -22,11 +22,11 @@ export type MethodologyScreenId =
   | "ioc-batch";
 
 const SCREEN_LABELS: Record<MethodologyScreenId, string> = {
-  "event-detail-agent": "RUNA 대시보드 · 이벤트 상세 (에이전트 통신)",
-  "long-session": "RUNA 분석 · 장시간 세션",
-  "task-and-whitelist": "RUNA 이슈 관리 · 화이트리스트 설정",
-  "event-dashboard": "RUNA 대시보드 · 단계별 요약",
-  "ioc-batch": "RUNA 대시보드 · IOC 연결 이벤트",
+  "event-detail-agent": "대시보드 · 이벤트 상세 (에이전트 통신)",
+  "long-session": "분석 · 장시간 세션",
+  "task-and-whitelist": "이슈 관리 · 화이트리스트 설정",
+  "event-dashboard": "대시보드 · 단계별 요약",
+  "ioc-batch": "대시보드 · IOC 연결 이벤트",
 };
 
 function RunaPreviewShell({
@@ -434,7 +434,7 @@ export function MethodologyCapture({ id }: { id: MethodologyScreenId }) {
 export function MethodologyScreenCaption({ id }: { id: MethodologyScreenId }) {
   return (
     <p className="mt-3 text-center text-xs text-slate-500">
-      {SCREEN_LABELS[id]} — 실제 RUNA(front) 화면과 동일한 레이아웃 · 컬럼명 · 데모 데이터
+      {SCREEN_LABELS[id]} — 실제 서비스 화면과 동일한 레이아웃 · 컬럼명 · 데모 데이터
     </p>
   );
 }

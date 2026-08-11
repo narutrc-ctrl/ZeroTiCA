@@ -34,7 +34,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
   if (visual === "notify") {
     const bodyText = large ? "text-sm" : "text-xs";
     return (
-      <CaptureFrame title="RUNA · 확인 요청" large={large}>
+      <CaptureFrame title="ZeroTica Watch · 확인 요청" large={large}>
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
             <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 확인 요청</p>

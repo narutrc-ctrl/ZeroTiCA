@@ -16,7 +16,7 @@ export function HeroDashboardPreview({ className }: { className?: string }) {
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-            <span className="ml-2 text-xs text-slate-400">ZeroTica Watch · RUNA</span>
+            <span className="ml-2 text-xs text-slate-400">ZeroTica Watch</span>
           </div>
           <BrandMark size="sm" inverted className="opacity-90" />
         </div>

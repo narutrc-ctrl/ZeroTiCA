@@ -442,7 +442,7 @@ export const demoReports = [
   {
     period: "2026-05-01 ~ 2026-05-31",
     title: "ZeroTica Watch",
-    status: "발행완료",
+    status: "발행 완료",
     statusClass: "text-emerald-600",
   },
 ];

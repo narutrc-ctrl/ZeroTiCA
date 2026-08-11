@@ -75,7 +75,7 @@ function CollaborateExtras({ step }: { step: JourneyStep }) {
         </ul>
         <RoleSplitBox
           analyst="위협 내역·근거 데이터를 이슈로 등록하고 확인 요청"
-          customer="RUNA 알림·이슈 관리 칸반에서 새 요청 확인"
+          customer="확인 요청·이슈 관리 칸반에서 새 요청 확인"
         />
       </div>
     );

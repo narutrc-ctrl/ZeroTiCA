@@ -81,7 +81,7 @@ function DetectSnippet({ study }: { study: TaskCaseStudy }) {
         ))}
       </ul>
       <p className="mt-3 text-[11px] text-slate-400">
-        이 단계에서는 후보 등록까지만 — RUNA 이슈·고객 확인은 이후 단계
+        이 단계에서는 후보 등록까지만 — 이슈·고객 확인은 이후 단계
       </p>
     </SnippetShell>
   );
@@ -123,7 +123,7 @@ function WhitelistSnippet({ study }: { study: TaskCaseStudy }) {
 function NotifySnippet({ study }: { study: TaskCaseStudy }) {
   return (
     <SnippetShell study={study} tone="notify">
-      <p className="text-[11px] font-bold uppercase tracking-wider text-blue-600">RUNA 이슈 · 확인 요청</p>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-blue-600">이슈 · 확인 요청</p>
       <p className="mt-2 text-sm font-bold text-[#212529]">{study.taskTitle}</p>
       <p className="mt-3 text-sm leading-relaxed text-slate-700">{study.staffAsk}</p>
     </SnippetShell>
@@ -227,7 +227,7 @@ export function JourneyStepExamples({ step }: { step: string }) {
         <StepExampleHeader focus={config.focus} headline={config.headline} />
         <CollectSnapshots />
         <p className="text-xs leading-relaxed text-slate-500">
-          conn·DNS·HTTP 등 원시 로그가 RUNA로 전달된 뒤, STEP 02부터 방향별 탐지 규칙이 실행됩니다.
+          conn·DNS·HTTP 등 원시 로그가 분석 서버로 전달된 뒤, STEP 02부터 방향별 탐지 규칙이 실행됩니다.
         </p>
       </div>
     );

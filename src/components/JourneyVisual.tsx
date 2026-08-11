@@ -4,7 +4,7 @@ import { MethodologyCapture, type MethodologyScreenId } from "@/components/Metho
 import { ProductCapture } from "@/components/ProductCapture";
 import { SensorIngestionPreview } from "@/components/SensorIngestionPreview";
 
-const RUNA_SCREENS = {
+const PORTAL_SCREENS = {
   "event-detail-agent": true,
   "long-session": true,
   "ioc-batch": true,
@@ -25,7 +25,7 @@ export function JourneyVisual({ id, large = true }: { id: JourneyVisualId; large
     return <SensorIngestionPreview />;
   }
 
-  if (id in RUNA_SCREENS) {
+  if (id in PORTAL_SCREENS) {
     const captureId = id === "task-whitelist" ? "task-and-whitelist" : id;
     return <MethodologyCapture id={captureId as MethodologyScreenId} />;
   }

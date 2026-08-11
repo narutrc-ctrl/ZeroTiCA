@@ -6,7 +6,7 @@ export const simulationIntro = {
   titleLine2: "조치할 수 있는 판단으로 바꿉니다.",
   titleAccent: "",
   description:
-    "Zerotica/RUNA가 이상 징후를 발견하고, 고객 업무 맥락을 확인한 뒤, 분석팀 검증과 조치 보고서까지 연결하는 과정을 짧게 체험합니다.",
+    "ZeroTiCA가 이상 징후를 발견하고, 고객 업무 맥락을 확인한 뒤, 분석팀 검증과 조치 보고서까지 연결하는 과정을 짧게 체험합니다.",
   coreMessage: "",
   startCta: "미니 시뮬레이션 시작하기",
 };
@@ -58,17 +58,17 @@ export const storyChapters = [
       { text: "하나의 이슈", accent: true },
       { text: "로 전달합니다." },
     ] satisfies StoryTitlePart[],
-    description: "무엇이 관측됐고 어떻게 조치해야 하는지 안내하고,\n고객이 조치를 수행하고 완료 될 때까지 관리합니다.",
+    description: "무엇이 관측됐고 어떻게 조치해야 하는지 안내하고,\n고객이 조치를 수행하고 완료될 때까지 관리합니다.",
   },
   {
     id: "report" as const,
-    label: "침해평가 보고서",
+    label: "침해 평가 보고서",
     titleParts: [
       { text: "판단과 조치의 결과를\n" },
       { text: "근거로", accent: true },
       { text: " 남깁니다." },
     ] satisfies StoryTitlePart[],
-    description: "일정 기간동안 분석한 내용과 고객의 확인, 조치 결과를\n보고서로 정리해 이후에도 참고할 수 있도록 합니다.",
+    description: "일정 기간 동안 분석한 내용과 고객의 확인, 조치 결과를\n보고서로 정리해 이후에도 참고할 수 있도록 합니다.",
   },
 ] as const;
 
@@ -179,7 +179,7 @@ export function getChapterSubProgress(
     return { total: THREAT_SUB_PHASES.length, current: threatSubIndex(phase) };
   }
 
-  // 관측 · 침해평가 보고서 — 하위 단계 1개
+  // 관측 · 침해 평가 보고서 — 하위 단계 1개
   return { total: 1, current: 0 };
 }
 
@@ -236,12 +236,12 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
   analyst: {
     situation: "후보 통신이 분석 파이프라인에 들어갔습니다.",
     why: "탐지·IOC·화이트리스트 정제를 거쳐 고객 확인 필요 여부를 판단합니다.",
-    action: "분석이 끝나면 RUNA 이슈로 등록됩니다.",
+    action: "분석이 끝나면 이슈로 등록됩니다.",
     actionType: "wait",
     note: "미러링 로그 수집 → 탐지 규칙 매칭 → 화이트리스트 대조 → 이슈 등록",
   },
   delivery: {
-    situation: "분석이 끝났고, RUNA가 고객 확인 요청을 등록했습니다.",
+    situation: "분석이 끝났고, ZeroTica Watch가 고객 확인 요청을 등록했습니다.",
     why: "선별된 이슈 한 건이 메일과 칸반에 동시에 도착합니다.",
     action: "오른쪽에서 새 이슈 카드 생성을 확인하세요.",
     actionType: "wait",
@@ -266,7 +266,7 @@ const sharedNarrative: Record<SimPhase, SimulationNarrative> = {
     actionType: "click-submit",
   },
   verifying: {
-    situation: "RUNA 상태가 「확인 중」으로 바뀌었습니다.",
+    situation: "이슈 상태가 「확인 중」으로 바뀌었습니다.",
     why: "분석팀이 탐지 데이터와 고객 답변을 함께 검토합니다.",
     action: "검증이 끝나면 분석팀 회신이 도착합니다.",
     actionType: "wait",
@@ -313,7 +313,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
       actionType: "click-submit",
     },
     verifying: {
-      situation: "RUNA 상태가 「확인 중」으로 바뀌었습니다.",
+      situation: "이슈 상태가 「확인 중」으로 바뀌었습니다.",
       why: "분석팀이 탐지 데이터와 고객 맥락을 대조합니다.",
       action: "정상 업무 통신 여부 판단이 진행됩니다.",
       actionType: "wait",
@@ -341,7 +341,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     analyst: {
       situation: "스캔 패턴이 유효 위협으로 확정되었습니다.",
       why: "업무 통신 후보에서 제외되고 고객 조치 요청이 필요합니다.",
-      action: "분석 완료 후 RUNA 이슈로 등록됩니다.",
+      action: "분석 완료 후 이슈로 등록됩니다.",
       actionType: "wait",
     },
     kanban: {
@@ -363,7 +363,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
       actionType: "click-submit",
     },
     verifying: {
-      situation: "RUNA 상태가 「확인 중」으로 바뀌었습니다.",
+      situation: "이슈 상태가 「확인 중」으로 바뀌었습니다.",
       why: "분석팀이 고객 조치와 재탐지 여부를 검증합니다.",
       action: "검증이 끝나면 분석팀 회신이 도착합니다.",
       actionType: "wait",
@@ -377,7 +377,7 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     complete: {
       situation: "사례 2 · 위협 통신 조치·검증이 끝났습니다.",
       why: "두 사례 모두 월간 보고서에 반영됩니다.",
-      action: "「다음」으로 침해평가 보고서를 확인하세요.",
+      action: "「다음」으로 침해 평가 보고서를 확인하세요.",
       actionType: "click-report",
     },
   },
@@ -388,7 +388,7 @@ export function getSimulationNarrative(phase: SimPhase, activeCase: SimCase): Si
 }
 
 export function getCaseLabel(activeCase: SimCase): string {
-  return activeCase === "normal" ? "사례 1 · 정상 검증" : "사례 2 · 위험 통신";
+  return activeCase === "normal" ? "사례 1 · 정상 검증" : "사례 2 · 위협 통신";
 }
 
 /** @deprecated getSimulationNarrative(activeCase) 사용 */
@@ -623,13 +623,13 @@ export function getCaseMonitoringLogs(activeCase: SimCase) {
 
 export const emailNotification = {
   from: "noreply@zerotica.app",
-  subject: "[ZeroTica Watch] RUNA 확인 요청",
+  subject: "[ZeroTica Watch] 확인 요청",
   time: "2026-05-12 11:05",
 };
 
 export const threatEmailNotification = {
   from: "noreply@zerotica.app",
-  subject: "[ZeroTica Watch] RUNA 확인 요청",
+  subject: "[ZeroTica Watch] 확인 요청",
   time: "2026-05-21 09:05",
 };
 

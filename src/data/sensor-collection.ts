@@ -13,16 +13,16 @@ export const sensorCollectionSection = {
     },
     {
       title: "다중 센서",
-      body: "망 구간·지점별로 s1, s2 등 센서를 두고, RUNA 서버로 일별 로그(gz)를 전송·집계합니다.",
+      body: "망 구간·지점별로 s1, s2 등 센서를 두고, 분석 서버로 일별 로그(gz)를 전송·집계합니다.",
     },
     {
       title: "수집 상태 가시성",
-      body: "RUNA 대시보드의 「데이터 수집 상태」 카드에서 날짜·센서별 conn 수집 여부를 확인합니다.",
+      body: "대시보드의 「데이터 수집 상태」 카드에서 날짜·센서별 conn 수집 여부를 확인합니다.",
     },
   ],
   flowSteps: [
     { label: "코어·백본 스위치", sub: "SPAN / TAP 미러 포트" },
     { label: "Zeek 센서", sub: "conn · http · dns · ssl …" },
-    { label: "RUNA 서버", sub: "전처리 · 분석 · 포털" },
+    { label: "분석 서버", sub: "전처리 · 분석 · 포털" },
   ],
 };

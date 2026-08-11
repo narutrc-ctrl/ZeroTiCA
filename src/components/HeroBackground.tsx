@@ -2,7 +2,7 @@ const logLines = [
   "14:22:01 conn 10.24.18.52 → 203.0.113.44 :443",
   "14:22:18 long_session outbound · duration 4h12m",
   "14:23:05 ioc match · tag=c2_candidate",
-  "14:23:41 task created · RUNA-2026-0512",
+  "14:23:41 task created · ZT-2026-0512",
   "14:24:02 notify customer · context required",
 ];
 

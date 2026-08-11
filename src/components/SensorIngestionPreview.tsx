@@ -51,7 +51,7 @@ export function SensorIngestionPreview() {
       </ul>
 
       <p className="mt-3 text-[10px] leading-relaxed text-gray-500">
-        RUNA 대시보드 · SensorIngestionStatusCard — conn gz·parquet 수집 여부를 날짜·센서별로 표시
+        대시보드 · SensorIngestionStatusCard — conn gz·parquet 수집 여부를 날짜·센서별로 표시
       </p>
     </div>
   );
