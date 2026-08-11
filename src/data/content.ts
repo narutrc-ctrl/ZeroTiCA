@@ -401,9 +401,8 @@ export const contactBanner = {
   title: "안전하다는 확신,",
   titleLine2: "내부를 확인하는 것부터 시작됩니다.",
   brochureLabel: "브로슈어 다운로드",
-  /** GitHub raw PDF — 클릭 시 바로 다운로드 */
-  brochureUrl:
-    "https://github.com/NaruSecurity-TRC/naru.trc_brochure/blob/main/ZeroTiCA/ZeroTiCA%20Pamphlet.pdf?raw=true",
+  /** 사이트 동일 도메인 PDF — 크로스 오리진 다운로드 경고 방지 */
+  brochureUrl: "/ZeroTiCA-Pamphlet.pdf",
 };
 
 /** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */
