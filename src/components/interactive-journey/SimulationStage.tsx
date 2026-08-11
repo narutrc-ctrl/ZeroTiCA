@@ -39,7 +39,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
     phase === "complete"
   ) {
     return (
-      <SimulationStageShell scrollable>
+      <SimulationStageShell scrollable flushMobile>
         <SimulationRunaTaskView sim={sim} showEmail={false} />
       </SimulationStageShell>
     );

@@ -189,7 +189,7 @@ export const demoTasks: DemoTask[] = [
   {
     id: "t3",
     code: "DEMO-2026-05-003",
-    title: "폐쇄망 IP (10.24.18.52) 기계적 통신 (80/tcp) 식별 문의",
+    title: "폐쇄망 IP (10.24.18.52) C2 의심 통신 식별 문의",
     status: "requested",
     statusLabel: "확인 요청",
     section: "pre_request",
@@ -463,7 +463,7 @@ export const demoReportThreatSummary = [
     outcome: "고객 조치 후 재탐지 없음, 완료",
   },
   {
-    title: "폐쇄망 IP (10.24.18.52) 기계적 통신 식별",
+    title: "폐쇄망 IP (10.24.18.52) C2 의심 통신 식별",
     date: "2026-05-12",
     status: "requested",
     cause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",

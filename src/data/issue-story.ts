@@ -489,7 +489,7 @@ export const threatMonitoringLogs = [
 /** 사례 1 — 정상 가능성 의심 통신 (고객 맥락 → 분석팀 검증) */
 export const incident: CaseIncident = {
   code: "DEMO-2026-05-003",
-  title: "폐쇄망 IP (10.24.18.52) 기계적 통신 (80/tcp) 식별 문의",
+  title: "폐쇄망 IP (10.24.18.52) C2 의심 통신 식별 문의",
   srcIp: "10.24.18.52",
   dstIp: "10.24.20.10",
   dstLabel: "내부 패치 미러 서버",
@@ -513,7 +513,7 @@ export const incident: CaseIncident = {
   reportVerdict: "정상 (업무 통신)",
   reportCause: "폐쇄망 호스트의 주기적 HTTP 기계적 연결",
   reportOutcome: "고객 맥락 확인 후 정상 업무 통신으로 분류, 완료",
-  emailPreview: "폐쇄망 IP 기계적 통신 — 업무 맥락 확인이 필요합니다.",
+  emailPreview: "폐쇄망 IP C2 의심 통신 — 업무 맥락 확인이 필요합니다.",
   monitoringAlertText: "이상 패턴 감지",
   initialEventCount: 1184,
   initialIssueCount: 2,
@@ -526,7 +526,7 @@ export const incident: CaseIncident = {
   assignee: "김분석",
   requestedAt: "2026-05-12 11:00",
   relatedThreatAt: "2026-05-12 10:55",
-  threatDescription: "폐쇄망 호스트 기계적 HTTP 통신 (80/tcp)",
+  threatDescription: "폐쇄망 호스트 C2 의심 통신",
   eventDetail: {
     eventName: "에이전트 통신(패킷/바이트)",
     date: "2026-05-12",

@@ -81,7 +81,7 @@ export const heroDashboardPreview = {
   staffMessage:
     "폐쇄망 IP에서 기계적 통신 패턴이 감지되었습니다. 정기 배포·패치 미러 서버 등 업무 통신인지 확인 부탁드립니다.",
   replyCta: "업무 맥락 답변하기",
-  caption: "ZeroTica Watch가 의심 통신을 고객 업무 맥락과 연결해 확인 요청으로 전환합니다.",
+  caption: "ZeroTica가 의심 통신을 고객 업무 맥락과 연결해 확인 요청으로 전환합니다.",
 };
 
 export const problemSection = {
@@ -190,7 +190,7 @@ export const section2Gap = {
 
 export const runaSection = {
   stepEyebrow: "STEP 03",
-  title: "ZeroTica Watch는 단순 알림봇이 아닙니다",
+  title: "ZeroTica는 단순 알림봇이 아닙니다",
   lead: "의심 통신의 맥락을 고객과 함께 확인하는 보안 어시스턴트입니다.",
   points: [
     "의심 통신 발생 시 고객에게 선별 알림",
@@ -242,7 +242,7 @@ export const serviceFlowSteps: {
   {
     step: "07",
     title: "고객 상호작용",
-    body: "ZeroTica Watch와 분석팀이 업무 맥락을 질문하고, 고객 답변을 바탕으로 사건을 구체화합니다.",
+    body: "분석팀이 업무 맥락을 질문하고, 고객 답변을 바탕으로 사건을 구체화합니다.",
     visual: "interact",
   },
   {
@@ -358,7 +358,7 @@ export const experienceSection = {
     badge: "고객 확인 요청",
   },
   listEyebrow: "하나의 이슈가 답하는 질문",
-  listHint: "항목에 마우스를 올리거나(모바일은 탭) 왼쪽 화면에서 대응 영역을 확인할 수 있습니다.",
+  listHint: "항목에 마우스를 올리면 왼쪽 화면에서 대응 영역을 확인할 수 있습니다.",
   points: [
     {
       num: "01",
@@ -388,7 +388,7 @@ export const experienceSection = {
   ],
   footerNote:
     "대시보드, 이슈 관리, 보고서 화면까지 직접 둘러볼 수 있습니다.",
-  ctaLabel: "서비스 데모 체험하기",
+  ctaLabel: "PC에서 데모 페이지 체험하기",
 };
 
 export const closing = {

@@ -14,7 +14,7 @@ export const observeDirectionCards = [
     to: "외부" as FlowNode,
     arrow: "right" as FlowArrow,
     body: "외부로 나가는 통신의 변화",
-    models: ["에이전트 통신(패킷/바이트)", "User-Agent 위협", "IOC 연결"],
+    models: ["정보 유출 행위 식별", "C2 통신 패턴 식별", "악성 IP(IOC) 연결"],
   },
   {
     en: "Inbound",
@@ -23,7 +23,7 @@ export const observeDirectionCards = [
     to: "외부" as FlowNode,
     arrow: "left" as FlowArrow,
     body: "내부로 들어오는 통신의 변화",
-    models: ["응답 실패율 이상", "URI 위협", "목적지 연결 거절 이상"],
+    models: ["비정상 내부 접근 행위 식별", "취약점 공격 및 스캔 식별", "웹쉘 패턴 식별"],
   },
   {
     en: "Lateral",
@@ -32,7 +32,7 @@ export const observeDirectionCards = [
     to: "내부" as FlowNode,
     arrow: "both" as FlowArrow,
     body: "내부 자산 사이 통신의 변화",
-    models: ["URI 위협", "응답 실패율 이상", "목적지 연결 거절 이상"],
+    models: ["권한 탈취 행위 식별", "주요 자산 비정상 접근 행위 식별", "내부 정찰 행위 식별"],
   },
 ] as const;
 

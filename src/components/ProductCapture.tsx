@@ -39,7 +39,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
             <p className={`font-semibold text-blue-700 ${large ? "text-sm" : "text-xs"}`}>새 확인 요청</p>
             <p className={`mt-2 font-bold text-zinc-800 ${large ? "text-base" : "text-sm"}`}>
-              폐쇄망 IP (10.24.18.52) 기계적 통신 식별
+              폐쇄망 IP (10.24.18.52) C2 의심 통신 식별
             </p>
             <p className={`mt-2 text-slate-600 ${bodyText}`}>
               분석팀이 의심 통신을 검토했습니다. 업무 맥락 확인이 필요합니다.
@@ -64,7 +64,7 @@ export function ProductCapture({ visual, large }: { visual: FlowVisualKey; large
         <div className={cnWrap(large ? "scale-100" : scale)}>
           <div className="rounded-xl border border-slate-200 bg-white shadow-lg">
             <div className="border-b border-slate-100 px-4 py-3.5">
-              <p className={`font-bold text-zinc-800 ${titleText}`}>폐쇄망 IP 기계적 통신 문의</p>
+              <p className={`font-bold text-zinc-800 ${titleText}`}>폐쇄망 IP C2 의심 통신 문의</p>
               <span className="mt-1.5 inline-block rounded-lg border border-blue-300 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-blue-600">
                 확인 요청
               </span>

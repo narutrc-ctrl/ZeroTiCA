@@ -23,7 +23,7 @@ export function MockPreview({ id }: { id: string }) {
             </div>
             <div className="space-y-2">
               <div className="rounded-lg border border-slate-200 p-2 text-[11px] font-medium text-slate-800">
-                폐쇄망 IP (10.24.18.52) 기계적 통신 문의
+                폐쇄망 IP (10.24.18.52) C2 의심 통신 문의
               </div>
               <div className="rounded-lg border border-slate-200 p-2 text-[11px] text-slate-600">
                 다수의 내부 IP 대상 SSH 연결 시도

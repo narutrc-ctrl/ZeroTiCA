@@ -176,7 +176,7 @@ export const taskCaseStudies: TaskCaseStudy[] = [
   {
     id: "unknown-mechanical",
     category: "unknown",
-    taskTitle: "폐쇄망 IP 기계적 통신 (80/tcp, http) 식별 문의",
+    taskTitle: "폐쇄망 IP (10.24.18.52) C2 의심 통신 식별 문의",
     eventType: "agent communication pkts bytes lateral",
     direction: "측면이동",
     summary:
