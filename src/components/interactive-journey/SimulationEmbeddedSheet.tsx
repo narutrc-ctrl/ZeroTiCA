@@ -3,7 +3,6 @@ import {
   Calendar,
   Hash,
   MessageSquare,
-  Send,
   Shield,
   User,
   X,
@@ -180,10 +179,6 @@ export function SimulationEmbeddedSheet({
             rows={3}
             className="mt-2 w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800"
           />
-          <div className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white">
-            <Send className="h-4 w-4" />
-            답변 등록
-          </div>
         </div>
       </div>
     ) : null;
