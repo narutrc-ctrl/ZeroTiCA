@@ -6,7 +6,7 @@ export function ServiceDecisionSection() {
     <section
       id="choose"
       aria-labelledby="choose-heading"
-      className="scroll-mt-20 border-b border-slate-200/80 bg-gradient-to-b from-slate-50 to-white"
+      className="scroll-mt-20 border-b border-slate-200/80 bg-white"
     >
       <div className="zt-container-hero py-20 sm:py-28 lg:py-32">
         <RevealOnScroll variant="fade-up">

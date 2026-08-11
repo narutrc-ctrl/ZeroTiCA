@@ -1,7 +1,8 @@
 import { ContactCTA } from "@/components/ContactCTA";
 import { CustomerOutcomesSection } from "@/components/CustomerOutcomesSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
-import { TrustStrip } from "@/components/TrustStrip";
+// TODO: 함께하는 고객사 섹션 — 요청 시 주석 해제
+// import { TrustStrip } from "@/components/TrustStrip";
 import { ServiceDecisionSection } from "@/components/ServiceDecisionSection";
 import { FaqSection } from "@/components/FaqSection";
 import { ProblemDifferentiatorSection } from "@/components/ProblemDifferentiatorSection";
@@ -21,7 +22,9 @@ export function LandingPage() {
 
       <ExperienceSection />
 
+      {/* TODO: 함께하는 고객사 섹션 — 요청 시 주석 해제
       <TrustStrip />
+      */}
 
       <ServiceDecisionSection />
 

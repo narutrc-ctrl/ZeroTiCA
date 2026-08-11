@@ -289,11 +289,6 @@ export function useIssueSimulation() {
       return;
     }
     if (phase === "staff-reply") {
-      // 검증 단계: 완료 화면 없이 바로 고객 조치로
-      if (activeCase === "normal") {
-        resetCaseState("threat", { startAtKanban: true });
-        return;
-      }
       setSheetOpen(false);
       setEventDetailOpen(false);
       setKanbanColumn("done");
@@ -301,6 +296,11 @@ export function useIssueSimulation() {
       return;
     }
     if (phase === "complete") {
+      // 검증 완료 → 고객 조치 / 고객 조치 완료 → 보고서
+      if (activeCase === "normal") {
+        resetCaseState("threat", { startAtKanban: true });
+        return;
+      }
       setPhase("report");
       return;
     }
@@ -380,15 +380,16 @@ export function useIssueSimulation() {
     }
     if (phase === "kanban" || phase === "delivery") {
       if (activeCase === "threat") {
-        // 위협 사례 칸반 이전 = 정상 사례 분석팀 회신
+        // 위협 사례 칸반 이전 = 정상 사례 완료 칸반
         setActiveCase("normal");
         setTaskStatus("완료");
-        setKanbanColumn("in_request");
-        setSheetOpen(true);
+        setKanbanColumn("done");
+        setSheetOpen(false);
         setEventDetailOpen(false);
-        setReplyDraft(getCaseIncident("normal").presetReply);
+        setReplyDraft("");
+        setReplyTyping(false);
         setComments([...initialComments("normal"), clientComment("normal"), staffReplyComment("normal")]);
-        setPhase("staff-reply");
+        setPhase("complete");
         return;
       }
       const steps = getCaseAnalystSteps(activeCase);

@@ -115,6 +115,7 @@ const VERIFY_SUB_PHASES: SimPhase[] = [
   "task",
   "reply",
   "staff-reply",
+  "complete",
 ];
 
 const THREAT_SUB_PHASES: SimPhase[] = [
@@ -124,6 +125,38 @@ const THREAT_SUB_PHASES: SimPhase[] = [
   "staff-reply",
   "complete",
 ];
+
+/** 검증 단계 하위 설명 (오른쪽 패널 · 검증 1/5~5/5) */
+export const VERIFY_CHAPTER_DETAILS = [
+  "분석가가 확인이 필요하다고 판단한 활동을 근거와 함께 하나의 이슈로 정리합니다.",
+  "관측된 통신과 관련 정황을 분석하고, 판단에 필요한 업무 맥락을 고객에게 확인 요청합니다.",
+  "고객은 해당 자산의 용도와 당시 업무 상황을 확인해, 분석에 필요한 내부 맥락을 전달합니다.",
+  "분석가는 관측 데이터와 고객의 맥락을 함께 검토해, 정상 활동인지 위협인지 최종 판단합니다.",
+  "정상으로 확인된 이슈는 완료 처리하고, 검증 기록으로 남겨 이후 판단의 기준으로 삼습니다.",
+] as const;
+
+/** 고객 조치 단계 하위 설명 (오른쪽 패널 · 고객 조치 1/5~5/5) */
+export const THREAT_CHAPTER_DETAILS = [
+  "위협으로 판단된 활동은 조치가 필요한 이슈로 이어서 관리합니다.",
+  "분석가는 위협 정황과 영향을 정리해, 고객이 확인할 대상과 필요한 조치 방향을 제안합니다.",
+  "고객은 내부 환경을 확인하고 필요한 조치를 수행한 뒤, 조치 결과를 분석가에게 공유합니다.",
+  "분석가는 조치 이후 관련 활동을 다시 확인해, 위협이 해소되었는지 검증합니다.",
+  "조치 결과까지 확인되면 이슈를 완료하고, 판단과 조치 결과를 다음 검증의 기준으로 남깁니다.",
+] as const;
+
+function verifySubIndex(phase: SimPhase): number {
+  if (phase === "delivery") return 0;
+  if (phase === "verifying") return VERIFY_SUB_PHASES.indexOf("staff-reply");
+  const idx = VERIFY_SUB_PHASES.indexOf(phase);
+  return Math.max(idx, 0);
+}
+
+function threatSubIndex(phase: SimPhase): number {
+  if (phase === "delivery") return 0;
+  if (phase === "verifying") return 3; // staff-reply와 동일: 조치 후 재검증
+  const idx = THREAT_SUB_PHASES.indexOf(phase);
+  return Math.max(idx, 0);
+}
 
 /** 현재 챕터의 하위 단계 진행 (0-based current) */
 export function getChapterSubProgress(
@@ -139,17 +172,36 @@ export function getChapterSubProgress(
   }
 
   if (chapter === 2) {
-    const current = VERIFY_SUB_PHASES.indexOf(phase);
-    return { total: VERIFY_SUB_PHASES.length, current: Math.max(current, 0) };
+    return { total: VERIFY_SUB_PHASES.length, current: verifySubIndex(phase) };
   }
 
   if (chapter === 3) {
-    const current = THREAT_SUB_PHASES.indexOf(phase);
-    return { total: THREAT_SUB_PHASES.length, current: Math.max(current, 0) };
+    return { total: THREAT_SUB_PHASES.length, current: threatSubIndex(phase) };
   }
 
   // 관측 · 침해평가 보고서 — 하위 단계 1개
   return { total: 1, current: 0 };
+}
+
+/** 오른쪽 패널 서브문구 — 선별/검증/고객 조치는 하위 단계별, 그 외는 챕터 기본 설명 */
+export function getChapterStepDetail(
+  phase: SimPhase,
+  activeCase: SimCase,
+  analystStep: number,
+): string {
+  const chapter = chapterForPhase(phase, activeCase);
+  const fallback = storyChapters[chapter]?.description ?? "";
+
+  if (chapter === 1) {
+    return getCaseAnalystSteps(activeCase)[analystStep]?.detail ?? fallback;
+  }
+  if (chapter === 2) {
+    return VERIFY_CHAPTER_DETAILS[verifySubIndex(phase)] ?? fallback;
+  }
+  if (chapter === 3) {
+    return THREAT_CHAPTER_DETAILS[threatSubIndex(phase)] ?? fallback;
+  }
+  return fallback;
 }
 
 export type NarrativeAction =
@@ -269,6 +321,12 @@ const caseNarrativeOverrides: Record<SimCase, Partial<Record<SimPhase, Simulatio
     "staff-reply": {
       situation: "정상 업무 통신으로 검증되었습니다.",
       why: "분석팀 회신이 댓글에 기록되었습니다.",
+      action: "곧 Sheet가 닫히고 「완료」로 이동합니다.",
+      actionType: "wait",
+    },
+    complete: {
+      situation: "사례 1 · 정상 검증이 끝났습니다.",
+      why: "완료 이슈는 칸반 「완료」에서 이력으로 관리됩니다.",
       action: "「다음」으로 고객 조치 단계를 이어가세요.",
       actionType: "click-next-case",
     },
@@ -400,7 +458,7 @@ export const analystSteps = [
     label: "분석가 우선 검토",
     title: "03 분석가 우선 검토",
     detail:
-      "새롭게 나타난 연결과 반복되는 활동, 이전과 달라진 패턴을 찾아내\n우선적으로 분석이 필요한 통신을 구분합니다.",
+      "새롭게 나타난 연결과 반복되는 활동, 이전과 달라진 패턴을 찾아내 우선적으로 분석이 필요한 통신을 구분합니다.",
   },
   {
     label: "검증 대상 사례",
@@ -476,7 +534,7 @@ export const incident: CaseIncident = {
     dstIp: "10.24.20.10",
     stage: "3단계: 측면이동",
     checked: 2,
-    checkedLabel: "보류",
+    checkedLabel: "위협 의심",
     variant: "agent",
     chartLabel: "bytesTimeline",
     chartValues: [4284, 4158, 4301, 4289, 4162, 4295],

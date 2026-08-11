@@ -26,14 +26,14 @@ export function FloatingCTA() {
   return (
     <div
       className={cn(
-        "fixed bottom-5 left-1/2 z-30 flex w-auto max-w-lg -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-md transition-all duration-300 sm:w-[calc(100%-2rem)] sm:gap-2 sm:p-2 sm:pl-4 lg:bottom-6",
+        "fixed bottom-5 left-1/2 z-30 hidden w-auto max-w-lg -translate-x-1/2 items-center gap-1.5 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-md transition-all duration-300 sm:flex sm:w-[calc(100%-2rem)] sm:gap-2 sm:p-2 sm:pl-4 lg:bottom-6",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
       <p className="hidden flex-1 text-xs text-slate-600 sm:block [word-break:keep-all]">
         실제 서비스 화면을 데모로 체험해 보세요
       </p>
-      <Link to={paths.fullTour} className="zt-btn-primary shrink-0 px-3 py-2 text-xs sm:text-sm">
+      <Link to={paths.fullTour} className="zt-btn-primary shrink-0 px-5 py-2 text-xs sm:px-6 sm:text-sm">
         데모 체험하기
       </Link>
       <button

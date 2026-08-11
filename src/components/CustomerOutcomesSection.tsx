@@ -35,7 +35,7 @@ export function CustomerOutcomesSection() {
         </RevealOnScroll>
 
         <RevealOnScroll delay={80} variant="fade-up">
-          <div className="mt-[48px] rounded-[28px] bg-gradient-to-r from-white to-[#abd1ff] px-4 py-8 sm:mt-[64px] sm:rounded-[32px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+          <div className="mt-[48px] rounded-[28px] bg-gradient-to-b from-white to-[#abd1ff] px-4 py-8 sm:mt-[64px] sm:rounded-[32px] sm:bg-gradient-to-r sm:px-8 sm:py-10 lg:px-12 lg:py-12">
             <div className="mb-5 hidden grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] items-end gap-4 px-1 sm:mb-6 sm:gap-5 md:grid lg:gap-6">
               <p className="pl-1 text-[13px] font-medium text-slate-400 sm:text-[14px]">
                 {beforeLabel}
@@ -46,11 +46,12 @@ export function CustomerOutcomesSection() {
               </p>
             </div>
 
-            <ul className="flex flex-col gap-5 sm:gap-6">
+            {/* 모바일: 1 | 2 | 3 가로 스크롤 / md+: 세로 스택 */}
+            <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:flex-col md:snap-none md:gap-6 md:overflow-visible md:pb-0 md:[-ms-overflow-style:auto] md:[scrollbar-width:auto] [&::-webkit-scrollbar]:hidden md:[&::-webkit-scrollbar]:block">
               {rows.map((row) => (
                 <li
                   key={row.num}
-                  className="grid grid-cols-1 items-center gap-3 md:grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] md:gap-5 lg:gap-6"
+                  className="grid w-[min(82vw,22rem)] shrink-0 snap-center grid-cols-1 items-center gap-3 md:w-auto md:min-w-0 md:shrink md:grid-cols-[minmax(0,0.92fr)_auto_minmax(0,1.35fr)] md:gap-5 lg:gap-6"
                 >
                   <p className="text-[12px] font-medium text-slate-400 md:hidden">{beforeLabel}</p>
                   <div className="flex min-h-[88px] items-center gap-3 rounded-2xl bg-white px-4 py-4 shadow-[0_8px_28px_rgba(59,130,246,0.08)] sm:gap-4 sm:px-5 sm:py-5">

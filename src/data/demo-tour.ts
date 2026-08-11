@@ -15,6 +15,8 @@ export type TourStep = {
 export type TourUiState = {
   taskSheetOpen: boolean;
   reportDialogOpen: boolean;
+  /** 보고서 뷰어 페이지 (0: 표지, 1: 1~3, 2: 4~5) */
+  reportPage: number;
 };
 
 export function resolveTour(pathname: string, tour: string | null, tab: string | null): TourStep[] | null {
@@ -29,16 +31,18 @@ export function resolveTour(pathname: string, tour: string | null, tab: string |
 }
 
 export function resolveTourUiState(stepId: string | undefined): TourUiState {
-  if (!stepId) return { taskSheetOpen: false, reportDialogOpen: false };
+  if (!stepId) return { taskSheetOpen: false, reportDialogOpen: false, reportPage: 0 };
 
   switch (stepId) {
     case "task-3":
-      return { taskSheetOpen: true, reportDialogOpen: false };
+      return { taskSheetOpen: true, reportDialogOpen: false, reportPage: 0 };
     case "report-2":
+      return { taskSheetOpen: false, reportDialogOpen: true, reportPage: 0 };
     case "report-3":
-      return { taskSheetOpen: false, reportDialogOpen: true };
+      // 위협 분석 결과(3)가 있는 2페이지
+      return { taskSheetOpen: false, reportDialogOpen: true, reportPage: 1 };
     default:
-      return { taskSheetOpen: false, reportDialogOpen: false };
+      return { taskSheetOpen: false, reportDialogOpen: false, reportPage: 0 };
   }
 }
 
@@ -57,7 +61,7 @@ export const demoTours: Record<string, TourStep[]> = {
       route: "/demo/task",
       target: "[data-tour='task-kanban']",
       title: `${KANBAN_COLUMNS.pre_request} · ${KANBAN_COLUMNS.in_request} · ${KANBAN_COLUMNS.done}`,
-      body: `고객에게는 ${KANBAN_COLUMNS.pre_request} → ${KANBAN_COLUMNS.in_request} → ${KANBAN_COLUMNS.done} 단계로 표시됩니다. 실제 RUNA 칸반과 동일한 구조입니다.`,
+      body: `고객에게는 ${KANBAN_COLUMNS.pre_request} → ${KANBAN_COLUMNS.in_request} → ${KANBAN_COLUMNS.done} 단계로 표시됩니다. 실제 고객 화면 칸반과 동일한 구조입니다.`,
       placement: "top",
     },
     {
@@ -124,6 +128,7 @@ export const demoTours: Record<string, TourStep[]> = {
       title: "위협 분석 결과 요약",
       body: "기간 내 이슈를 날짜순으로 요약합니다. 이슈·원인과 결과·상태를 한눈에 볼 수 있습니다.",
       placement: "top",
+      measureDelay: 360,
     },
   ],
 };

@@ -48,8 +48,7 @@ export function MockRunaShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4">
-          <div className="text-sm text-slate-500">ZeroTica Watch · 데모 고객 계정</div>
+        <header className="flex h-16 shrink-0 items-center justify-end border-b border-slate-200 bg-white px-4">
           <div className="flex items-center gap-4">
             <span className="text-sm">
               <span className="font-semibold">demo_admin</span>님 환영합니다
@@ -196,6 +195,8 @@ const STATUS_CLASS: Record<string, string> = {
   requested: "bg-white border-blue-300 text-blue-600",
   checking: "bg-sky-50 border-sky-300 text-sky-700",
   completed: "bg-green-50 border-green-300 text-green-600",
+  normal: "bg-green-50 border-green-300 text-green-600",
+  threat: "bg-red-50 border-red-300 text-red-600",
 };
 
 export function taskStatusClass(status: string) {

@@ -11,25 +11,31 @@ function checkedBadgeClass(checked: number) {
 export function SimulationEventDetailPanel({
   detail,
   onClose,
+  overlay = "absolute",
 }: {
   detail: SimEventDetail;
   onClose: () => void;
+  /** absolute: 부모 relative 기준(검증 시뮬레이션) · fixed: 화면 전체(데모 이슈 시트) */
+  overlay?: "absolute" | "fixed";
 }) {
   const maxChart = Math.max(...detail.chartValues, 1);
   const isScan = detail.variant === "scan";
+  const layer = overlay === "fixed" ? "fixed inset-0" : "absolute inset-0";
+  const backdropZ = overlay === "fixed" ? "z-[60]" : "z-30";
+  const dialogZ = overlay === "fixed" ? "z-[70]" : "z-40";
 
   return (
     <>
       <button
         type="button"
-        className="absolute inset-0 z-30 bg-slate-900/35 backdrop-blur-[2px]"
+        className={cn(layer, backdropZ, "bg-slate-900/35 backdrop-blur-[2px]")}
         aria-label="이벤트 상세 닫기"
         onClick={onClose}
       />
       <div
         role="dialog"
         aria-modal="true"
-        className="absolute inset-0 z-40 flex items-center justify-center p-4 pointer-events-none"
+        className={cn(layer, dialogZ, "flex items-center justify-center p-4 pointer-events-none")}
       >
         <div className="pointer-events-auto flex max-h-[88%] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sim-slide-in">
           <div className="flex items-start justify-between gap-3 border-b border-slate-200 px-4 py-3">

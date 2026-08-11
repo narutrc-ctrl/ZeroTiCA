@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import { TourCompleteModal } from "@/components/DemoTourPrompt";
@@ -19,12 +19,19 @@ export function GlobalTour() {
 
   const tour = params.get("tour");
   const tab = params.get("tab");
+  const stepParam = params.get("step");
   const steps = resolveTour(location.pathname, tour, tab);
-  const index = Math.min(Math.max(0, Number(params.get("step") ?? 0)), (steps?.length ?? 1) - 1);
+  const index = Math.min(Math.max(0, Number(stepParam ?? 0)), (steps?.length ?? 1) - 1);
 
-  if (!steps?.length || !tour) return null;
+  // 새 가이드 시작 시 이전 완료 모달 상태 초기화
+  useEffect(() => {
+    if (tour === "full" && stepParam === "0") {
+      setShowComplete(false);
+    }
+  }, [tour, stepParam]);
 
   const goToStep = (nextIndex: number) => {
+    if (!steps?.length || !tour) return;
     const step = steps[nextIndex];
     navigate(
       { pathname: step.route, search: buildSearch(tour, nextIndex, step.search) },
@@ -40,21 +47,24 @@ export function GlobalTour() {
   };
 
   const handleComplete = () => {
+    const wasFull = tour === "full";
     closeTour();
-    if (tour === "full") setShowComplete(true);
+    if (wasFull) setShowComplete(true);
   };
 
   return (
     <>
-      <TutorialOverlay
-        steps={steps}
-        active
-        index={index}
-        onIndexChange={goToStep}
-        onClose={closeTour}
-        onComplete={handleComplete}
-      />
-      {showComplete && <TourCompleteModal onClose={() => setShowComplete(false)} />}
+      {steps?.length && tour ? (
+        <TutorialOverlay
+          steps={steps}
+          active
+          index={index}
+          onIndexChange={goToStep}
+          onClose={closeTour}
+          onComplete={handleComplete}
+        />
+      ) : null}
+      {showComplete ? <TourCompleteModal onClose={() => setShowComplete(false)} /> : null}
     </>
   );
 }

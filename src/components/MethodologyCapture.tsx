@@ -238,7 +238,7 @@ function LongSessionPagePreview() {
 
 function TaskAndWhitelistPreview() {
   const task = demoTasks.find((t) => t.id === "t3")!;
-  const inRequest = demoTasks.filter((t) => t.section === "in_request");
+  const confirmRequest = demoTasks.filter((t) => t.section === "pre_request");
 
   return (
     <RunaPreviewShell screenId="task-and-whitelist">
@@ -249,9 +249,9 @@ function TaskAndWhitelistPreview() {
             title="확인 요청"
             titleClass="text-blue-500"
             headerClass="bg-sky-50"
-            count={inRequest.length}
+            count={confirmRequest.length}
           >
-            {inRequest.map((t) => (
+            {confirmRequest.map((t) => (
               <TaskCard
                 key={t.id}
                 title={t.title}

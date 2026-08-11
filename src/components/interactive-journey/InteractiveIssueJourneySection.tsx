@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { simulationIntro, storyChapters } from "@/data/issue-story";
+import { getChapterStepDetail, simulationIntro, storyChapters } from "@/data/issue-story";
 import { SimulationStage } from "@/components/interactive-journey/SimulationStage";
 import { useIssueSimulation } from "@/hooks/useIssueSimulation";
 import { cn } from "@/lib/cn";
@@ -66,12 +66,15 @@ function revealStyle(t: number) {
 
 export function InteractiveIssueJourneySection() {
   const sim = useIssueSimulation();
-  const { phase, chapterIndex, isAtStart, isAtEnd, subProgress, analystStep, analystSteps } = sim;
+  const { phase, chapterIndex, isAtStart, isAtEnd, subProgress, analystStep, activeCase } = sim;
   const chapter = storyChapters[chapterIndex] ?? storyChapters[0];
-  const chapterDescription =
-    phase === "analyst"
-      ? (analystSteps[analystStep]?.detail ?? chapter.description)
-      : chapter.description;
+  const chapterDescription = getChapterStepDetail(phase, activeCase, analystStep);
+  /** 검증 5/5 — 오른쪽 패널 안내 박스 + 뱃지 */
+  const showVerifyClosingNote =
+    chapterIndex === 2 && subProgress.total > 1 && subProgress.current === subProgress.total - 1;
+  /** 고객 조치 5/5 — 오른쪽 패널 하단 안내 박스 */
+  const showThreatClosingNote =
+    chapterIndex === 3 && subProgress.total > 1 && subProgress.current === subProgress.total - 1;
 
   const sectionRef = useRef<HTMLElement>(null);
   const flowStartedRef = useRef(false);
@@ -205,7 +208,12 @@ export function InteractiveIssueJourneySection() {
               </div>
 
               <div className="relative order-1 min-w-0 sm:h-[600px] lg:order-2">
-                <div className="pb-4 pt-0 sm:h-full sm:overflow-y-auto sm:pb-16 sm:pt-6">
+                <div
+                  className={cn(
+                    "pb-4 pt-0 sm:h-full sm:overflow-y-auto sm:pt-6",
+                    showVerifyClosingNote || showThreatClosingNote ? "sm:pb-44" : "sm:pb-16",
+                  )}
+                >
                   <p className="text-[15px] font-semibold text-slate-700 sm:text-[16px]">
                     <span className="text-primary">{chapter.label}</span>{" "}
                     <span className="tabular-nums">
@@ -213,6 +221,18 @@ export function InteractiveIssueJourneySection() {
                       <span className="text-slate-400">/{subProgress.total}</span>
                     </span>
                   </p>
+
+                  {chapterIndex === 2 ? (
+                    <p className="mt-1 text-[12px] font-medium text-slate-400 [word-break:keep-all] sm:text-[13px]">
+                      사례 A · 에이전트 통신(패킷/바이트)
+                    </p>
+                  ) : null}
+
+                  {chapterIndex === 3 ? (
+                    <p className="mt-1 text-[12px] font-medium text-slate-400 [word-break:keep-all] sm:text-[13px]">
+                      사례 B · 목적지 연결 거절 이상
+                    </p>
+                  ) : null}
 
                   <h3 className="mt-2.5 text-[22px] font-extrabold leading-[1.35] tracking-tight text-zinc-900 [word-break:keep-all] sm:mt-3 sm:text-[26px] lg:text-[28px]">
                     {chapter.titleParts.map((part, i) =>
@@ -238,67 +258,96 @@ export function InteractiveIssueJourneySection() {
                   </p>
                 </div>
 
-                <div className="relative mt-4 flex items-center justify-between gap-3 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0">
-                  {subProgress.total > 1 && !isAtEnd ? (
-                    <div
-                      className="flex items-center gap-1.5"
-                      aria-label={`${chapter.label} ${subProgress.current + 1}/${subProgress.total}`}
-                    >
-                      {Array.from({ length: subProgress.total }, (_, i) => (
-                        <span
-                          key={i}
-                          className={cn(
-                            "h-1.5 w-1.5 rounded-full transition-colors",
-                            i === subProgress.current ? "bg-primary" : "bg-slate-300",
-                          )}
-                        />
-                      ))}
+                <div className="relative mt-4 flex flex-col gap-3 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0">
+                  {showVerifyClosingNote ? (
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 px-3.5 py-3">
+                      <p className="text-[12px] font-semibold leading-relaxed text-emerald-800 [word-break:keep-all] sm:text-[13px]">
+                        위협이 아니어도 검증의 결과입니다.
+                      </p>
+                      <div className="mt-2.5 flex flex-wrap gap-1.5">
+                        {["몰랐던 자산·통신", "필요한 업무 통신", "정리가 필요한 통신", "이후 판단의 기준"].map(
+                          (label) => (
+                            <span
+                              key={label}
+                              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 [word-break:keep-all] sm:text-[12px]"
+                            >
+                              {label}
+                            </span>
+                          ),
+                        )}
+                      </div>
                     </div>
-                  ) : (
-                    <span />
-                  )}
-                  <div className="flex items-center justify-end gap-2.5">
-                    {isAtEnd ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={sim.goPrev}
-                          className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50"
-                        >
-                          이전
-                        </button>
-                        <button
-                          type="button"
-                          onClick={sim.restart}
-                          className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
-                        >
-                          처음으로 돌아가기
-                        </button>
-                      </>
+                  ) : null}
+
+                  {showThreatClosingNote ? (
+                    <p className="rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3.5 text-[14px] font-semibold leading-relaxed text-primary [word-break:keep-all] sm:text-[15px]">
+                      정상으로 확인된 사례와 위협으로 조치한 사례가 모두 검증 기록으로 남아 이후
+                      변화를 판단하는 기준이 됩니다.
+                    </p>
+                  ) : null}
+
+                  <div className="flex items-center justify-between gap-3">
+                    {subProgress.total > 1 && !isAtEnd ? (
+                      <div
+                        className="flex items-center gap-1.5"
+                        aria-label={`${chapter.label} ${subProgress.current + 1}/${subProgress.total}`}
+                      >
+                        {Array.from({ length: subProgress.total }, (_, i) => (
+                          <span
+                            key={i}
+                            className={cn(
+                              "h-1.5 w-1.5 rounded-full transition-colors",
+                              i === subProgress.current ? "bg-primary" : "bg-slate-300",
+                            )}
+                          />
+                        ))}
+                      </div>
                     ) : (
-                      <>
-                        <button
-                          type="button"
-                          onClick={sim.goPrev}
-                          disabled={isAtStart}
-                          aria-hidden={isAtStart}
-                          tabIndex={isAtStart ? -1 : undefined}
-                          className={cn(
-                            "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
-                            isAtStart && "invisible pointer-events-none",
-                          )}
-                        >
-                          이전
-                        </button>
-                        <button
-                          type="button"
-                          onClick={sim.goNext}
-                          className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
-                        >
-                          다음
-                        </button>
-                      </>
+                      <span />
                     )}
+                    <div className="flex items-center justify-end gap-2.5">
+                      {isAtEnd ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={sim.goPrev}
+                            className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50"
+                          >
+                            이전
+                          </button>
+                          <button
+                            type="button"
+                            onClick={sim.restart}
+                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+                          >
+                            처음으로
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={sim.goPrev}
+                            disabled={isAtStart}
+                            aria-hidden={isAtStart}
+                            tabIndex={isAtStart ? -1 : undefined}
+                            className={cn(
+                              "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
+                              isAtStart && "invisible pointer-events-none",
+                            )}
+                          >
+                            이전
+                          </button>
+                          <button
+                            type="button"
+                            onClick={sim.goNext}
+                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+                          >
+                            다음
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

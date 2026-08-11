@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Check, Mail } from "lucide-react";
 import { getCaseEmail, getCaseIncident, type CaseIncident } from "@/data/issue-story";
 import { JOURNEY_KANBAN_COLUMNS, ISSUE_STATUS } from "@/data/issue-ui-labels";
 import { SimulationEmbeddedSheet } from "@/components/interactive-journey/SimulationEmbeddedSheet";
@@ -61,14 +61,24 @@ export function SimulationRunaTaskView({
   const highlightNewCard = phase === "delivery" || (phase === "kanban" && kanbanColumn === "pre_request");
 
   const isDoneColumn = kanbanColumn === "done" || phase === "complete";
+  const doneLabel = activeCase === "threat" ? "유효 위협" : "정상";
+  const doneStatusKey = activeCase === "threat" ? "threat" : "normal";
   const activeStatus =
     phase === "verifying"
       ? ISSUE_STATUS.checking
-      : isDoneColumn || phase === "staff-reply"
-        ? ISSUE_STATUS.completed
-        : ISSUE_STATUS.requested;
+      : isDoneColumn
+        ? doneLabel
+        : phase === "staff-reply"
+          ? ISSUE_STATUS.completed
+          : ISSUE_STATUS.requested;
   const activeStatusKey =
-    phase === "verifying" ? "checking" : isDoneColumn || phase === "staff-reply" ? "completed" : "requested";
+    phase === "verifying"
+      ? "checking"
+      : isDoneColumn
+        ? doneStatusKey
+        : phase === "staff-reply"
+          ? "completed"
+          : "requested";
 
   const activeCard = showActiveCard || phase === "complete" ? (
     <KanbanTaskCard
@@ -85,12 +95,15 @@ export function SimulationRunaTaskView({
   ) : null;
 
   const previousDoneCard = previousIncident ? (
-    <KanbanTaskCard incident={previousIncident} status={ISSUE_STATUS.completed} statusKey="completed" className="opacity-90" />
+    <KanbanTaskCard incident={previousIncident} status="정상" statusKey="normal" className="opacity-90" />
   ) : null;
 
   const emptySlot = (
     <div className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[10px] text-slate-400">—</div>
   );
+
+  /** 검증 5/5 — 사례 A 검증 결과 플로팅 카드 */
+  const showCaseAResult = !sheetOpen && activeCase === "normal" && phase === "complete";
 
   return (
     <div className="relative h-full">
@@ -109,7 +122,23 @@ export function SimulationRunaTaskView({
       ) : null}
 
       <MiniRunaFrame activeNav="tasks" showNotification variant="cropped" className="h-full border-0 shadow-none">
-        <div className="flex h-full flex-col">
+        <div className="relative flex h-full flex-col">
+          {showCaseAResult ? (
+            <div className="sim-email-in absolute bottom-2 left-[30%] z-10 w-[min(92%,288px)] -translate-x-1/2 rounded-full border border-emerald-100 bg-white px-3.5 py-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.1)]">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                  <Check className="h-4 w-4" strokeWidth={2.75} aria-hidden />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-medium leading-none text-slate-400">사례 A 검증 결과</p>
+                  <p className="mt-1 text-[13px] font-bold leading-snug text-emerald-700 [word-break:keep-all]">
+                    정상 업무 통신으로 확인
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex min-h-0 w-full flex-1 gap-1.5 p-1">
             <KanbanColumn
               title={JOURNEY_KANBAN_COLUMNS.pre_request}

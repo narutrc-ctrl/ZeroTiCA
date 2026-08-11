@@ -173,7 +173,7 @@ export function Layout() {
             <ContactCTA className="hidden text-sm sm:inline-flex" />
             */}
             {/* 임시: 도입 문의 자리 → 데모 체험 */}
-            <Link to={withLocale(paths.fullTour)} className="zt-btn-primary hidden text-sm sm:inline-flex">
+            <Link to={withLocale(paths.fullTour)} className="zt-btn-primary hidden px-6 text-sm sm:inline-flex">
               데모 체험하기
             </Link>
             <button

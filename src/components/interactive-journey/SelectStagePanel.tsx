@@ -55,7 +55,7 @@ function useIsMobile() {
 const VERIFY_CASES = [
   {
     key: "A",
-    meta: "사례 A · Lateral · 에이전트 통신(패킷/바이트)",
+    meta: "사례 A · 에이전트 통신(패킷/바이트)",
     title: "폐쇄망 서버의 반복 HTTP 통신",
     path: "10.24.18.52 → 10.24.20.10 :80",
     highlight: true,
@@ -66,7 +66,7 @@ const VERIFY_CASES = [
   },
   {
     key: "B",
-    meta: "사례 B · Lateral · 목적지 연결 거절 이상",
+    meta: "사례 B · 목적지 연결 거절 이상",
     title: "내부 호스트의 다수 포트 연결 시도",
     path: "10.88.12.5 → 10.200.0.0/16",
     highlight: false,
@@ -149,9 +149,6 @@ function ModelTable({ step, rows }: { step: number; rows: ModelRow[] }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
       <div className="flex shrink-0 items-center gap-2 border-b border-slate-100 px-4 py-3">
-        <span className="inline-flex shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-primary">
-          Lateral
-        </span>
         <p className="truncate text-[13px] font-bold text-zinc-900 sm:text-[14px]">측면이동 관측 모델</p>
       </div>
 

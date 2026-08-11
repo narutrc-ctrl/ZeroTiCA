@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
+import { fullDemoTour } from "@/data/demo-tour";
 // TODO: 도입 문의 CTA — 요청 시 주석 해제
 // import { useContactModal } from "@/components/ContactModal";
 const STORAGE_KEY = "zerotica-demo-prompt-dismissed";
 
 export function DemoTourPrompt() {
-  const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -24,7 +26,11 @@ export function DemoTourPrompt() {
   const startTour = () => {
     localStorage.setItem(STORAGE_KEY, "1");
     setOpen(false);
-    setParams({ tour: "full", step: "0" });
+    const first = fullDemoTour[0];
+    const search = new URLSearchParams(first.search);
+    search.set("tour", "full");
+    search.set("step", "0");
+    navigate({ pathname: first.route, search: search.toString() });
   };
 
   if (!open) return null;

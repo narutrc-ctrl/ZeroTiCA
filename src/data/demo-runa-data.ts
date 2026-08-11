@@ -1,6 +1,17 @@
-/** 데모용 RUNA 데이터 — 실제 고객사명·IP·코드는 모두 가상값으로 치환 */
+import type { SimEventDetail } from "@/data/issue-story";
+
+/** 데모용 고객 화면 데이터 — 실제 고객사명·IP·코드는 모두 가상값으로 치환 */
 
 export type DemoTaskStatus = "writing" | "requested" | "checking" | "completed";
+
+export type DemoRelatedThreat = {
+  at: string;
+  event: string;
+  srcIp: string;
+  dstIp: string;
+  description: string;
+  eventDetail: SimEventDetail;
+};
 
 export type DemoTask = {
   id: string;
@@ -15,13 +26,7 @@ export type DemoTask = {
   assignee: string;
   summary: string;
   content: string[];
-  relatedThreats: {
-    at: string;
-    event: string;
-    srcIp: string;
-    dstIp: string;
-    description: string;
-  }[];
+  relatedThreats: DemoRelatedThreat[];
   actionNotes?: string;
   comments: { author: string; role: "staff" | "client"; body: string; at: string }[];
 };
@@ -49,10 +54,42 @@ export const demoTasks: DemoTask[] = [
     relatedThreats: [
       {
         at: "2026-05-06 13:42",
-        event: "long session outbound",
+        event: "장시간 세션",
         srcIp: "10.88.12.5",
         dstIp: "203.0.113.44",
         description: "장시간 아웃바운드 세션 — 프록시 성격 통신",
+        eventDetail: {
+          eventName: "장시간 세션",
+          date: "2026-05-06",
+          srcIp: "10.88.12.5",
+          dstIp: "203.0.113.44",
+          stage: "1단계: 아웃바운드",
+          checked: 1,
+          checkedLabel: "정상",
+          variant: "agent",
+          chartLabel: "bytesTimeline",
+          chartValues: [820, 940, 1100, 1280, 1420, 1380],
+          connLogs: [
+            {
+              datetime: "2026-05-06 07:24",
+              src_ip: "10.88.12.5",
+              dst_ip: "203.0.113.44",
+              dst_port: 443,
+              service: "ssl",
+              duration: "6h18m",
+              src_bytes: "1.2 GB",
+            },
+            {
+              datetime: "2026-05-06 13:42",
+              src_ip: "10.88.12.5",
+              dst_ip: "203.0.113.44",
+              dst_port: 443,
+              service: "ssl",
+              duration: "0h12m",
+              src_bytes: "48 MB",
+            },
+          ],
+        },
       },
     ],
     actionNotes: "고객 조치: 서비스 중지 및 프로세스 삭제. 재탐지 모니터링 48시간 후 완료 처리.",
@@ -96,10 +133,42 @@ export const demoTasks: DemoTask[] = [
     relatedThreats: [
       {
         at: "2026-05-07 15:12",
-        event: "response failure rate abnormal outbound",
+        event: "응답 실패율 이상",
         srcIp: "10.88.12.8",
         dstIp: "198.51.100.22",
         description: "CDN 업데이트 채널 의심 통신",
+        eventDetail: {
+          eventName: "응답 실패율 이상",
+          date: "2026-05-07",
+          srcIp: "10.88.12.8",
+          dstIp: "198.51.100.22",
+          stage: "1단계: 아웃바운드",
+          checked: 1,
+          checkedLabel: "정상",
+          variant: "agent",
+          chartLabel: "failureRateTimeline",
+          chartValues: [12, 18, 27, 31, 22, 14],
+          connLogs: [
+            {
+              datetime: "2026-05-07 14:50",
+              src_ip: "10.88.12.8",
+              dst_ip: "198.51.100.22",
+              dst_port: 443,
+              service: "ssl",
+              fail_rate: "28%",
+              count: 64,
+            },
+            {
+              datetime: "2026-05-07 15:12",
+              src_ip: "10.88.12.8",
+              dst_ip: "198.51.100.22",
+              dst_port: 443,
+              service: "ssl",
+              fail_rate: "31%",
+              count: 72,
+            },
+          ],
+        },
       },
     ],
     comments: [
@@ -123,7 +192,7 @@ export const demoTasks: DemoTask[] = [
     title: "폐쇄망 IP (10.24.18.52) 기계적 통신 (80/tcp) 식별 문의",
     status: "requested",
     statusLabel: "확인 요청",
-    section: "in_request",
+    section: "pre_request",
     author: "제로티카 분석팀",
     requestedAt: "2026-05-12 11:00",
     updatedAt: "2026-05-13 09:40",
@@ -138,10 +207,54 @@ export const demoTasks: DemoTask[] = [
     relatedThreats: [
       {
         at: "2026-05-12 10:55",
-        event: "agent communication pkts bytes lateral",
+        event: "에이전트 통신(패킷/바이트)",
         srcIp: "10.24.18.52",
         dstIp: "10.24.20.10",
         description: "폐쇄망 호스트 기계적 HTTP 통신 (80/tcp)",
+        eventDetail: {
+          eventName: "에이전트 통신(패킷/바이트)",
+          date: "2026-05-12",
+          srcIp: "10.24.18.52",
+          dstIp: "10.24.20.10",
+          stage: "3단계: 측면이동",
+          checked: 2,
+          checkedLabel: "위협 의심",
+          variant: "agent",
+          chartLabel: "bytesTimeline",
+          chartValues: [4284, 4158, 4301, 4289, 4162, 4295],
+          connLogs: [
+            {
+              datetime: "2026-05-12 10:00",
+              src_ip: "10.24.18.52",
+              dst_ip: "10.24.20.10",
+              dst_port: 80,
+              service: "http",
+              duration: "1h02m",
+              src_pkts: 42,
+              src_bytes: 4284,
+            },
+            {
+              datetime: "2026-05-12 11:00",
+              src_ip: "10.24.18.52",
+              dst_ip: "10.24.20.10",
+              dst_port: 80,
+              service: "http",
+              duration: "1h01m",
+              src_pkts: 41,
+              src_bytes: 4158,
+            },
+            {
+              datetime: "2026-05-12 12:00",
+              src_ip: "10.24.18.52",
+              dst_ip: "10.24.20.10",
+              dst_port: 80,
+              service: "http",
+              duration: "1h03m",
+              src_pkts: 42,
+              src_bytes: 4301,
+            },
+          ],
+        },
       },
     ],
     comments: [
@@ -178,10 +291,51 @@ export const demoTasks: DemoTask[] = [
     relatedThreats: [
       {
         at: "2026-05-14 15:22",
-        event: "smb fail outlier lateral",
+        event: "SMB 실패 이상",
         srcIp: "10.200.10.15",
         dstIp: "10.200.10.0/24",
         description: "다수 내부 IP 대상 SSH 연결 시도",
+        eventDetail: {
+          eventName: "SMB 실패 이상",
+          date: "2026-05-14",
+          srcIp: "10.200.10.15",
+          dstIp: "10.200.10.0/24",
+          stage: "3단계: 측면이동",
+          checked: 2,
+          checkedLabel: "위협 의심",
+          variant: "scan",
+          chartLabel: "failTimeline",
+          chartValues: [6, 14, 28, 41, 36, 22],
+          connLogs: [
+            {
+              datetime: "2026-05-14 15:18",
+              src_ip: "10.200.10.15",
+              dst_ip: "10.200.10.21",
+              dst_port: 22,
+              proto: "tcp",
+              conn_state: "REJ",
+              count: 18,
+            },
+            {
+              datetime: "2026-05-14 15:20",
+              src_ip: "10.200.10.15",
+              dst_ip: "10.200.10.44",
+              dst_port: 22,
+              proto: "tcp",
+              conn_state: "S0",
+              count: 24,
+            },
+            {
+              datetime: "2026-05-14 15:22",
+              src_ip: "10.200.10.15",
+              dst_ip: "10.200.10.88",
+              dst_port: 445,
+              proto: "tcp",
+              conn_state: "REJ",
+              count: 31,
+            },
+          ],
+        },
       },
     ],
     comments: [
@@ -197,22 +351,72 @@ export const demoTasks: DemoTask[] = [
     id: "t5",
     code: "DEMO-2026-05-005",
     title: "10.88.12.5 지속적인 포트 스캐닝 정황 식별 문의",
-    status: "writing",
-    statusLabel: "요청 전",
+    status: "requested",
+    statusLabel: "확인 요청",
     section: "pre_request",
     author: "제로티카 분석팀",
     requestedAt: "2026-05-21 09:00",
     updatedAt: "2026-05-21 09:00",
     assignee: "미지정",
-    summary: "단일 호스트에서 내부망 다수 포트로 스캔 패턴이 탐지되었습니다. 분석 내용을 정리 중입니다.",
-    content: ["내부 포트 스캔 패턴 분석 중입니다. 고객 확인 전 요청 전 상태입니다."],
+    summary: "단일 호스트에서 내부망 다수 포트로 스캔 패턴이 탐지되었습니다. 고객 확인이 필요합니다.",
+    content: ["내부 포트 스캔 패턴이 탐지되었습니다. 업무 용도 및 조치 여부 확인을 요청드립니다."],
     relatedThreats: [
       {
         at: "2026-05-21 08:48",
-        event: "conn dst reject outlier lateral",
+        event: "목적지 연결 거절 이상",
         srcIp: "10.88.12.5",
         dstIp: "10.200.0.0/16",
         description: "내부망 다수 포트 스캔 정황",
+        eventDetail: {
+          eventName: "목적지 연결 거절 이상",
+          date: "2026-05-21",
+          srcIp: "10.88.12.5",
+          dstIp: "10.200.0.0/16",
+          stage: "3단계: 측면이동",
+          checked: 5,
+          checkedLabel: "유효 위협",
+          variant: "scan",
+          chartLabel: "rejectTimeline",
+          chartValues: [8, 22, 41, 52, 48, 36],
+          connLogs: [
+            {
+              datetime: "2026-05-21 08:42",
+              src_ip: "10.88.12.5",
+              dst_ip: "10.200.10.1",
+              dst_port: 22,
+              proto: "tcp",
+              conn_state: "REJ",
+              count: 48,
+            },
+            {
+              datetime: "2026-05-21 08:43",
+              src_ip: "10.88.12.5",
+              dst_ip: "10.200.10.2",
+              dst_port: 445,
+              proto: "tcp",
+              conn_state: "REJ",
+              count: 36,
+            },
+            {
+              datetime: "2026-05-21 08:44",
+              src_ip: "10.88.12.5",
+              dst_ip: "10.200.10.15",
+              dst_port: 3389,
+              proto: "tcp",
+              conn_state: "REJ",
+              count: 29,
+            },
+            {
+              datetime: "2026-05-21 08:45",
+              src_ip: "10.88.12.5",
+              dst_ip: "10.200.10.88",
+              dst_port: 80,
+              proto: "tcp",
+              conn_state: "S0",
+              count: 22,
+            },
+          ],
+        },
       },
     ],
     comments: [],
@@ -226,12 +430,12 @@ export const demoStageSummaryRows = [
 ];
 
 export const demoStageEventRows = [
-  { event: "agent communication pkts bytes lateral", stage: "3단계: 측면이동", events: 52, suspected: 2, valid: 0 },
-  { event: "ioc connection outbound", stage: "1단계: 아웃바운드", events: 28, suspected: 2, valid: 1 },
-  { event: "long session outbound", stage: "1단계: 아웃바운드", events: 312, suspected: 4, valid: 1 },
-  { event: "response failure rate abnormal outbound", stage: "1단계: 아웃바운드", events: 198, suspected: 3, valid: 0 },
-  { event: "conn dst reject outlier lateral", stage: "3단계: 측면이동", events: 87, suspected: 2, valid: 1 },
-  { event: "smb fail outlier lateral", stage: "3단계: 측면이동", events: 64, suspected: 1, valid: 0 },
+  { event: "에이전트 통신(패킷/바이트)", stage: "3단계: 측면이동", events: 52, suspected: 2, valid: 0 },
+  { event: "IOC 연결", stage: "1단계: 아웃바운드", events: 28, suspected: 2, valid: 1 },
+  { event: "장시간 세션", stage: "1단계: 아웃바운드", events: 312, suspected: 4, valid: 1 },
+  { event: "응답 실패율 이상", stage: "1단계: 아웃바운드", events: 198, suspected: 3, valid: 0 },
+  { event: "목적지 연결 거절 이상", stage: "3단계: 측면이동", events: 87, suspected: 2, valid: 1 },
+  { event: "SMB 실패 이상", stage: "3단계: 측면이동", events: 64, suspected: 1, valid: 0 },
 ];
 
 export const demoReports = [
@@ -518,7 +722,7 @@ export const demoReportPages = {
   ],
   executiveSummary: [
     "이번 기간 총 3,219건 이벤트 중 위협 의심 48건, 유효 위협 6건을 확인했습니다.",
-    "고객 확인 요청 이슈는 5건이며, 완료 2건/확인 중 2건/요청 전 1건 상태입니다.",
+    "고객 확인 요청 이슈는 5건이며, 확인 요청 2건/확인 중 1건/완료 2건 상태입니다.",
     "AD 인증 환경에서는 Site별 DC 부하 편중과 DNS SRV 실패가 확인되어 운영 점검이 필요합니다.",
   ],
   recommendations: [

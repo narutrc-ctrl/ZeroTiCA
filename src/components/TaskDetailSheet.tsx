@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Calendar, Hash, MessageSquare, Shield, User, X } from "lucide-react";
-import type { DemoTask } from "@/data/demo-runa-data";
+import type { DemoRelatedThreat, DemoTask } from "@/data/demo-runa-data";
+import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
 import { taskStatusClass } from "@/components/MockRunaShell";
 import { cn } from "@/lib/cn";
 
@@ -39,11 +40,13 @@ export function TaskDetailSheet({
 }) {
   const [showContent, setShowContent] = useState(false);
   const [entered, setEntered] = useState(false);
+  const [eventDetail, setEventDetail] = useState<DemoRelatedThreat["eventDetail"] | null>(null);
 
   useEffect(() => {
     if (open) {
       setEntered(false);
       setShowContent(false);
+      setEventDetail(null);
       const enterTimer = window.setTimeout(() => setEntered(true), 20);
       const contentTimer = window.setTimeout(() => setShowContent(true), 180);
       return () => {
@@ -53,6 +56,7 @@ export function TaskDetailSheet({
     }
     setEntered(false);
     setShowContent(false);
+    setEventDetail(null);
   }, [open, task?.id]);
 
   if (!task) return null;
@@ -149,7 +153,15 @@ export function TaskDetailSheet({
                           {task.relatedThreats.map((row) => (
                             <tr key={`${row.at}-${row.event}`} className="border-t border-sky-100/90">
                               <td className="whitespace-nowrap px-2 py-1.5 text-[11px] sm:px-3">{row.at}</td>
-                              <td className="border-l border-slate-100 px-2 py-1.5 font-medium sm:px-3">{row.event}</td>
+                              <td className="border-l border-slate-100 px-2 py-1.5 font-medium sm:px-3">
+                                <button
+                                  type="button"
+                                  onClick={() => setEventDetail(row.eventDetail)}
+                                  className="text-left text-blue-600 underline-offset-2 hover:underline [word-break:keep-all]"
+                                >
+                                  {row.event}
+                                </button>
+                              </td>
                               <td className="border-l border-slate-100 px-2 py-1.5 font-mono text-[11px]">{row.srcIp}</td>
                               <td className="border-l border-slate-100 px-2 py-1.5 font-mono text-[11px]">{row.dstIp}</td>
                               <td className="border-l border-slate-100 px-2 py-1.5 text-slate-600">{row.description}</td>
@@ -224,6 +236,14 @@ export function TaskDetailSheet({
           </nav>
         </div>
       </aside>
+
+      {eventDetail ? (
+        <SimulationEventDetailPanel
+          detail={eventDetail}
+          onClose={() => setEventDetail(null)}
+          overlay="fixed"
+        />
+      ) : null}
     </>
   );
 }

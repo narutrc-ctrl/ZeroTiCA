@@ -63,9 +63,9 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
               highlightNormal ? "sim-report-highlight border-blue-200 bg-blue-50/50" : "border-slate-100 bg-slate-50",
             )}
           >
-            {highlightNormal ? (
-              <span className="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white">방금 처리</span>
-            ) : null}
+            <span className="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white">
+              사례 A · 에이전트 통신(패킷/바이트)
+            </span>
             <p className="mt-2 font-semibold text-zinc-800">
               1) {incident.title}{" "}
               <span className="font-normal text-slate-400">(2026-05-12)</span>
@@ -85,9 +85,9 @@ export function SimulationReport({ highlightNormal = true, highlightThreat = tru
               highlightThreat ? "sim-report-highlight border-red-200 bg-red-50/40" : "border-slate-100 bg-slate-50",
             )}
           >
-            {highlightThreat ? (
-              <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white">위험 통신 사례</span>
-            ) : null}
+            <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white">
+              사례 B · 목적지 연결 거절 이상
+            </span>
             <p className="mt-2 font-semibold text-zinc-800">
               2) {threatIncident.title}{" "}
               <span className="font-normal text-slate-400">(2026-05-21)</span>

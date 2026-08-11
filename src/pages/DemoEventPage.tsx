@@ -349,6 +349,7 @@ export function DemoEventPage() {
         onClose={() => setReportOpen(false)}
         title={report.title}
         period={report.period}
+        initialPage={tourActive ? tourUi.reportPage : 0}
       />
     </MockRunaShell>
   );

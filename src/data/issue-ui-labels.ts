@@ -3,8 +3,8 @@
 export const ISSUE_MENU = "이슈 관리";
 
 export const KANBAN_COLUMNS = {
-  pre_request: "요청 전",
-  in_request: "확인 요청",
+  pre_request: "확인 요청",
+  in_request: "확인 중",
   done: "완료",
 } as const;
 
