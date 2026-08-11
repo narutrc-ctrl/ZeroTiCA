@@ -9,16 +9,22 @@ export function SimulationStageShell({
   children,
   className,
   scrollable = false,
+  /** 모바일에서 회색 테두리·배경 없이 콘텐츠만 표시 */
+  flushMobile = false,
 }: {
   children: React.ReactNode;
   className?: string;
   scrollable?: boolean;
+  flushMobile?: boolean;
 }) {
   return (
     <div
       className={cn(
         // 모바일: 고정 높이·내부 스크롤 없이 콘텐츠만큼 늘어남
-        "sim-stage-shell relative h-auto overflow-visible rounded-2xl border border-slate-200/70 bg-slate-50",
+        "sim-stage-shell relative h-auto overflow-visible",
+        flushMobile
+          ? "rounded-none border-0 bg-transparent sm:rounded-2xl sm:border sm:border-slate-200/70 sm:bg-slate-50"
+          : "rounded-2xl border border-slate-200/70 bg-slate-50",
         "sm:h-[600px] sm:overflow-hidden",
         scrollable && "sm:overflow-y-auto",
         className,

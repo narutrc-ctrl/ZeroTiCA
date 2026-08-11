@@ -140,6 +140,7 @@ export function SimulationRunaTaskView({
           ) : null}
 
           <div className="flex min-h-0 w-full flex-1 gap-1.5 p-1">
+            {/* 모바일 검증 1/5: 확인 요청 컬럼만 (3열 압착 방지) */}
             <KanbanColumn
               title={JOURNEY_KANBAN_COLUMNS.pre_request}
               titleClass="text-slate-600"
@@ -147,6 +148,9 @@ export function SimulationRunaTaskView({
               count={kanbanColumn === "pre_request" && phase !== "complete" ? 1 : 0}
               showArrow
               compact
+              arrowClassName={
+                kanbanColumn === "pre_request" && phase !== "complete" ? "hidden sm:flex" : undefined
+              }
             >
               {kanbanColumn === "pre_request" && phase !== "complete" ? activeCard : emptySlot}
             </KanbanColumn>
@@ -157,6 +161,12 @@ export function SimulationRunaTaskView({
               count={kanbanColumn === "in_request" && phase !== "complete" ? 1 : 0}
               showArrow
               compact
+              className={
+                kanbanColumn === "pre_request" && phase !== "complete" ? "hidden sm:flex" : undefined
+              }
+              arrowClassName={
+                kanbanColumn === "pre_request" && phase !== "complete" ? "hidden sm:flex" : undefined
+              }
             >
               {kanbanColumn === "in_request" && phase !== "complete" ? activeCard : emptySlot}
             </KanbanColumn>
@@ -166,6 +176,9 @@ export function SimulationRunaTaskView({
               headerClass="bg-emerald-50"
               count={isDoneColumn ? (previousIncident ? 2 : 1) : previousIncident ? 1 : 0}
               compact
+              className={
+                kanbanColumn === "pre_request" && phase !== "complete" ? "hidden sm:flex" : undefined
+              }
             >
               {isDoneColumn || previousIncident ? (
                 <div className="space-y-2">

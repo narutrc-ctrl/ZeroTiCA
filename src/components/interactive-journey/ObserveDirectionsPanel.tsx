@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowLeftRight, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 type FlowNode = "내부" | "외부";
 type FlowArrow = "right" | "left" | "both";
@@ -74,16 +76,57 @@ function DirectionFlow({
 }
 
 export function ObserveDirectionsPanel() {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const updateActive = () => {
+      const children = Array.from(el.children) as HTMLElement[];
+      if (!children.length) return;
+      const mid = el.scrollLeft + el.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      children.forEach((child, i) => {
+        const center = child.offsetLeft + child.offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      setActive(best);
+    };
+
+    updateActive();
+    el.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    return () => {
+      el.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, []);
+
+  const goTo = (index: number) => {
+    const el = scrollerRef.current;
+    const child = el?.children[index] as HTMLElement | undefined;
+    if (!el || !child) return;
+    el.scrollTo({ left: child.offsetLeft, behavior: "smooth" });
+  };
+
   return (
-    <div className="flex h-auto items-stretch justify-center overflow-visible py-4 sm:h-full sm:items-center sm:overflow-y-auto sm:px-4 sm:py-12 lg:px-5 lg:py-14">
+    <div className="flex h-auto flex-col items-stretch justify-center overflow-visible py-0 sm:h-full sm:items-center sm:overflow-y-auto sm:px-4 sm:py-12 lg:px-5 lg:py-14">
       {/* 모바일: 가로 스크롤 / sm+: 3열 그리드 */}
       <div
-        className="flex w-full snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-3 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] lg:gap-4 [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block"
+        ref={scrollerRef}
+        className="flex w-full snap-x snap-mandatory gap-3 overflow-x-auto px-0 pb-1 pr-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-3 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 sm:pr-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] lg:gap-4 [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block"
       >
         {observeDirectionCards.map((card) => (
           <article
             key={card.en}
-            className="flex w-[min(78vw,20rem)] shrink-0 snap-center flex-col rounded-2xl border border-slate-200/80 bg-white px-4 py-5 shadow-sm sm:w-auto sm:min-w-0 sm:shrink sm:px-5 sm:py-6"
+            className="flex w-[calc(100%-1.5rem)] shrink-0 snap-start flex-col rounded-2xl border border-slate-200/80 bg-white px-4 py-5 shadow-sm sm:w-auto sm:min-w-0 sm:shrink sm:px-5 sm:py-6"
           >
             <p className="text-[13px] font-bold tracking-wide text-primary sm:text-[14px]">{card.en}</p>
             <h4 className="mt-0.5 text-[20px] font-extrabold tracking-tight text-zinc-900 sm:text-[22px]">
@@ -109,6 +152,27 @@ export function ObserveDirectionsPanel() {
               </ul>
             </div>
           </article>
+        ))}
+      </div>
+
+      <div
+        className="mt-3 flex items-center justify-center gap-1.5 sm:hidden"
+        role="tablist"
+        aria-label="관측 방향 카드"
+      >
+        {observeDirectionCards.map((card, i) => (
+          <button
+            key={card.en}
+            type="button"
+            role="tab"
+            aria-selected={i === active}
+            aria-label={`${card.title} (${i + 1}/${observeDirectionCards.length})`}
+            onClick={() => goTo(i)}
+            className={cn(
+              "h-1.5 w-1.5 rounded-full transition-colors",
+              i === active ? "bg-primary" : "bg-slate-300",
+            )}
+          />
         ))}
       </div>
     </div>

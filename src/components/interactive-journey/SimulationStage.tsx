@@ -14,7 +14,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   // 관측 단계: Outbound / Inbound / Lateral 카드
   if (phase === "monitoring" || phase === "anomaly") {
     return (
-      <SimulationStageShell scrollable>
+      <SimulationStageShell scrollable flushMobile>
         <ObserveDirectionsPanel />
       </SimulationStageShell>
     );
@@ -23,7 +23,7 @@ export function SimulationStage({ sim }: { sim: IssueSimulationState }) {
   // 선별 단계: 전체 이벤트 → 정상 제외 → 우선 검토 → 검증 대상 사례
   if (phase === "analyst") {
     return (
-      <SimulationStageShell>
+      <SimulationStageShell flushMobile>
         <SelectStagePanel step={analystStep} />
       </SimulationStageShell>
     );

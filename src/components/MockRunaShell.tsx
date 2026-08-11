@@ -118,6 +118,8 @@ export function KanbanColumn({
   children,
   showArrow,
   compact,
+  className,
+  arrowClassName,
 }: {
   title: string;
   titleClass: string;
@@ -126,10 +128,12 @@ export function KanbanColumn({
   children: React.ReactNode;
   showArrow?: boolean;
   compact?: boolean;
+  className?: string;
+  arrowClassName?: string;
 }) {
   return (
     <>
-      <div className={cn("flex min-w-0 flex-1 flex-col", !compact && "min-w-[300px]")}>
+      <div className={cn("flex min-w-0 flex-1 flex-col", !compact && "min-w-[300px]", className)}>
         <div className={cn("mb-3 flex items-center gap-2 rounded-xl px-4 py-2.5", headerClass, compact && "px-2.5 py-2")}>
           <span className={cn("text-sm font-semibold", compact ? "text-[11px]" : "", titleClass)}>{title}</span>
           <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-slate-600">
@@ -139,7 +143,7 @@ export function KanbanColumn({
         <div className={cn("min-w-0 space-y-3", compact && "p-0.5")}>{children}</div>
       </div>
       {showArrow && (
-        <div className="flex shrink-0 items-center self-center text-slate-300">
+        <div className={cn("flex shrink-0 items-center self-center text-slate-300", arrowClassName)}>
           <ChevronRight className="h-6 w-6" />
         </div>
       )}

@@ -803,7 +803,7 @@ export function HeroSection() {
           <p className="mt-2 max-w-[640px] text-[14px] leading-relaxed text-slate-300">
             {section2Gap.lead}
           </p>
-          <div className="hero-section2-cards mt-4 w-full overflow-hidden rounded-[20px] bg-white/85 shadow-[0_18px_50px_rgba(171,209,255,0.55)]">
+          <div className="hero-section2-cards mt-4 w-full overflow-hidden rounded-[20px] bg-white/85">
                 <div className="grid grid-cols-1 divide-y divide-slate-200/90 md:grid-cols-3 md:divide-y-0">
                   {section2Gap.cards.map((card) => (
                     <article

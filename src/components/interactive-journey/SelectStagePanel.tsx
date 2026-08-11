@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
 const SELECT_STEPS = [
@@ -220,15 +220,58 @@ function ModelTable({ step, rows }: { step: number; rows: ModelRow[] }) {
 }
 
 function VerifyCases() {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const updateActive = () => {
+      const children = Array.from(el.children) as HTMLElement[];
+      if (!children.length) return;
+      const mid = el.scrollLeft + el.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      children.forEach((child, i) => {
+        const center = child.offsetLeft + child.offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      setActive(best);
+    };
+
+    updateActive();
+    el.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    return () => {
+      el.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, []);
+
+  const goTo = (index: number) => {
+    const el = scrollerRef.current;
+    const child = el?.children[index] as HTMLElement | undefined;
+    if (!el || !child) return;
+    el.scrollTo({ left: child.offsetLeft, behavior: "smooth" });
+  };
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       {/* 모바일: 사례 카드 가로 스크롤 / sm+: 2열 그리드 */}
-      <div className="flex min-h-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-y-auto sm:overflow-x-visible sm:pb-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block">
+      <div
+        ref={scrollerRef}
+        className="flex min-h-0 flex-1 snap-x snap-mandatory gap-3 overflow-x-auto pb-1 pr-5 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-y-auto sm:overflow-x-visible sm:pb-0 sm:pr-0 sm:[-ms-overflow-style:auto] sm:[scrollbar-width:auto] [&::-webkit-scrollbar]:hidden sm:[&::-webkit-scrollbar]:block"
+      >
         {VERIFY_CASES.map((item) => (
           <article
             key={item.key}
             className={cn(
-              "flex w-[min(82vw,20rem)] shrink-0 snap-center flex-col rounded-2xl bg-white p-4 shadow-sm sm:w-auto sm:min-w-0 sm:shrink",
+              "flex w-[calc(100%-1.5rem)] shrink-0 snap-start flex-col rounded-2xl bg-white p-4 shadow-sm sm:w-auto sm:min-w-0 sm:shrink",
               item.highlight ? "border-2 border-primary/70" : "border border-slate-200/90",
             )}
           >
@@ -258,6 +301,27 @@ function VerifyCases() {
         ))}
       </div>
 
+      <div
+        className="-mt-1 flex items-center justify-center gap-1.5 sm:hidden"
+        role="tablist"
+        aria-label="검증 대상 사례"
+      >
+        {VERIFY_CASES.map((item, i) => (
+          <button
+            key={item.key}
+            type="button"
+            role="tab"
+            aria-selected={i === active}
+            aria-label={`${item.meta} (${i + 1}/${VERIFY_CASES.length})`}
+            onClick={() => goTo(i)}
+            className={cn(
+              "h-1.5 w-1.5 rounded-full transition-colors",
+              i === active ? "bg-primary" : "bg-slate-300",
+            )}
+          />
+        ))}
+      </div>
+
       <p className="shrink-0 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-[12px] font-semibold leading-relaxed text-primary [word-break:keep-all] sm:text-[13px]">
         모델이 탐지한 모든 이벤트를 그대로 전달하지 않고, 분석가가 우선 검증할 후보를 좁힙니다.
       </p>
@@ -271,7 +335,7 @@ export function SelectStagePanel({ step }: { step: number }) {
   const rows = isMobile ? MODEL_ROWS_MOBILE : MODEL_ROWS;
 
   return (
-    <div className="flex h-full flex-col gap-3 bg-[#f3f6fa] p-3 sm:p-4">
+    <div className="flex h-full flex-col gap-3 bg-transparent p-0 sm:bg-[#f3f6fa] sm:p-4">
       {/* 모바일: 상단 1~4 단계 뱃지 숨김 (설명은 우측/상단 내러티브로 충분) */}
       <div className="hidden shrink-0 grid-cols-2 gap-2 sm:grid lg:grid-cols-4">
         {SELECT_STEPS.map((s, i) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -14,20 +14,52 @@ function heroSceneProgress(hero: HTMLElement) {
 /** 브릿지 문구 이후·섹션2 등장 구간 */
 const SHOW_FROM_PROGRESS = 0.84;
 
-/** 섹션2부터 노출 → 클릭 시 최상단으로 */
+/** 미세 스크롤·바운스 무시 */
+const DIRECTION_DELTA = 8;
+
+/** 섹션2부터 노출 → 클릭 시 최상단으로. 내릴 때 숨김, 올릴 때 다시 표시 */
 export function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
+  const lastYRef = useRef(0);
+  const inRangeRef = useRef(false);
 
   useEffect(() => {
     let raf = 0;
+    lastYRef.current = window.scrollY;
+
     const update = () => {
+      const y = window.scrollY;
       const hero = document.getElementById("top");
-      if (!hero) {
-        setVisible(window.scrollY > 320);
+      const inRange = hero
+        ? heroSceneProgress(hero) >= SHOW_FROM_PROGRESS
+        : y > 320;
+
+      const delta = y - lastYRef.current;
+      const scrollingDown = delta > DIRECTION_DELTA;
+      const scrollingUp = delta < -DIRECTION_DELTA;
+
+      if (scrollingDown || scrollingUp) {
+        lastYRef.current = y;
+      }
+
+      inRangeRef.current = inRange;
+
+      if (!inRange) {
+        setVisible(false);
         return;
       }
-      // 히어로 장면 progress가 섹션2 구간에 들어오면 표시 (이후 페이지에서도 유지)
-      setVisible(heroSceneProgress(hero) >= SHOW_FROM_PROGRESS);
+
+      // 범위 진입 직후·맨 위 근처에서는 올리기 동작이 없어도 표시
+      if (y < 80) {
+        setVisible(false);
+        return;
+      }
+
+      if (scrollingDown) {
+        setVisible(false);
+      } else if (scrollingUp) {
+        setVisible(true);
+      }
     };
 
     const onScroll = () => {
@@ -36,6 +68,11 @@ export function ScrollToTopButton() {
     };
 
     update();
+    // 첫 진입 시 이미 범위 안이면 표시 (새로고침·앵커 등)
+    if (inRangeRef.current && window.scrollY >= 80) {
+      setVisible(true);
+    }
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {

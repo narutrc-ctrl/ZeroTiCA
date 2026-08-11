@@ -56,6 +56,124 @@ function JourneyStepTabs({
   );
 }
 
+function JourneyNavFooter({
+  chapterLabel,
+  subProgress,
+  isAtStart,
+  isAtEnd,
+  showVerifyClosingNote,
+  showThreatClosingNote,
+  onPrev,
+  onNext,
+  onRestart,
+  showSubDots = false,
+}: {
+  chapterLabel: string;
+  subProgress: { current: number; total: number };
+  isAtStart: boolean;
+  isAtEnd: boolean;
+  showVerifyClosingNote: boolean;
+  showThreatClosingNote: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+  onRestart: () => void;
+  /** 데스크톱 전용 — 하위 단계 닷 */
+  showSubDots?: boolean;
+}) {
+  return (
+    <>
+      {showVerifyClosingNote ? (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 px-3.5 py-3">
+          <p className="text-[12px] font-semibold leading-relaxed text-emerald-800 [word-break:keep-all] sm:text-[13px]">
+            위협이 아니어도 검증의 결과입니다.
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {["몰랐던 자산·통신", "필요한 업무 통신", "정리가 필요한 통신", "이후 판단의 기준"].map(
+              (label) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 [word-break:keep-all] sm:text-[12px]"
+                >
+                  {label}
+                </span>
+              ),
+            )}
+          </div>
+        </div>
+      ) : null}
+
+      {showThreatClosingNote ? (
+        <p className="rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3.5 text-[14px] font-semibold leading-relaxed text-primary [word-break:keep-all] sm:text-[15px]">
+          정상으로 확인된 사례와 위협으로 조치한 사례가 모두 검증 기록으로 남아 이후 변화를
+          판단하는 기준이 됩니다.
+        </p>
+      ) : null}
+
+      <div className="flex items-center justify-end gap-3">
+        {showSubDots && subProgress.total > 1 && !isAtEnd ? (
+          <div
+            className="mr-auto flex items-center gap-1.5"
+            aria-label={`${chapterLabel} ${subProgress.current + 1}/${subProgress.total}`}
+          >
+            {Array.from({ length: subProgress.total }, (_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full transition-colors",
+                  i === subProgress.current ? "bg-primary" : "bg-slate-300",
+                )}
+              />
+            ))}
+          </div>
+        ) : null}
+        <div className="flex items-center justify-end gap-2.5">
+          {isAtEnd ? (
+            <>
+              <button
+                type="button"
+                onClick={onPrev}
+                className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50"
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                onClick={onRestart}
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+              >
+                처음으로
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={onPrev}
+                disabled={isAtStart}
+                aria-hidden={isAtStart}
+                tabIndex={isAtStart ? -1 : undefined}
+                className={cn(
+                  "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
+                  isAtStart && "invisible pointer-events-none",
+                )}
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                onClick={onNext}
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
+              >
+                다음
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 function revealStyle(t: number) {
   const e = easeOutCubic(Math.min(1, Math.max(0, t)));
   return {
@@ -200,17 +318,11 @@ export function InteractiveIssueJourneySection() {
 
           <div className="sim-journey-panel mt-5 rounded-[28px] border border-slate-200/90 bg-white/90 p-4 shadow-[0_18px_50px_rgba(171,209,255,0.45)] backdrop-blur-sm sm:mt-6 sm:p-6 lg:p-7">
             <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
-              {/* 모바일: 설명·버튼이 단계 탭 바로 아래 → 시뮬레이션은 그 다음 */}
-              <div className="order-2 min-w-0 lg:order-1">
-                <div className="overflow-hidden rounded-2xl bg-[#eef2f7]">
-                  <SimulationStage sim={sim} />
-                </div>
-              </div>
-
+              {/* 모바일: 설명 → 시뮬레이션 → 이전/다음(카드 하단) / lg: 시뮬 | 설명+버튼 */}
               <div className="relative order-1 min-w-0 sm:h-[600px] lg:order-2">
                 <div
                   className={cn(
-                    "pb-4 pt-0 sm:h-full sm:overflow-y-auto sm:pt-6",
+                    "pb-0 pt-0 sm:h-full sm:overflow-y-auto sm:pb-4 sm:pt-6",
                     showVerifyClosingNote || showThreatClosingNote ? "sm:pb-44" : "sm:pb-16",
                   )}
                 >
@@ -258,98 +370,50 @@ export function InteractiveIssueJourneySection() {
                   </p>
                 </div>
 
-                <div className="relative mt-4 flex flex-col gap-3 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0">
-                  {showVerifyClosingNote ? (
-                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 px-3.5 py-3">
-                      <p className="text-[12px] font-semibold leading-relaxed text-emerald-800 [word-break:keep-all] sm:text-[13px]">
-                        위협이 아니어도 검증의 결과입니다.
-                      </p>
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
-                        {["몰랐던 자산·통신", "필요한 업무 통신", "정리가 필요한 통신", "이후 판단의 기준"].map(
-                          (label) => (
-                            <span
-                              key={label}
-                              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 [word-break:keep-all] sm:text-[12px]"
-                            >
-                              {label}
-                            </span>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {showThreatClosingNote ? (
-                    <p className="rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3.5 text-[14px] font-semibold leading-relaxed text-primary [word-break:keep-all] sm:text-[15px]">
-                      정상으로 확인된 사례와 위협으로 조치한 사례가 모두 검증 기록으로 남아 이후
-                      변화를 판단하는 기준이 됩니다.
-                    </p>
-                  ) : null}
-
-                  <div className="flex items-center justify-between gap-3">
-                    {subProgress.total > 1 && !isAtEnd ? (
-                      <div
-                        className="flex items-center gap-1.5"
-                        aria-label={`${chapter.label} ${subProgress.current + 1}/${subProgress.total}`}
-                      >
-                        {Array.from({ length: subProgress.total }, (_, i) => (
-                          <span
-                            key={i}
-                            className={cn(
-                              "h-1.5 w-1.5 rounded-full transition-colors",
-                              i === subProgress.current ? "bg-primary" : "bg-slate-300",
-                            )}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <span />
-                    )}
-                    <div className="flex items-center justify-end gap-2.5">
-                      {isAtEnd ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={sim.goPrev}
-                            className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50"
-                          >
-                            이전
-                          </button>
-                          <button
-                            type="button"
-                            onClick={sim.restart}
-                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
-                          >
-                            처음으로
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            onClick={sim.goPrev}
-                            disabled={isAtStart}
-                            aria-hidden={isAtStart}
-                            tabIndex={isAtStart ? -1 : undefined}
-                            className={cn(
-                              "inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-5 py-2.5 text-[14px] font-semibold text-primary shadow-sm hover:bg-blue-50",
-                              isAtStart && "invisible pointer-events-none",
-                            )}
-                          >
-                            이전
-                          </button>
-                          <button
-                            type="button"
-                            onClick={sim.goNext}
-                            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:bg-blue-600"
-                          >
-                            다음
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                {/* 데스크톱: 설명 컬럼 하단 고정 */}
+                <div className="relative mt-4 hidden flex-col gap-3 sm:absolute sm:inset-x-0 sm:bottom-0 sm:mt-0 sm:flex">
+                  <JourneyNavFooter
+                    chapterLabel={chapter.label}
+                    subProgress={subProgress}
+                    isAtStart={isAtStart}
+                    isAtEnd={isAtEnd}
+                    showVerifyClosingNote={showVerifyClosingNote}
+                    showThreatClosingNote={showThreatClosingNote}
+                    onPrev={sim.goPrev}
+                    onNext={sim.goNext}
+                    onRestart={sim.restart}
+                    showSubDots
+                  />
                 </div>
+              </div>
+
+              <div className="order-2 min-w-0 lg:order-1">
+                <div
+                  className={cn(
+                    "overflow-hidden",
+                    // 관측·선별 모바일: 회색 프레임 없이 콘텐츠만
+                    phase === "monitoring" || phase === "anomaly" || phase === "analyst"
+                      ? "rounded-none bg-transparent sm:rounded-2xl sm:bg-[#eef2f7]"
+                      : "rounded-2xl bg-[#eef2f7]",
+                  )}
+                >
+                  <SimulationStage sim={sim} />
+                </div>
+              </div>
+
+              {/* 모바일: 카드 맨 아래 */}
+              <div className="order-3 flex flex-col gap-3 sm:hidden">
+                <JourneyNavFooter
+                  chapterLabel={chapter.label}
+                  subProgress={subProgress}
+                  isAtStart={isAtStart}
+                  isAtEnd={isAtEnd}
+                  showVerifyClosingNote={showVerifyClosingNote}
+                  showThreatClosingNote={showThreatClosingNote}
+                  onPrev={sim.goPrev}
+                  onNext={sim.goNext}
+                  onRestart={sim.restart}
+                />
               </div>
             </div>
           </div>
