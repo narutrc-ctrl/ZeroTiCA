@@ -27,63 +27,66 @@ function PerspectiveBody({ parts }: { parts: readonly PerspectiveBodyPart[] }) {
 
 function PerspectiveDetailPanel({
   detail,
-  labels,
   labelledBy,
 }: {
   detail: PerspectiveDetail;
-  labels: (typeof perspectivesPage)["detailLabels"];
   labelledBy: string;
 }) {
+  const sectionLabelClassName =
+    "text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400 sm:text-[12px]";
+
   return (
     <div
       role="region"
       aria-labelledby={labelledBy}
-      className="grid gap-8 border-t border-slate-100 pt-6 sm:gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 lg:pt-7"
+      className="border-t border-slate-100 pt-6 sm:pt-7 pr-8 sm:pr-9"
     >
-      <div>
-        <h4 className="text-[15px] font-bold text-zinc-800 [word-break:keep-all] sm:text-[16px]">
-          {labels.reason}
-        </h4>
-        <p className="mt-2 text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[15px]">
+      <div className="grid gap-6 sm:gap-7 lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-x-6">
+        <p className={sectionLabelClassName}>이 관점이 필요한 이유</p>
+        <p className="text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[15px]">
           {detail.reason}
         </p>
-        <div className="mt-5 rounded-2xl bg-slate-50 px-4 py-4 sm:mt-6 sm:px-5 sm:py-5">
-          <p className="text-[14px] font-bold text-primary [word-break:keep-all] sm:text-[15px]">
-            {labels.confirm}
-          </p>
-          <ul className="mt-3 space-y-2">
-            {detail.confirms.map((item) => (
-              <li
-                key={item}
-                className="flex gap-2.5 text-[14px] leading-relaxed text-slate-600 [word-break:keep-all] sm:text-[15px]"
-              >
-                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
 
-      <div>
-        <h4 className="text-[15px] font-bold text-zinc-800 [word-break:keep-all] sm:text-[16px]">
-          {labels.look}
-        </h4>
-        <ul className="mt-3">
+      <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:mt-7 sm:pt-7 lg:grid-cols-[168px_minmax(0,1fr)] lg:gap-x-6">
+        <p className={cn(sectionLabelClassName, "leading-[1.4]")}>무엇을 보는가</p>
+        <ul>
           {detail.looks.map((look, i) => (
             <li
               key={look.title}
               className={cn(
-                "py-4 first:pt-1 last:pb-0",
+                "grid gap-3 py-4 first:pt-0 last:pb-0 sm:gap-4 lg:grid-cols-[32px_minmax(0,1fr)]",
                 i > 0 && "border-t border-slate-100",
               )}
             >
-              <p className="text-[14px] font-bold text-zinc-800 [word-break:keep-all] sm:text-[15px]">
-                {look.title}
-              </p>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[15px]">
-                {look.body}
-              </p>
+              <span className="text-[15px] font-bold tabular-nums text-primary sm:text-[16px]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[14px] font-bold text-zinc-800 [word-break:keep-all] sm:text-[15px]">
+                  {look.title}
+                </p>
+                <p className="mt-1.5 text-[14px] leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[15px]">
+                  {look.body}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:mt-7 sm:pt-7 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-x-6">
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-primary sm:text-[12px]">
+          이 관점에서 확인할 수 있는 것
+        </p>
+        <ul className="space-y-3 sm:space-y-4">
+          {detail.confirms.map((item) => (
+            <li
+              key={item}
+              className="flex gap-3 text-[14px] leading-relaxed text-slate-600 [word-break:keep-all] sm:text-[15px]"
+            >
+              <span className="mt-[8px] h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+              <span>{item}</span>
             </li>
           ))}
         </ul>
@@ -96,12 +99,10 @@ function PerspectiveItemCard({
   item,
   open,
   onToggle,
-  labels,
 }: {
   item: PerspectiveItem;
   open: boolean;
   onToggle: () => void;
-  labels: (typeof perspectivesPage)["detailLabels"];
 }) {
   const triggerId = `perspective-q-${item.num}`;
   const panelId = `perspective-a-${item.num}`;
@@ -146,7 +147,6 @@ function PerspectiveItemCard({
               <div className="pt-5 sm:pt-6">
                 <PerspectiveDetailPanel
                   detail={item.detail}
-                  labels={labels}
                   labelledBy={triggerId}
                 />
               </div>
@@ -159,7 +159,7 @@ function PerspectiveItemCard({
 }
 
 export function PerspectivesPage() {
-  const { eyebrow, titleAccent, titleAfter, titleLine2, lead, backLabel, groups, detailLabels } =
+  const { eyebrow, titleAccent, titleAfter, titleLine2, lead, closing, backLabel, groups } =
     perspectivesPage;
   const [openNum, setOpenNum] = useState<string | null>(null);
 
@@ -183,7 +183,9 @@ export function PerspectivesPage() {
           {titleLine2}
         </h1>
         <p className="mt-4 w-full max-w-none text-[16px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-5 sm:text-[18px]">
-          {lead}
+          {lead[0]}
+          <br />
+          {lead[1]}
         </p>
 
         <div className="mt-16 flex flex-col gap-12 sm:mt-20 sm:gap-16 lg:mt-24 lg:gap-20">
@@ -202,13 +204,26 @@ export function PerspectivesPage() {
                     item={item}
                     open={openNum === item.num}
                     onToggle={() => setOpenNum((prev) => (prev === item.num ? null : item.num))}
-                    labels={detailLabels}
                   />
                 ))}
               </ol>
             </section>
           ))}
         </div>
+
+        <section className="mt-8 py-10 text-center sm:mt-10 sm:py-12 lg:mt-12 lg:py-16">
+          <div className="mx-auto mb-10 h-0.5 w-16 bg-primary sm:mb-12 sm:w-20" aria-hidden />
+          <h2 className="text-[22px] font-extrabold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-[26px] lg:text-[28px]">
+            {closing.titleLine1}
+            <br />
+            {closing.titleLine2}
+          </h2>
+          <div className="mt-4 space-y-1.5 text-[16px] leading-relaxed text-slate-500 [word-break:keep-all] sm:mt-5 sm:text-[18px]">
+            {closing.body.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+        </section>
 
         <Link
           to="/#differentiator"
