@@ -164,11 +164,6 @@ export function Layout() {
             </nav>
           )}
           <div className="flex items-center gap-2">
-            {!isHome && (
-              <Link to={withLocale("/")} className="hidden text-sm text-slate-600 hover:text-zinc-800 sm:inline">
-                소개로
-              </Link>
-            )}
             {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
             <ContactCTA className="hidden text-sm sm:inline-flex" />
             */}
