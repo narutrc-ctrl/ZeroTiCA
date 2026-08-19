@@ -60,14 +60,6 @@ export const PAGES: SeoPage[] = [
     indexable: true,
   },
   {
-    path: "/legal/terms",
-    title: "서비스 이용약관 | ZeroTiCA",
-    description: "(주)나루씨큐리티 제로티카 서비스의 이용 조건과 문의 방법을 안내합니다.",
-    canonicalPath: "/legal/terms",
-    robots: INDEX_ROBOTS,
-    indexable: true,
-  },
-  {
     path: "/demo/task",
     title: "이슈 관리 데모 | ZeroTiCA",
     description: "제로티카 고객 포털의 이슈 관리 화면 데모입니다.",

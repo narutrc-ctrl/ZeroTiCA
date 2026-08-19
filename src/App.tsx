@@ -5,7 +5,6 @@ import { Layout } from "@/components/Layout";
 import { LandingPage } from "@/pages/LandingPage";
 import { ContactPage } from "@/pages/ContactPage";
 import { PrivacyPage } from "@/pages/legal/PrivacyPage";
-import { TermsPage } from "@/pages/legal/TermsPage";
 import { PerspectivesPage } from "@/pages/PerspectivesPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 
@@ -30,7 +29,6 @@ function marketingRoutes() {
       <Route index element={<LandingPage />} />
       <Route path="contact" element={<ContactPage />} />
       <Route path="legal/privacy" element={<PrivacyPage />} />
-      <Route path="legal/terms" element={<TermsPage />} />
       <Route path="perspectives" element={<PerspectivesPage />} />
       <Route path="services" element={<Navigate to="/#choose" replace />} />
       <Route path="process" element={<Navigate to="/#journey" replace />} />

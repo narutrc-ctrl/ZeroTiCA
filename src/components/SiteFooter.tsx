@@ -70,9 +70,6 @@ export function SiteFooter() {
           <Link to="/legal/privacy" className="text-[#9ca3af] transition-colors hover:text-white">
             개인정보 처리방침
           </Link>
-          <Link to="/legal/terms" className="text-[#9ca3af] transition-colors hover:text-white">
-            서비스 이용약관
-          </Link>
         </div>
 
         <p className="mt-8 text-center text-[12px] text-[#6b7280] sm:mt-9">

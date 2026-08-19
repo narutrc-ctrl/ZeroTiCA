@@ -47,7 +47,6 @@ function handler(event) {
     '/demo/report': true,
     '/demo/task': true,
     '/legal/privacy': true,
-    '/legal/terms': true,
     '/perspectives': true
   };
 
