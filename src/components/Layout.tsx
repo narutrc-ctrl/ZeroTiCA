@@ -13,6 +13,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
+import { SeoHead } from "@/components/SeoHead";
 import { paths, storyAnchors } from "@/data/content";
 import { cn } from "@/lib/cn";
 
@@ -125,6 +126,7 @@ export function Layout() {
   if (isDemo) {
     return (
       <div className="h-screen overflow-hidden bg-white">
+        <SeoHead />
         <DemoTourBar />
         <div className="h-[calc(100vh-40px)]">
           <Outlet />
@@ -137,6 +139,7 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
+      <SeoHead />
       <ScrollProgress retracted={headerHidden} />
       <header
         className={cn(

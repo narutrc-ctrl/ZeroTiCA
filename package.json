@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host=0.0.0.0 --port 5174",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/build-hosting.mjs",
+    "apply:cloudfront": "python3 scripts/apply-cloudfront-spa-router.py",
     "preview": "vite preview --port 5174"
   },
   "dependencies": {

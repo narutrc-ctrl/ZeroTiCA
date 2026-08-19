@@ -2,15 +2,14 @@
 
 ## 파일별 체크
 
+- `src/seo/pages.ts`
+  - indexable 페이지의 title/description/canonical 원본
+  - 빌드 시 `dist/*.html`, `dist/sitemap.xml`, CloudFront SPA router 생성
 - `index.html`
-  - title/description/canonical/hreflang/JSON-LD 유지
+  - 홈 템플릿. 배포 HTML head는 `pages.ts` 기준으로 stamp
   - OG/Twitter 이미지 URL가 실제 파일과 일치하는지 확인
 - `public/robots.txt`
   - 운영 도메인 sitemap URL 반영
-- `public/sitemap.xml` 
-  - 운영 중인 모든 공개 URL 포함 (`/`, `/ko-kr`, `/en-us`, 데모 페이지)
-- `vercel.json`
-  - SPA 라우팅 새로고침 404 방지를 위한 rewrite 유지
 
 ## 운영 체크
 

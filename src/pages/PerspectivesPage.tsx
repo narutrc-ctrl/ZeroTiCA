@@ -164,12 +164,7 @@ export function PerspectivesPage() {
   const [openNum, setOpenNum] = useState<string | null>(null);
 
   useEffect(() => {
-    const prev = document.title;
-    document.title = "ZeroTiCA의 8가지 검증 관점 | ZeroTiCA";
     window.scrollTo(0, 0);
-    return () => {
-      document.title = prev;
-    };
   }, []);
 
   return (
