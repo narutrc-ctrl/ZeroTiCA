@@ -28,6 +28,17 @@ function toQueryString(qs) {
   return parts.length ? '?' + parts.join('&') : '';
 }
 
+function redirect301(request, path) {
+  var host = request.headers.host.value;
+  return {
+    statusCode: 301,
+    statusDescription: 'Moved Permanently',
+    headers: {
+      location: { value: 'https://' + host + path + toQueryString(request.querystring) }
+    }
+  };
+}
+
 function handler(event) {
   var request = event.request;
   var uri = request.uri;
@@ -48,13 +59,7 @@ function handler(event) {
     if (uri.length > 5 && uri.substring(uri.length - 5) === '.html') {
       var pretty = uri.substring(0, uri.length - 5);
       if (SPA[pretty]) {
-        return {
-          statusCode: 301,
-          statusDescription: 'Moved Permanently',
-          headers: {
-            location: { value: pretty + toQueryString(request.querystring) }
-          }
-        };
+        return redirect301(request, pretty);
       }
     }
     return request;
@@ -65,13 +70,7 @@ function handler(event) {
 
   if (SPA[normalized]) {
     if (hadSlash) {
-      return {
-        statusCode: 301,
-        statusDescription: 'Moved Permanently',
-        headers: {
-          location: { value: normalized + toQueryString(request.querystring) }
-        }
-      };
+      return redirect301(request, normalized);
     }
     request.uri = normalized + '.html';
     return request;
