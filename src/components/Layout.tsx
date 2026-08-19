@@ -16,6 +16,7 @@ import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { SeoHead } from "@/components/SeoHead";
 import { paths, storyAnchors } from "@/data/content";
 import { cn } from "@/lib/cn";
+import { jumpToTopInstant } from "@/lib/scroll";
 
 /** 히어로 sticky 안 섹션2가 거의 다 드러난 지점 (끝이면 검증 관점으로 넘어감) */
 const PROBLEM_SCENE_PROGRESS = 0.96;
@@ -75,6 +76,11 @@ export function Layout() {
   useEffect(() => {
     document.documentElement.lang = locale === "en-us" ? "en" : "ko";
   }, [locale]);
+
+  useEffect(() => {
+    if (location.hash) return;
+    jumpToTopInstant();
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!location.hash) return;

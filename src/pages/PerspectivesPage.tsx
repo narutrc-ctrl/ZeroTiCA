@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import {
@@ -162,10 +162,6 @@ export function PerspectivesPage() {
   const { eyebrow, titleAccent, titleAfter, titleLine2, lead, closing, backLabel, groups } =
     perspectivesPage;
   const [openNum, setOpenNum] = useState<string | null>(null);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className="border-b border-slate-200/80 bg-[#f8f9fb]">

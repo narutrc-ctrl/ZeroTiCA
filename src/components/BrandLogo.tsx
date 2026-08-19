@@ -1,25 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/cn";
 import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
+import { jumpToTopInstant } from "@/lib/scroll";
 
 function homePath(pathname: string) {
   const parts = pathname.split("/").filter(Boolean);
   const locale = isSupportedLocale(parts[0]) ? parts[0] : null;
   return locale && locale !== DEFAULT_LOCALE ? `/${locale}` : "/";
-}
-
-/** CSS scroll-behavior:smooth 를 잠시 끄고 즉시 상단으로 점프 */
-function jumpToTopInstant() {
-  const html = document.documentElement;
-  const prev = html.style.scrollBehavior;
-  html.style.scrollBehavior = "auto";
-  window.scrollTo(0, 0);
-  html.scrollTop = 0;
-  document.body.scrollTop = 0;
-  // 다음 프레임까지 유지한 뒤 복구 (해시/레이아웃 스크롤 간섭 방지)
-  requestAnimationFrame(() => {
-    html.style.scrollBehavior = prev;
-  });
 }
 
 export function BrandLogo({ className, linked = true }: { className?: string; linked?: boolean }) {
