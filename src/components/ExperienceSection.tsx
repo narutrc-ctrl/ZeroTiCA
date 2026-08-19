@@ -324,7 +324,7 @@ function ExperienceMockCard({ highlight }: { highlight: HighlightId }) {
 }
 
 function ExperienceCta() {
-  const { footerNote, ctaLabel } = experienceSection;
+  const { footerNote, ctaLabel, ctaLabelMobile } = experienceSection;
   const btnClass =
     "mt-4 flex w-full items-center justify-center rounded-full bg-primary px-5 py-3.5 text-[15px] font-bold text-white sm:mt-5 sm:py-4 sm:text-[16px]";
 
@@ -338,7 +338,7 @@ function ExperienceCta() {
         className={cn(btnClass, "pointer-events-none select-none opacity-55 lg:hidden")}
         aria-disabled="true"
       >
-        {ctaLabel}
+        {ctaLabelMobile}
         <span className="ml-1.5" aria-hidden>
           →
         </span>

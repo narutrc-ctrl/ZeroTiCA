@@ -390,7 +390,8 @@ export const experienceSection = {
   ],
   footerNote:
     "대시보드, 이슈 관리, 보고서 화면까지 직접 둘러볼 수 있습니다.",
-  ctaLabel: "PC에서 데모 페이지 체험하기",
+  ctaLabel: "데모 페이지 체험하기",
+  ctaLabelMobile: "PC에서 데모 페이지 체험하기",
 };
 
 export const closing = {
