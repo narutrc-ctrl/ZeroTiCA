@@ -102,10 +102,10 @@ export function ProblemDifferentiatorSection() {
         </div>
 
         <RevealOnScroll delay={280} variant="fade-up">
-          <div className="mt-12 flex justify-center sm:mt-16">
+          <div className="mt-20 flex justify-center sm:mt-24">
             <Link
               to={paths.perspectives}
-              className="inline-flex items-center gap-1.5 text-[14px] font-medium text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#10141d] sm:text-[15px]"
+              className="inline-flex items-center gap-2 text-[16px] font-medium text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#10141d] sm:text-[18px]"
             >
               {ctaLabel}
               <span aria-hidden>→</span>
