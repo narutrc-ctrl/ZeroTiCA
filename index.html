@@ -39,29 +39,44 @@
         "@graph": [
           {
             "@type": "Organization",
-            "name": "ZeroTiCA",
-            "alternateName": ["제로티카", "ZeroTica"],
-            "url": "https://zerotica.narusec.com",
-            "logo": "https://zerotica.narusec.com/logo.svg",
+            "@id": "https://zerotica.narusec.com/#organization",
+            "name": "나루씨큐리티",
+            "url": "https://www.narusec.com/",
             "contactPoint": {
               "@type": "ContactPoint",
               "contactType": "sales",
               "email": "zerotica@narusec.com",
               "telephone": "+82-2-522-7912",
               "areaServed": "KR",
-              "availableLanguage": ["ko", "en"]
+              "availableLanguage": "ko"
             }
           },
           {
             "@type": "WebSite",
+            "@id": "https://zerotica.narusec.com/#website",
             "name": "ZeroTiCA",
-            "alternateName": ["제로티카"],
+            "alternateName": "제로티카",
             "url": "https://zerotica.narusec.com/",
-            "inLanguage": ["ko-KR", "en-US"],
+            "inLanguage": "ko-KR",
             "publisher": {
-              "@type": "Organization",
-              "name": "ZeroTiCA"
+              "@id": "https://zerotica.narusec.com/#organization"
             }
+          },
+          {
+            "@type": "Service",
+            "@id": "https://zerotica.narusec.com/#service",
+            "name": "ZeroTiCA",
+            "alternateName": "제로티카",
+            "serviceType": "침해평가 서비스",
+            "url": "https://zerotica.narusec.com/",
+            "provider": {
+              "@id": "https://zerotica.narusec.com/#organization"
+            },
+            "areaServed": {
+              "@type": "Country",
+              "name": "KR"
+            },
+            "description": "기업 내부망의 네트워크 통신을 분석해 이상 징후와 침해 흔적을 확인하고, 전문가가 실제 위협 여부를 검증해 조치 방향을 제시하는 침해평가 서비스입니다."
           }
         ]
       }

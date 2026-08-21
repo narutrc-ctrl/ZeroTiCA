@@ -223,12 +223,12 @@ const networkChangeDetail: PerspectiveDetail = {
 
 export const perspectivesPage = {
   eyebrow: "ZeroTiCA의 검증 관점",
-  titleAccent: "여덟가지 관점",
+  titleAccent: "여덟 가지 관점",
   titleAfter: "으로",
-  titleLine2: "침해 가능성을 확인합니다.",
+  titleLine2: "기업 내부의 침해 가능성을 확인합니다.",
   lead: [
-    "실제 침해사고 조사에서 반복적으로 확인된 흔적을 8가지 관점으로 정리했습니다.",
-    "각 관점의 정황을 따로 판단하지 않고 서로 연결해 검증하며, 전문가가 현재 침해 여부를 최종 판단합니다.",
+    "실제 침해사고 조사에서 반복적으로 확인된 내부망의 침해 징후를 8가지 관점으로 정리했습니다.",
+    "네트워크 통신에서 나타난 각 정황을 따로 판단하지 않고 서로 연결해 검증하며, 전문가가 실제 침해 가능성을 최종 판단합니다.",
   ],
   closing: {
     titleLine1: "8개의 관점은",

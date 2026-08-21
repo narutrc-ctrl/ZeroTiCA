@@ -43,9 +43,9 @@ export const PAGES: SeoPage[] = [
   HOME,
   {
     path: "/perspectives",
-    title: "ZeroTiCA의 8가지 검증 관점 | ZeroTiCA",
+    title: "침해 징후를 확인하는 8가지 보안 검증 관점 | ZeroTiCA",
     description:
-      "실제 침해사고 조사에서 반복적으로 확인된 흔적을 8가지 관점으로 정리했습니다. 각 관점의 정황을 연결해 검증하며, 전문가가 현재 침해 여부를 최종 판단합니다.",
+      "ZeroTiCA는 기업 내부망의 네트워크 통신에서 웹셸, C2 통신, 측면이동, 보안통제 우회, 비정상 데이터 이동 등 침해 징후를 8가지 관점으로 분석하고 전문가가 실제 침해 가능성을 검증합니다.",
     canonicalPath: "/perspectives",
     robots: INDEX_ROBOTS,
     indexable: true,

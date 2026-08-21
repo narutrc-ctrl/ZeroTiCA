@@ -52,69 +52,6 @@ function upsertLink(
   el.setAttribute("href", href);
 }
 
-function upsertJsonLd(id: string, data: object) {
-  const selector =
-    `script[type="application/ld+json"][data-seo-id="${id}"]`;
-
-  let el = document.head.querySelector<HTMLScriptElement>(selector);
-
-  if (!el) {
-    el = document.createElement("script");
-    el.type = "application/ld+json";
-    el.dataset.seoId = id;
-    document.head.appendChild(el);
-  }
-
-  el.textContent = JSON.stringify(data);
-}
-
-function removeJsonLd(id: string) {
-  const selector =
-    `script[type="application/ld+json"][data-seo-id="${id}"]`;
-
-  document.head
-    .querySelector<HTMLScriptElement>(selector)
-    ?.remove();
-}
-
-const HOME_STRUCTURED_DATA = {
-  "@context": "https://schema.org",
-
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://zerotica.narusec.com/#website",
-
-      url: "https://zerotica.narusec.com/",
-
-      name: "ZeroTiCA",
-
-      alternateName: "제로티카",
-
-      inLanguage: "ko-KR",
-
-      publisher: {
-        "@id": "https://zerotica.narusec.com/#organization",
-      },
-    },
-
-    {
-      "@type": "Organization",
-      "@id": "https://zerotica.narusec.com/#organization",
-
-      name: "나루씨큐리티",
-
-      url: "https://www.narusec.com/",
-
-      brand: {
-        "@type": "Brand",
-        name: "ZeroTiCA",
-        alternateName: "제로티카",
-      },
-    },
-  ],
-};
-
 export function SeoHead() {
   const { pathname } = useLocation();
 
@@ -123,12 +60,8 @@ export function SeoHead() {
   const canonical = canonicalUrl(page.canonicalPath);
 
   const ogTitle = page.ogTitle ?? page.title;
-
-  const ogDescription =
-    page.ogDescription ?? page.description;
-
-  const twitterTitle =
-    page.twitterTitle ?? page.title;
+  const ogDescription = page.ogDescription ?? page.description;
+  const twitterTitle = page.twitterTitle ?? page.title;
 
   useLayoutEffect(() => {
     // 기본 SEO
@@ -195,6 +128,12 @@ export function SeoHead() {
       "ZeroTiCA"
     );
 
+    upsertMeta(
+      "property",
+      "og:locale",
+      "ko_KR"
+    );
+
     // Twitter / X
     upsertMeta(
       "name",
@@ -207,22 +146,11 @@ export function SeoHead() {
       "twitter:description",
       ogDescription
     );
-
-    // 홈페이지 구조화 데이터
-    if (page.path === "/") {
-      upsertJsonLd(
-        "home",
-        HOME_STRUCTURED_DATA
-      );
-    } else {
-      removeJsonLd("home");
-    }
   }, [
     canonical,
     ogDescription,
     ogTitle,
     page.description,
-    page.path,
     page.robots,
     page.title,
     twitterTitle,
