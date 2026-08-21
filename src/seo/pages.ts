@@ -18,13 +18,13 @@ export type SeoPage = {
 
 export const HOME: SeoPage = {
   path: "/",
-  title: "제로티카(ZeroTiCA) | 기업 내부를 검증하는 보안",
+  title: "제로티카(ZeroTiCA) | 침해평가로 기업 내부를 검증하는 보안",
   description:
-    "제로티카(ZeroTiCA)는 네트워크 통신을 분석해 보이지 않는 이상 징후를 찾고, 실제 위협 여부를 전문가가 검증하는 침해평가 서비스입니다.",
+  "제로티카(ZeroTiCA)는 기업 내부망의 네트워크 통신을 분석해 이상 징후와 침해 흔적을 찾고, 전문가가 실제 위협 여부를 검증해 조치 방향을 제시하는 침해평가 서비스입니다.",
   canonicalPath: "/",
   robots: INDEX_ROBOTS,
   indexable: true,
-  ogTitle: "제로티카(ZeroTiCA) | 기업 내부를 검증하는 보안",
+  ogTitle: "제로티카(ZeroTiCA) | 침해평가로 기업 내부를 검증하는 보안",
   ogDescription: "내부망 통신을 분석해 보이지 않는 이상 징후를 찾고, 실제 위협 여부를 전문가가 검증합니다.",
   twitterTitle: "기업 내부를 검증하는 보안 | ZeroTiCA",
 };
@@ -79,7 +79,7 @@ export const PAGES: SeoPage[] = [
     path: "/demo/report",
     title: "보고서 데모 | ZeroTiCA",
     description: "제로티카 고객 포털의 침해 평가 보고서 데모입니다.",
-    canonicalPath: "/demo/event",
+    canonicalPath: "/demo/report",
     robots: NOINDEX_ROBOTS,
     indexable: false,
   },

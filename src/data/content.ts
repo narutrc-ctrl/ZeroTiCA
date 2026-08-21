@@ -4,7 +4,7 @@ export const site = {
   productPortal: "ZeroTica Watch",
   runaDefinition:
     "제로티카 고객 포털(ZeroTica Watch) — 위협 탐지, 이슈 협업, 침해 평가 보고를 웹에서 확인하는 서비스 화면입니다.",
-  footerTagline: "네트워크 데이터와 전문가 분석을 기반으로\n기업의 침해 여부를 평가합니다.",
+  footerTagline: "기업 내부망의 네트워크 데이터를 분석해 이상 징후와 침해 흔적을 확인하고,\n전문가가 실제 위협 여부를 검증하는 침해평가 서비스입니다.",
   contactEmail: "zerotica@narusec.com",
   contactPhone: "02-522-7912",
   companyLegalName: "(주)나루씨큐리티",
@@ -66,7 +66,7 @@ export const hero = {
     label: "서비스 영상 보기",
     youtubeId: "EeKxCfILC58",
   },
-  ctaFlow: { label: "침해 평가 흐름 보기", href: paths.fullTour },
+  ctaFlow: { label: "검증 과정 확인하기", href: paths.fullTour },
   scrollHref: "#problem",
 };
 
