@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { YouTubeVideoModal } from "@/components/YouTubeVideoModal";
+import { CTA, trackCtaClick } from "@/lib/analytics";
 import { hero, keyholeBridge, section2Gap } from "@/data/content";
 
 const INSIDE = "#10141d";
@@ -646,13 +647,20 @@ export function HeroSection() {
               </h1>
 
               <div className="hero-focus-actions">
-                <a href="#journey" className="hero-focus-btn hero-focus-btn-primary">
+                <a
+                  href="#journey"
+                  className="hero-focus-btn hero-focus-btn-primary"
+                  onClick={() => trackCtaClick(CTA.verificationProcess)}
+                >
                   {hero.ctaFlow.label}
                 </a>
                 <button
                   type="button"
                   className="hero-focus-btn hero-focus-btn-secondary"
-                  onClick={() => setVideoOpen(true)}
+                  onClick={() => {
+                    trackCtaClick(CTA.serviceVideo);
+                    setVideoOpen(true);
+                  }}
                 >
                   {hero.ctaVideo.label}
                 </button>
