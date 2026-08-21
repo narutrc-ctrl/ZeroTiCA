@@ -1,7 +1,10 @@
 import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import { canonicalUrl, seoForPathname } from "@/seo/pages";
+import { canonicalUrl, seoForPathname, stripTrailingSlash } from "@/seo/pages";
+
+/** SPA/StrictMode remount에서도 같은 pathname에 대해 virtual_page_view를 한 번만 보낸다. */
+let lastVirtualPageViewPath: string | null = null;
 
 function upsertMeta(
   attr: "name" | "property",
@@ -54,6 +57,7 @@ function upsertLink(
 
 export function SeoHead() {
   const { pathname } = useLocation();
+  const pathKey = stripTrailingSlash(pathname);
 
   const page = seoForPathname(pathname);
 
@@ -146,7 +150,21 @@ export function SeoHead() {
       "twitter:description",
       ogDescription
     );
+
+    // SEO 반영 후 pathname 기준 virtual page view (hash/query만 바뀌면 pathKey 동일 → 미발송)
+    if (lastVirtualPageViewPath === pathKey) {
+      return;
+    }
+    lastVirtualPageViewPath = pathKey;
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "virtual_page_view",
+      page_location: window.location.href,
+      page_title: page.title,
+    });
   }, [
+    pathKey,
     canonical,
     ogDescription,
     ogTitle,
