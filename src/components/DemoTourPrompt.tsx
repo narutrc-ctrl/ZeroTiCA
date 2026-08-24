@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
 import { fullDemoTour } from "@/data/demo-tour";
+import { beginFullGuideAndTrackFirstStep, trackDemoGuideAction } from "@/lib/analytics";
 // TODO: 도입 문의 CTA — 요청 시 주석 해제
 // import { useContactModal } from "@/components/ContactModal";
 const STORAGE_KEY = "zerotica-demo-prompt-dismissed";
@@ -27,6 +28,7 @@ export function DemoTourPrompt() {
     localStorage.setItem(STORAGE_KEY, "1");
     setOpen(false);
     const first = fullDemoTour[0];
+    beginFullGuideAndTrackFirstStep({ id: first.id, total: fullDemoTour.length });
     const search = new URLSearchParams(first.search);
     search.set("tour", "full");
     search.set("step", "0");
@@ -78,11 +80,11 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
           도입·PoC·견적 상담이 필요하시면 문의를 남겨 주세요. 담당자가 연락드립니다.
         </p>
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+        <div className="mt-6 flex flex-col gap-2">
           {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
           <button
             type="button"
-            className="zt-btn-primary flex-1"
+            className="zt-btn-primary w-full"
             onClick={() => {
               onClose();
               openContactModal();
@@ -91,13 +93,27 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
             도입 문의하기
           </button>
           */}
-          <Link to="/" className="zt-btn-ghost flex-1 text-center" onClick={onClose}>
+          <button
+            type="button"
+            onClick={() => {
+              trackDemoGuideAction("continue_demo");
+              onClose();
+            }}
+            className="zt-btn-primary w-full"
+          >
+            데모 계속 탐색
+          </button>
+          <Link
+            to="/"
+            className="w-full text-center text-sm text-slate-500 hover:text-slate-700"
+            onClick={() => {
+              trackDemoGuideAction("back_to_intro");
+              onClose();
+            }}
+          >
             소개 페이지로
           </Link>
         </div>
-        <button type="button" onClick={onClose} className="mt-3 w-full text-center text-sm text-slate-500 hover:text-slate-700">
-          데모 계속 탐색
-        </button>
       </div>
     </div>
   );

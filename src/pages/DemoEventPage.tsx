@@ -19,13 +19,13 @@ import {
   demoStageSummaryRows,
 } from "@/data/demo-runa-data";
 import { useDemoTour } from "@/hooks/useDemoTour";
+import {
+  resetGuideReportViewTracking,
+  trackDemoReportView,
+  trackDemoReportViewFromGuide,
+} from "@/lib/analytics";
 
-const SIDEBAR_ITEMS = [
-  { key: "overview", label: "현황", active: true },
-  { key: "outbound", label: "1단계: 아웃바운드" },
-  { key: "inbound", label: "2단계: 인바운드" },
-  { key: "lateral", label: "3단계: 측면이동" },
-];
+const SIDEBAR_ITEMS = [{ key: "overview", label: "현황", active: true }];
 
 export function DemoEventPage() {
   const [params, setParams] = useSearchParams();
@@ -34,8 +34,16 @@ export function DemoEventPage() {
   const tab = params.get("tab") === "reports" ? "reports" : "stage-summary";
 
   useEffect(() => {
-    if (!tourActive) return;
+    if (!tourActive) {
+      resetGuideReportViewTracking();
+      return;
+    }
     setReportOpen(tourUi.reportDialogOpen);
+    if (tourUi.reportDialogOpen) {
+      trackDemoReportViewFromGuide();
+    } else {
+      resetGuideReportViewTracking();
+    }
   }, [tourActive, tourUi.reportDialogOpen]);
 
   const setTab = (id: string) => {
@@ -46,6 +54,17 @@ export function DemoEventPage() {
       else next.delete("tab");
       return next;
     });
+  };
+
+  const openReportManual = () => {
+    if (tourActive && !tourUi.reportDialogOpen) return;
+    // guide가 이미 뷰어를 연 상태에서의 행 클릭은 manual로 치지 않음
+    if (tourActive && tourUi.reportDialogOpen) {
+      setReportOpen(true);
+      return;
+    }
+    setReportOpen(true);
+    trackDemoReportView("manual");
   };
 
   const report = demoReports[0];
@@ -327,10 +346,7 @@ export function DemoEventPage() {
                     <tr
                       key={r.period}
                       className="cursor-pointer hover:bg-sky-50"
-                      onClick={() => {
-                        if (tourActive && !tourUi.reportDialogOpen) return;
-                        setReportOpen(true);
-                      }}
+                      onClick={openReportManual}
                     >
                       <td className="font-medium">{r.period}</td>
                       <td className="text-blue-600">{r.title}</td>

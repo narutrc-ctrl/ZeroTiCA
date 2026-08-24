@@ -16,7 +16,7 @@ import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { SeoHead } from "@/components/SeoHead";
 import { paths, storyAnchors } from "@/data/content";
 import { cn } from "@/lib/cn";
-import { CTA, trackCtaClick } from "@/lib/analytics";
+import { CTA, markDemoEntrySource, trackCtaClick, trackDemoStartIfNeeded } from "@/lib/analytics";
 import { jumpToTopInstant } from "@/lib/scroll";
 
 /** 히어로 sticky 안 섹션2가 거의 다 드러난 지점 (끝이면 검증 관점으로 넘어감) */
@@ -77,6 +77,10 @@ export function Layout() {
   useEffect(() => {
     document.documentElement.lang = locale === "en-us" ? "en" : "ko";
   }, [locale]);
+
+  useEffect(() => {
+    trackDemoStartIfNeeded(location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.hash) return;
@@ -181,7 +185,10 @@ export function Layout() {
             <Link
               to={withLocale(paths.fullTour)}
               className="zt-btn-primary hidden px-6 text-sm sm:inline-flex"
-              onClick={() => trackCtaClick(CTA.demoHeader)}
+              onClick={() => {
+                markDemoEntrySource("header");
+                trackCtaClick(CTA.demoHeader);
+              }}
             >
               데모 체험하기
             </Link>

@@ -3,6 +3,8 @@ import { Calendar, Hash, MessageSquare, Shield, User, X } from "lucide-react";
 import type { DemoRelatedThreat, DemoTask } from "@/data/demo-runa-data";
 import { SimulationEventDetailPanel } from "@/components/interactive-journey/SimulationEventDetailPanel";
 import { taskStatusClass } from "@/components/MockRunaShell";
+import type { DemoExplorationMode } from "@/lib/analytics";
+import { trackDemoThreatDetailView } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 function DetailInfoField({
@@ -32,11 +34,13 @@ export function TaskDetailSheet({
   open,
   onClose,
   hideBackdrop = false,
+  explorationMode = "self",
 }: {
   task: DemoTask | null;
   open: boolean;
   onClose: () => void;
   hideBackdrop?: boolean;
+  explorationMode?: DemoExplorationMode;
 }) {
   const [showContent, setShowContent] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -150,13 +154,20 @@ export function TaskDetailSheet({
                           </tr>
                         </thead>
                         <tbody className="bg-white text-slate-700">
-                          {task.relatedThreats.map((row) => (
+                          {task.relatedThreats.map((row, threatIndex) => (
                             <tr key={`${row.at}-${row.event}`} className="border-t border-sky-100/90">
                               <td className="whitespace-nowrap px-2 py-1.5 text-[11px] sm:px-3">{row.at}</td>
                               <td className="border-l border-slate-100 px-2 py-1.5 font-medium sm:px-3">
                                 <button
                                   type="button"
-                                  onClick={() => setEventDetail(row.eventDetail)}
+                                  onClick={() => {
+                                    setEventDetail(row.eventDetail);
+                                    trackDemoThreatDetailView({
+                                      issue_id: task.id,
+                                      threat_id: `${task.id}-threat-${threatIndex}`,
+                                      exploration_mode: explorationMode,
+                                    });
+                                  }}
                                   className="text-left text-blue-600 underline-offset-2 hover:underline [word-break:keep-all]"
                                 >
                                   {row.event}

@@ -88,7 +88,7 @@ export const demoTours: Record<string, TourStep[]> = {
       route: "/demo/event",
       target: "[data-tour='event-sidebar']",
       title: "단계별 필터",
-      body: "현황 또는 1~3단계(아웃바운드·인바운드·측면이동)를 선택해 집계를 봅니다.",
+      body: "기간을 두고 현황 기준으로 단계별 집계를 확인합니다.",
       placement: "right",
     },
     {

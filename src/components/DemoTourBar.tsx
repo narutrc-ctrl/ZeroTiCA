@@ -2,6 +2,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
 import { tourPhases } from "@/data/content";
 import { fullDemoTour } from "@/data/demo-tour";
+import { beginFullGuideAndTrackFirstStep } from "@/lib/analytics";
 
 function getPhaseLabel(stepIndex: number) {
   const phase = tourPhases.find((p) => stepIndex >= p.stepRange[0] && stepIndex <= p.stepRange[1]);
@@ -19,6 +20,7 @@ export function DemoTourBar() {
 
   const startFullTour = () => {
     const first = fullDemoTour[0];
+    beginFullGuideAndTrackFirstStep({ id: first.id, total: fullDemoTour.length });
     const search = new URLSearchParams(first.search);
     search.set("tour", "full");
     search.set("step", "0");

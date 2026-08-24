@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { experienceSection, paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { markDemoEntrySource } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 type HighlightId = "01" | "02" | "03" | "04" | "05";
@@ -349,6 +350,7 @@ function ExperienceCta() {
           btnClass,
           "hidden transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:flex",
         )}
+        onClick={() => markDemoEntrySource("other")}
       >
         {ctaLabel}
         <span className="ml-1.5" aria-hidden>

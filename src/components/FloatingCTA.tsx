@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { useSectionInView } from "@/components/JourneyProgress";
 import { paths } from "@/data/content";
+import { CTA, markDemoEntrySource, trackCtaClick } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 export function FloatingCTA() {
@@ -33,7 +34,14 @@ export function FloatingCTA() {
       <p className="hidden flex-1 text-xs text-slate-600 sm:block [word-break:keep-all]">
         실제 서비스 화면을 데모로 체험해 보세요
       </p>
-      <Link to={paths.fullTour} className="zt-btn-primary shrink-0 px-5 py-2 text-xs sm:px-6 sm:text-sm">
+      <Link
+        to={paths.fullTour}
+        className="zt-btn-primary shrink-0 px-5 py-2 text-xs sm:px-6 sm:text-sm"
+        onClick={() => {
+          markDemoEntrySource("floating");
+          trackCtaClick(CTA.demoFloating);
+        }}
+      >
         데모 체험하기
       </Link>
       <button

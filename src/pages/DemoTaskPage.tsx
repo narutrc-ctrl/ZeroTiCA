@@ -10,6 +10,7 @@ import {
 import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { DEMO_DATE_RANGE, demoTasks, type DemoTask } from "@/data/demo-runa-data";
 import { useDemoTour } from "@/hooks/useDemoTour";
+import { trackDemoIssueOpen } from "@/lib/analytics";
 
 import { ISSUE_MENU, KANBAN_COLUMNS } from "@/data/issue-ui-labels";
 
@@ -43,7 +44,13 @@ export function DemoTaskPage() {
 
   const openTask = (id: string) => {
     setSelectedId(id);
-    if (!tourActive || tourUi.taskSheetOpen) setSheetOpen(true);
+    if (!tourActive || tourUi.taskSheetOpen) {
+      setSheetOpen(true);
+      trackDemoIssueOpen({
+        issue_id: id,
+        exploration_mode: tourActive ? "guide" : "self",
+      });
+    }
   };
 
   return (
@@ -130,6 +137,7 @@ export function DemoTaskPage() {
           open={sheetOpen}
           onClose={() => setSheetOpen(false)}
           hideBackdrop={tourActive}
+          explorationMode={tourActive ? "guide" : "self"}
         />
       </div>
     </MockRunaShell>
