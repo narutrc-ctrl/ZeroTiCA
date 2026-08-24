@@ -223,7 +223,7 @@ const networkChangeDetail: PerspectiveDetail = {
 
 export const perspectivesPage = {
   eyebrow: "ZeroTiCA의 검증 관점",
-  titleAccent: "여덟 가지 관점",
+  titleAccent: "8가지 관점",
   titleAfter: "으로",
   titleLine2: "기업 내부의 침해 가능성을 확인합니다.",
   lead: [
@@ -231,7 +231,7 @@ export const perspectivesPage = {
     "네트워크 통신에서 나타난 각 정황을 따로 판단하지 않고 서로 연결해 검증하며, 전문가가 실제 침해 가능성을 최종 판단합니다.",
   ],
   closing: {
-    titleLine1: "8개의 관점은",
+    titleLine1: "8가지 관점은",
     titleLine2: "독립적으로 존재하지 않습니다.",
     body: [
       "한 관점에서 발견된 정황은 다른 관점에서 나타난 흔적과 함께 확인됩니다.",
@@ -278,7 +278,7 @@ export const perspectivesPage = {
           title: "측면이동 평가",
           bodyParts: [
             { text: "침투에 성공한 " },
-            { text: "공격자가 내부 시스템 사이를 횡단하며 확산하고 있는가?", emphasis: true },
+            { text: "공격자가 내부 시스템 사이를 횡단하며 피해를 확산하고 있는가?", emphasis: true },
           ],
           detail: lateralDetail,
         },
@@ -287,7 +287,7 @@ export const perspectivesPage = {
           title: "중앙관리형 자산 평가",
           bodyParts: [
             { text: "인터넷 연결성이 높은 " },
-            { text: "중앙관리형 자산의 연결 특성에 평시와 다른 이상 변화가 나타나고 있는가?", emphasis: true },
+            { text: "중앙관리형 자산의 연결 특성에 평소와 다른 이상 변화가 나타나고 있는가?", emphasis: true },
           ],
           detail: centralAssetDetail,
         },
@@ -295,7 +295,7 @@ export const perspectivesPage = {
     },
     {
       label: "위협 연결 평가",
-      heading: "알려진 위협과 연결되는지, 보안의 시야를 피하는지",
+      heading: "알려진 위협과 연결되는지, 보안의 가시성을 우회하는지",
       items: [
         {
           num: "05",
@@ -319,14 +319,14 @@ export const perspectivesPage = {
     },
     {
       label: "이상 징후 평가",
-      heading: "데이터와 네트워크가 평소와 달라졌는지",
+      heading: "데이터와 네트워크의 흐름이 평소와 달라졌는지",
       items: [
         {
           num: "07",
           title: "데이터 이동 평가",
           bodyParts: [
             { text: "장기 세션 내 데이터 누적, 통신 방향 역전 등 " },
-            { text: "정상적인 서비스와 다른 비정상적인 데이터 이동 특성이 나타나고 있는가?", emphasis: true },
+            { text: "정상적인 통신 패턴에서 벗어난 데이터 이동이 나타나는가?", emphasis: true },
           ],
           detail: dataMoveDetail,
         },

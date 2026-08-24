@@ -14,7 +14,10 @@ function PerspectiveBody({ parts }: { parts: readonly PerspectiveBodyPart[] }) {
     <p className="mt-2 text-[14px] font-normal leading-relaxed text-slate-500 [word-break:keep-all] sm:text-[16px]">
       {parts.map((part, i) =>
         part.emphasis ? (
-          <span key={i} className="font-bold text-slate-700">
+          <span
+            key={i}
+            className="rounded-sm bg-blue-100/60 px-0.5 font-semibold text-slate-700 box-decoration-clone"
+          >
             {part.text}
           </span>
         ) : (
