@@ -26,7 +26,7 @@ export const CTA = {
   perspectivesSection: {
     cta_name: "perspectives",
     cta_location: "perspective_section",
-    cta_text: "ZeroTiCA의 8가지 검증 관점 보기",
+    cta_text: "8가지 검증 관점 보기",
   },
   serviceVideo: {
     cta_name: "service_video",

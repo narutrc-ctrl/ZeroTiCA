@@ -6,9 +6,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Mail, Phone, X } from "lucide-react";
+import { X } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
-import { site } from "@/data/content";
 
 type ContactModalContextValue = {
   open: boolean;
@@ -65,18 +64,17 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-modal-title"
-        className="contact-modal-dialog flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
+        className="contact-modal-dialog flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">문의</p>
-            <h2 id="contact-modal-title" className="mt-1 text-xl font-bold text-zinc-800 sm:text-2xl">
-              도입·상담 문의
+        <div className="flex shrink-0 items-start justify-between gap-4 px-5 pb-1 pt-5 sm:px-7 sm:pt-7">
+          <div className="min-w-0 pr-2">
+            <h2
+              id="contact-modal-title"
+              className="text-[22px] font-extrabold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-2xl"
+            >
+              ZeroTiCA 도입 문의
             </h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Insight·Watch 도입, PoC, 견적 문의를 남겨 주시면 담당자가 연락드립니다.
-            </p>
           </div>
           <button
             type="button"
@@ -88,38 +86,8 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)]">
-            <ContactForm onSubmitted={onClose} />
-            <aside className="space-y-4 lg:pt-1">
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">연락처</p>
-                <ul className="mt-3 space-y-3 text-sm text-slate-700">
-                  <li className="flex items-start gap-2.5">
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                    <a href={`mailto:${site.contactEmail}`} className="hover:text-blue-600 hover:underline">
-                      {site.contactEmail}
-                    </a>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-                    <div>
-                      <a
-                        href={`tel:${site.contactPhone.replace(/-/g, "")}`}
-                        className="hover:text-blue-600 hover:underline"
-                      >
-                        {site.contactPhone}
-                      </a>
-                      <p className="mt-0.5 text-xs text-slate-500">평일 09:00–18:00</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <p className="text-xs leading-relaxed text-slate-500">
-                소개 페이지를 먼저 읽으신 뒤 문의해 주시면 상담이 더 수월합니다.
-              </p>
-            </aside>
-          </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:pb-7">
+          <ContactForm onSubmitted={onClose} />
         </div>
       </div>
     </div>

@@ -97,12 +97,12 @@ export const problemSection = {
 
 /** 섹션3 — WHAT'S DIFFERENT (섹션2 타이포·간격 체계 공유) */
 export const whatsDifferentSection = {
-  eyebrow: "검증 관점",
+  eyebrow: "ZeroTiCA의 검증 관점",
   titleBefore: "안전하다고 판단하려면,",
   titleAccent: "침해 가능성",
   titleAfter: "까지 확인해야 합니다.",
   lead: "제로티카(ZeroTiCA)는 실제 네트워크에서 관측된 활동을 바탕으로 침해 정황이 있는지 확인하고 현재 상태를 검증합니다.",
-  ctaLabel: "ZeroTiCA의 8가지 검증 관점 보기",
+  ctaLabel: "8가지 검증 관점 보기",
   cards: [
     {
       eyebrow: "예방 탐지로 확인해온 것",

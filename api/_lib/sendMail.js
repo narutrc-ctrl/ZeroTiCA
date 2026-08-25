@@ -14,7 +14,7 @@ export function getMailEnv(env = process.env) {
     user: env.EMAIL_HOST_USER || "",
     pass: env.EMAIL_HOST_PASSWORD || "",
     from: env.DEFAULT_FROM_EMAIL || env.EMAIL_HOST_USER || "",
-    to: env.CONTACT_INQUIRY_TO || "zerotica@narusec.com",
+    to: env.CONTACT_INQUIRY_TO || "mrlee@narusec.com",
   };
 }
 
@@ -45,8 +45,8 @@ export function validateInquiry(body) {
   if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     details.email = "이메일을 확인해 주세요.";
   }
-  if (phone.length > 50) details.phone = "연락처가 너무 깁니다.";
-  if (!service || service.length > 100) details.service = "관심 서비스를 확인해 주세요.";
+  if (!phone || phone.length > 50) details.phone = "연락처를 확인해 주세요.";
+  if (!service || service.length > 100) details.service = "문의 유형을 선택해 주세요.";
   if (!message || message.length > 5000) details.message = "문의 내용을 확인해 주세요.";
 
   if (Object.keys(details).length > 0) {
@@ -88,7 +88,7 @@ export async function sendContactInquiry(data, env = process.env) {
     `담당자: ${data.name}`,
     `이메일: ${data.email}`,
     `연락처: ${data.phone || "-"}`,
-    `관심 서비스: ${data.service}`,
+    `문의 유형: ${data.service || "-"}`,
     "",
     "문의 내용:",
     data.message,

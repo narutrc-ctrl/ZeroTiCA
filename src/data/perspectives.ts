@@ -222,7 +222,7 @@ const networkChangeDetail: PerspectiveDetail = {
 };
 
 export const perspectivesPage = {
-  eyebrow: "검증 관점",
+  eyebrow: "ZeroTiCA의 검증 관점",
   titleAccent: "8가지 관점",
   titleAfter: "으로",
   titleLine2: "기업 내부의 침해 가능성을 확인합니다.",
