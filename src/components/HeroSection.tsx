@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { YouTubeVideoModal } from "@/components/YouTubeVideoModal";
 import { CTA, trackCtaClick } from "@/lib/analytics";
-import { hero, keyholeBridge, section2Gap } from "@/data/content";
+import { hero, keyholeBridge, paths, section2Gap } from "@/data/content";
 
 const INSIDE = "#10141d";
 const WHEEL_DIAMETER = 6;
@@ -647,13 +648,13 @@ export function HeroSection() {
               </h1>
 
               <div className="hero-focus-actions">
-                <a
-                  href="#journey"
+                <Link
+                  to={paths.perspectives}
                   className="hero-focus-btn hero-focus-btn-primary"
-                  onClick={() => trackCtaClick(CTA.verificationProcess)}
+                  onClick={() => trackCtaClick(CTA.perspectivesHero)}
                 >
                   {hero.ctaFlow.label}
-                </a>
+                </Link>
                 <button
                   type="button"
                   className="hero-focus-btn hero-focus-btn-secondary"

@@ -66,7 +66,7 @@ export const hero = {
     label: "서비스 영상 보기",
     youtubeId: "EeKxCfILC58",
   },
-  ctaFlow: { label: "검증 과정 확인하기", href: paths.fullTour },
+  ctaFlow: { label: "8가지 검증 관점 보기", href: paths.perspectives },
   scrollHref: "#problem",
 };
 
@@ -408,7 +408,7 @@ export const contactBanner = {
   brochureUrl: "/ZeroTiCA-Pamphlet.pdf",
 };
 
-/** 앵커 네비게이션 — 헤더 메뉴와 동일하게 유지 */
+/** 레거시 /#section deep-link 호환용 */
 export const storyAnchors = [
   { id: "problem", label: "왜 검증인가" },
   { id: "journey", label: "검증 과정" },
@@ -417,6 +417,22 @@ export const storyAnchors = [
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "문의" },
 ];
+
+/**
+ * 홈 Story Progress Indicator — top-level narrative chapter.
+ * Indicator 클릭은 hash/history를 바꾸지 않음.
+ * intro: Hero~키홀 / problem: 「보안 운영에 남는 공백」(데스크톱은 sticky progress, 모바일은 #problem)
+ */
+export const storyProgressChapters = [
+  { id: "intro", label: "인트로" },
+  { id: "problem", label: "왜 검증인가" },
+  { id: "differentiator", label: "검증 관점" },
+  { id: "journey", label: "검증 과정" },
+  { id: "outcomes", label: "고객 가치" },
+  { id: "experience", label: "화면 데모" },
+  { id: "choose", label: "서비스" },
+  { id: "faq", label: "FAQ" },
+] as const;
 
 export const tourPhases = [
   { label: "이슈 관리", stepRange: [0, 2] as const },

@@ -5,6 +5,7 @@ import { GlobalTour } from "@/components/GlobalTour";
 import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
 import { BrandLogo } from "@/components/BrandLogo";
+import { StoryProgressIndicator } from "@/components/StoryProgressIndicator";
 // TODO: 도입 문의 CTA — 요청 시 주석 해제
 // import { ContactCTA } from "@/components/ContactCTA";
 // import { useContactModal } from "@/components/ContactModal";
@@ -14,14 +15,12 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { SeoHead } from "@/components/SeoHead";
-import { paths, storyAnchors } from "@/data/content";
+import { paths } from "@/data/content";
 import { cn } from "@/lib/cn";
 import { CTA, markDemoEntrySource, trackCtaClick, trackDemoStartIfNeeded } from "@/lib/analytics";
-import { jumpToTopInstant } from "@/lib/scroll";
+import { jumpToTopInstant, HERO_PROBLEM_CLICK_PROGRESS, scrollToHeroSceneProgress } from "@/lib/scroll";
 
-/** 히어로 sticky 안 섹션2가 거의 다 드러난 지점 (끝이면 검증 관점으로 넘어감) */
-const PROBLEM_SCENE_PROGRESS = 0.96;
-
+/** 외부 /#section deep-link 호환 — Indicator는 hash를 쓰지 않음 */
 function scrollToStoryAnchor(id: string) {
   const behavior =
     id === "top" || window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -29,20 +28,25 @@ function scrollToStoryAnchor(id: string) {
       : "smooth";
 
   if (id === "problem") {
-    // 모바일: 섹션2가 sticky 밖 #problem — 일반 스크롤
     if (window.matchMedia("(max-width: 640px)").matches) {
       document.getElementById("problem")?.scrollIntoView({ behavior, block: "start" });
       return;
     }
-    const scene = document.getElementById("top");
-    if (!scene) return;
-    const totalDistance = Math.max(scene.offsetHeight - window.innerHeight, 0);
-    const top = scene.offsetTop + totalDistance * PROBLEM_SCENE_PROGRESS;
-    window.scrollTo({ top, behavior });
+    scrollToHeroSceneProgress(HERO_PROBLEM_CLICK_PROGRESS, behavior);
     return;
   }
 
   document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
+}
+
+function navLinkClass(active: boolean) {
+  return cn(
+    "rounded-full px-5 py-2.5 text-sm transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+    // font-* 는 공통에 두지 않음 — Tailwind에서 medium/extrabold가 충돌하면 굵기가 덮임
+    active
+      ? "font-semibold text-primary"
+      : "font-medium text-slate-600 hover:text-zinc-800",
+  );
 }
 
 export function Layout() {
@@ -52,8 +56,6 @@ export function Layout() {
   const lastScrollY = useRef(0);
   const location = useLocation();
   const navigate = useNavigate();
-  // TODO: 도입 문의 CTA — 요청 시 주석 해제
-  // const { openContactModal } = useContactModal();
   const parts = location.pathname.split("/").filter(Boolean);
   const locale = isSupportedLocale(parts[0]) ? parts[0] : DEFAULT_LOCALE;
   const basePath = isSupportedLocale(parts[0]) ? `/${parts.slice(1).join("/")}` || "/" : location.pathname;
@@ -61,18 +63,18 @@ export function Layout() {
     locale === DEFAULT_LOCALE ? path : `/${locale}${path === "/" ? "" : path}`;
   const isDemo = basePath.startsWith("/demo");
   const isHome = basePath === "/";
+  const isPerspectives = basePath === "/perspectives";
+  const homePath = withLocale("/");
 
-  const goToAnchor = useCallback(
-    (id: string) => {
-      const hash = `#${id}`;
-      if (location.hash === hash) {
-        scrollToStoryAnchor(id);
-        return;
-      }
-      navigate({ pathname: location.pathname, search: location.search, hash: id });
-    },
-    [location.hash, location.pathname, location.search, navigate],
-  );
+  const goToIntro = useCallback(() => {
+    setOpen(false);
+    if (isHome) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      return;
+    }
+    navigate(homePath);
+  }, [homePath, isHome, navigate]);
 
   useEffect(() => {
     document.documentElement.lang = locale === "en-us" ? "en" : "ko";
@@ -87,6 +89,7 @@ export function Layout() {
     jumpToTopInstant();
   }, [location.pathname]);
 
+  // 기존 /#section deep-link 유지 (Header Indicator는 hash를 생성하지 않음)
   useEffect(() => {
     if (!location.hash) return;
     const id = location.hash.replace(/^#/, "");
@@ -148,6 +151,30 @@ export function Layout() {
     );
   }
 
+  const globalNav = (
+    <>
+      <button
+        type="button"
+        className={navLinkClass(isHome)}
+        aria-current={isHome ? "page" : undefined}
+        onClick={goToIntro}
+      >
+        ZeroTiCA 소개
+      </button>
+      <Link
+        to={withLocale(paths.perspectives)}
+        className={navLinkClass(isPerspectives)}
+        aria-current={isPerspectives ? "page" : undefined}
+        onClick={() => {
+          setOpen(false);
+          trackCtaClick(CTA.perspectivesHeader);
+        }}
+      >
+        검증 관점
+      </Link>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <SeoHead />
@@ -160,28 +187,10 @@ export function Layout() {
       >
         <div className="zt-container-hero flex h-16 items-center justify-between gap-4">
           <BrandLogo />
-          {isHome && (
-              <nav className="hidden items-center gap-2 lg:flex" aria-label="페이지 내 이동">
-                {storyAnchors.map((a) => (
-                  <a
-                    key={a.id}
-                    href={`#${a.id}`}
-                    className="rounded-lg px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    goToAnchor(a.id);
-                  }}
-                >
-                  {a.label}
-                </a>
-              ))}
+          <div className="flex items-center gap-6 sm:gap-10">
+            <nav className="hidden items-center gap-1 lg:flex" aria-label="주요 콘텐츠">
+              {globalNav}
             </nav>
-          )}
-          <div className="flex items-center gap-2">
-            {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
-            <ContactCTA className="hidden text-sm sm:inline-flex" />
-            */}
-            {/* 임시: 도입 문의 자리 → 데모 체험 */}
             <Link
               to={withLocale(paths.fullTour)}
               className="zt-btn-primary hidden px-6 text-sm sm:inline-flex"
@@ -206,24 +215,38 @@ export function Layout() {
         </div>
         {open && (
           <div id="mobile-nav" className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
-            {isHome && (
-              <nav aria-label="페이지 내 이동">
-                {storyAnchors.map((a) => (
-                  <a
-                    key={a.id}
-                    href={`#${a.id}`}
-                    className="block rounded-lg px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setOpen(false);
-                      goToAnchor(a.id);
-                    }}
-                  >
-                    {a.label}
-                  </a>
-                ))}
-              </nav>
-            )}
+            <nav className="flex flex-col gap-1" aria-label="주요 콘텐츠">
+              <button
+                type="button"
+                className={cn(navLinkClass(isHome), "w-full text-left text-sm")}
+                aria-current={isHome ? "page" : undefined}
+                onClick={goToIntro}
+              >
+                ZeroTiCA 소개
+              </button>
+              <Link
+                to={withLocale(paths.perspectives)}
+                className={cn(navLinkClass(isPerspectives), "text-sm")}
+                aria-current={isPerspectives ? "page" : undefined}
+                onClick={() => {
+                  setOpen(false);
+                  trackCtaClick(CTA.perspectivesHeader);
+                }}
+              >
+                검증 관점
+              </Link>
+              <Link
+                to={withLocale(paths.fullTour)}
+                className="zt-btn-primary mt-2 w-full justify-center text-sm sm:hidden"
+                onClick={() => {
+                  setOpen(false);
+                  markDemoEntrySource("header");
+                  trackCtaClick(CTA.demoHeader);
+                }}
+              >
+                데모 체험하기
+              </Link>
+            </nav>
           </div>
         )}
       </header>
@@ -232,6 +255,7 @@ export function Layout() {
         <Outlet />
       </main>
 
+      {isHome && <StoryProgressIndicator />}
       {isHome && <FloatingCTA />}
       {isHome && <ScrollToTopButton />}
 

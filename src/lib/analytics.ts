@@ -13,10 +13,20 @@ export type TrackCtaClickInput = {
 
 /** 측정 대상 CTA — UI 라벨과 payload cta_text를 분리해 고정한다. */
 export const CTA = {
-  verificationProcess: {
-    cta_name: "verification_process",
+  perspectivesHero: {
+    cta_name: "perspectives",
     cta_location: "hero",
-    cta_text: "검증 과정 확인하기",
+    cta_text: "8가지 검증 관점 보기",
+  },
+  perspectivesHeader: {
+    cta_name: "perspectives",
+    cta_location: "header",
+    cta_text: "검증 관점",
+  },
+  perspectivesSection: {
+    cta_name: "perspectives",
+    cta_location: "perspective_section",
+    cta_text: "ZeroTiCA의 8가지 검증 관점 보기",
   },
   serviceVideo: {
     cta_name: "service_video",
