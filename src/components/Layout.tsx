@@ -6,13 +6,11 @@ import { DemoTourBar } from "@/components/DemoTourBar";
 import { DemoTourPrompt } from "@/components/DemoTourPrompt";
 import { BrandLogo } from "@/components/BrandLogo";
 import { StoryProgressIndicator } from "@/components/StoryProgressIndicator";
-// TODO: 도입 문의 CTA — 요청 시 주석 해제
-// import { ContactCTA } from "@/components/ContactCTA";
-// import { useContactModal } from "@/components/ContactModal";
+import { ContactCTA } from "@/components/ContactCTA";
+import { useContactModal } from "@/components/ContactModal";
 import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ScrollProgress } from "@/components/ScrollProgress";
-import { FloatingCTA } from "@/components/FloatingCTA";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import { SeoHead } from "@/components/SeoHead";
 import { paths } from "@/data/content";
@@ -56,6 +54,7 @@ export function Layout() {
   const lastScrollY = useRef(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const { openContactModal } = useContactModal();
   const parts = location.pathname.split("/").filter(Boolean);
   const locale = isSupportedLocale(parts[0]) ? parts[0] : DEFAULT_LOCALE;
   const basePath = isSupportedLocale(parts[0]) ? `/${parts.slice(1).join("/")}` || "/" : location.pathname;
@@ -191,26 +190,29 @@ export function Layout() {
             <nav className="hidden items-center gap-1 lg:flex" aria-label="주요 콘텐츠">
               {globalNav}
             </nav>
-            <Link
-              to={withLocale(paths.fullTour)}
-              className="zt-btn-primary hidden px-6 text-sm sm:inline-flex"
-              onClick={() => {
-                markDemoEntrySource("header");
-                trackCtaClick(CTA.demoHeader);
-              }}
-            >
-              데모 체험하기
-            </Link>
-            <button
-              type="button"
-              className="-mr-1 rounded-lg p-1 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
-              onClick={() => setOpen((v) => !v)}
-              aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
-              aria-expanded={open}
-              aria-controls="mobile-nav"
-            >
-              {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                to={withLocale(paths.fullTour)}
+                className="zt-btn-ghost hidden py-2.5 px-6 text-sm sm:inline-flex"
+                onClick={() => {
+                  markDemoEntrySource("header");
+                  trackCtaClick(CTA.demoHeader);
+                }}
+              >
+                데모 체험
+              </Link>
+              <ContactCTA className="hidden py-2.5 text-sm sm:inline-flex" />
+              <button
+                type="button"
+                className="-mr-1 rounded-lg p-1 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
+                onClick={() => setOpen((v) => !v)}
+                aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+                aria-expanded={open}
+                aria-controls="mobile-nav"
+              >
+                {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
+              </button>
+            </div>
           </div>
         </div>
         {open && (
@@ -237,15 +239,25 @@ export function Layout() {
               </Link>
               <Link
                 to={withLocale(paths.fullTour)}
-                className="zt-btn-primary mt-2 w-full justify-center text-sm sm:hidden"
+                className="zt-btn-ghost mt-2 w-full justify-center text-sm sm:hidden"
                 onClick={() => {
                   setOpen(false);
                   markDemoEntrySource("header");
                   trackCtaClick(CTA.demoHeader);
                 }}
               >
-                데모 체험하기
+                데모 체험
               </Link>
+              <button
+                type="button"
+                className="zt-btn-primary mt-2 w-full text-sm sm:hidden"
+                onClick={() => {
+                  setOpen(false);
+                  openContactModal();
+                }}
+              >
+                도입 문의
+              </button>
             </nav>
           </div>
         )}
@@ -256,7 +268,6 @@ export function Layout() {
       </main>
 
       {isHome && <StoryProgressIndicator />}
-      {isHome && <FloatingCTA />}
       {isHome && <ScrollToTopButton />}
 
       <SiteFooter />

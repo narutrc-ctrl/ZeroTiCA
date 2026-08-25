@@ -350,7 +350,7 @@ export const services = [
 ];
 
 export const experienceSection = {
-  eyebrow: "서비스 화면 데모",
+  eyebrow: "서비스 데모 체험",
   title: "설명은 여기까지,",
   titleLine2: "이제 직접 확인해보세요.",
   lead: "대시보드부터 이슈 확인, 분석가와의 소통, 보고서까지 실제 고객 화면과 유사한 데모에서 직접 둘러보세요.",
@@ -390,8 +390,8 @@ export const experienceSection = {
   ],
   footerNote:
     "대시보드, 이슈 관리, 보고서 화면까지 직접 둘러볼 수 있습니다.",
-  ctaLabel: "데모 페이지 체험하기",
-  ctaLabelMobile: "PC에서 데모 페이지 체험하기",
+  ctaLabel: "데모 체험하기",
+  ctaLabelMobile: "PC에서 데모 체험하기",
 };
 
 export const closing = {
@@ -429,9 +429,10 @@ export const storyProgressChapters = [
   { id: "differentiator", label: "검증 관점" },
   { id: "journey", label: "판단 과정" },
   { id: "outcomes", label: "고객 가치" },
-  { id: "experience", label: "화면 데모" },
+  { id: "experience", label: "데모 체험" },
   { id: "choose", label: "서비스" },
   { id: "faq", label: "FAQ" },
+  { id: "contact", label: "도입 문의" },
 ] as const;
 
 export const tourPhases = [

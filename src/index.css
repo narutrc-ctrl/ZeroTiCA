@@ -352,7 +352,8 @@
   }
 
   .hero-focus-btn-secondary:hover {
-    @apply bg-primary/5;
+    @apply bg-slate-50 text-primary;
+    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.28);
   }
 
   /* Hero → Section2 scroll transition */

@@ -36,12 +36,7 @@ export const CTA = {
   demoHeader: {
     cta_name: "demo",
     cta_location: "header",
-    cta_text: "데모 체험하기",
-  },
-  demoFloating: {
-    cta_name: "demo",
-    cta_location: "floating",
-    cta_text: "데모 체험하기",
+    cta_text: "데모 체험",
   },
 } as const satisfies Record<string, TrackCtaClickInput>;
 
@@ -62,7 +57,7 @@ export function trackCtaClick(input: TrackCtaClickInput): void {
 
 /* ── Demo GA4 ─────────────────────────────────────────────── */
 
-export type DemoEntrySource = "header" | "floating" | "direct" | "other";
+export type DemoEntrySource = "header" | "direct" | "other";
 export type DemoExplorationMode = "guide" | "self";
 export type DemoGuideGroup = "task" | "event" | "report";
 
@@ -99,7 +94,7 @@ function consumeDemoEntrySource(): DemoEntrySource {
     const raw = sessionStorage.getItem(DEMO_ENTRY_SOURCE_KEY);
     if (raw) {
       sessionStorage.removeItem(DEMO_ENTRY_SOURCE_KEY);
-      if (raw === "header" || raw === "floating" || raw === "other") return raw;
+      if (raw === "header" || raw === "other") return raw;
     }
   } catch {
     /* ignore */

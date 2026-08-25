@@ -14,12 +14,21 @@ const LATER_CHAPTER_IDS = storyProgressChapters
   .map((c) => c.id)
   .filter((id): id is ChapterId => id !== "intro" && id !== "problem");
 
+/** 문서 하단 근처 — 도입 문의(#contact) 인디케이터 강제 활성 */
+const CONTACT_SCROLL_RATIO = 0.95;
+
 function preferReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function isMobileLayout() {
   return window.matchMedia("(max-width: 640px)").matches;
+}
+
+function getDocumentScrollRatio() {
+  const doc = document.documentElement;
+  const max = Math.max(doc.scrollHeight - window.innerHeight, 1);
+  return Math.min(Math.max(window.scrollY / max, 0), 1);
 }
 
 function scrollToChapter(id: ChapterId) {
@@ -86,6 +95,11 @@ export function StoryProgressIndicator() {
 
     let raf = 0;
     const resolveActive = (): ChapterId => {
+      // 페이지 하단(~95%): contact가 viewport 밴드에 안 잡혀도 활성
+      if (getDocumentScrollRatio() >= CONTACT_SCROLL_RATIO) {
+        return "contact";
+      }
+
       const scene = document.getElementById("top");
       const mobile = isMobileLayout();
 

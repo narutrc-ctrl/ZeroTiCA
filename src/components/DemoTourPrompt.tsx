@@ -3,8 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
 import { fullDemoTour } from "@/data/demo-tour";
 import { beginFullGuideAndTrackFirstStep, trackDemoGuideAction } from "@/lib/analytics";
-// TODO: 도입 문의 CTA — 요청 시 주석 해제
-// import { useContactModal } from "@/components/ContactModal";
+import { useContactModal } from "@/components/ContactModal";
 const STORAGE_KEY = "zerotica-demo-prompt-dismissed";
 
 export function DemoTourPrompt() {
@@ -69,8 +68,7 @@ export function DemoTourPrompt() {
 }
 
 export function TourCompleteModal({ onClose }: { onClose: () => void }) {
-  // TODO: 도입 문의 CTA — 요청 시 주석 해제
-  // const { openContactModal } = useContactModal();
+  const { openContactModal } = useContactModal();
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/50 p-4">
@@ -81,7 +79,6 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
           도입·PoC·견적 상담이 필요하시면 문의를 남겨 주세요. 담당자가 연락드립니다.
         </p>
         <div className="mt-6 flex flex-col gap-2">
-          {/* TODO: 도입 문의 CTA — 요청 시 주석 해제
           <button
             type="button"
             className="zt-btn-primary w-full"
@@ -92,14 +89,13 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
           >
             도입 문의하기
           </button>
-          */}
           <button
             type="button"
             onClick={() => {
               trackDemoGuideAction("continue_demo");
               onClose();
             }}
-            className="zt-btn-primary w-full"
+            className="zt-btn-ghost w-full"
           >
             데모 계속 탐색
           </button>

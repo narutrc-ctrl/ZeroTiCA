@@ -1,4 +1,5 @@
 import { Download, Mail, Phone } from "lucide-react";
+import { useContactModal } from "@/components/ContactModal";
 import { contactBanner, site } from "@/data/content";
 import { cn } from "@/lib/cn";
 
@@ -11,6 +12,8 @@ const telHref = `tel:${site.contactPhone.replace(/-/g, "")}`;
 const mailHref = `mailto:${site.contactEmail}`;
 
 export function ContactCTA({ variant = "primary", className }: Props) {
+  const { openContactModal } = useContactModal();
+
   if (variant === "banner") {
     return (
       <section
@@ -31,20 +34,13 @@ export function ContactCTA({ variant = "primary", className }: Props) {
             {contactBanner.titleLine2}
           </h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-9 sm:gap-4">
-            <a
-              href={mailHref}
+            <button
+              type="button"
+              onClick={openContactModal}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-semibold text-[#3b82f6] transition-colors hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:px-8 sm:py-3.5 sm:text-base"
             >
-              <Mail className="h-4 w-4" aria-hidden />
-              {site.contactEmail}
-            </a>
-            <a
-              href={telHref}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white bg-transparent px-6 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:px-8 sm:py-3.5 sm:text-base"
-            >
-              <Phone className="h-4 w-4" aria-hidden />
-              {site.contactPhone}
-            </a>
+              도입 문의하기
+            </button>
           </div>
 
           <a
@@ -63,9 +59,9 @@ export function ContactCTA({ variant = "primary", className }: Props) {
   if (variant === "inline") {
     return (
       <div className={cn("flex flex-wrap gap-3", className)}>
-        <a href={mailHref} className="zt-btn-primary">
-          <Mail className="h-4 w-4" aria-hidden /> 이메일 문의
-        </a>
+        <button type="button" onClick={openContactModal} className="zt-btn-primary">
+          도입 문의하기
+        </button>
         <a href={telHref} className="zt-btn-ghost">
           <Phone className="h-4 w-4" aria-hidden /> {site.contactPhone}
         </a>
@@ -74,9 +70,9 @@ export function ContactCTA({ variant = "primary", className }: Props) {
   }
 
   return (
-    <a href={mailHref} className={cn("zt-btn-primary", className)}>
-      이메일 문의
-    </a>
+    <button type="button" onClick={openContactModal} className={cn("zt-btn-primary", className)}>
+      도입 문의
+    </button>
   );
 }
 
