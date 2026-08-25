@@ -1,7 +1,7 @@
 /** 랜딩 미니 시뮬레이션 — 정상 검증 사례 + 위협 통신 사례 */
 
 export const simulationIntro = {
-  eyebrow: "ZeroTiCA의 검증 과정",
+  eyebrow: "판단 과정",
   title: "관측된 변화를,",
   titleLine2: "조치할 수 있는 판단으로 바꿉니다.",
   titleAccent: "",

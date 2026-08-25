@@ -97,7 +97,7 @@ export const problemSection = {
 
 /** 섹션3 — WHAT'S DIFFERENT (섹션2 타이포·간격 체계 공유) */
 export const whatsDifferentSection = {
-  eyebrow: "ZeroTiCA의 검증 관점",
+  eyebrow: "검증 관점",
   titleBefore: "안전하다고 판단하려면,",
   titleAccent: "침해 가능성",
   titleAfter: "까지 확인해야 합니다.",
@@ -411,7 +411,7 @@ export const contactBanner = {
 /** 레거시 /#section deep-link 호환용 */
 export const storyAnchors = [
   { id: "problem", label: "왜 검증인가" },
-  { id: "journey", label: "검증 과정" },
+  { id: "journey", label: "판단 과정" },
   { id: "outcomes", label: "고객 가치" },
   { id: "choose", label: "서비스" },
   { id: "faq", label: "FAQ" },
@@ -427,7 +427,7 @@ export const storyProgressChapters = [
   { id: "intro", label: "인트로" },
   { id: "problem", label: "왜 검증인가" },
   { id: "differentiator", label: "검증 관점" },
-  { id: "journey", label: "검증 과정" },
+  { id: "journey", label: "판단 과정" },
   { id: "outcomes", label: "고객 가치" },
   { id: "experience", label: "화면 데모" },
   { id: "choose", label: "서비스" },
