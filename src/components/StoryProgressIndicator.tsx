@@ -166,7 +166,7 @@ export function StoryProgressIndicator() {
                     "mr-3 flex h-6 max-w-[7.5rem] items-center truncate text-right text-[11px] font-medium leading-none tracking-wide transition-opacity duration-200",
                     active
                       ? "text-primary opacity-100"
-                      : "text-slate-400 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100",
+                      : "text-slate-400 opacity-0 group-hover:opacity-100",
                   )}
                   aria-hidden={!active}
                 >
@@ -174,7 +174,10 @@ export function StoryProgressIndicator() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => scrollToChapter(chapter.id)}
+                  onClick={(e) => {
+                    scrollToChapter(chapter.id);
+                    e.currentTarget.blur();
+                  }}
                   aria-label={chapter.label}
                   aria-current={active ? "true" : undefined}
                   className="relative flex h-6 w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
