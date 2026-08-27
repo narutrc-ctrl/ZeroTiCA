@@ -3,6 +3,10 @@ export const SITE_ORIGIN = "https://zerotica.narusec.com";
 export const INDEX_ROBOTS = "index,follow,max-image-preview:large";
 export const NOINDEX_ROBOTS = "noindex,follow";
 
+/** Shared meta / OG / Twitter description for all pages. */
+export const SITE_DESCRIPTION =
+  "나루씨큐리티의 제로티카(ZeroTiCA)는 내부망 네트워크 통신을 분석해 침해 징후를 검증하고 조치 방향을 제시합니다.";
+
 export type SeoPage = {
   path: string;
   title: string;
@@ -19,20 +23,18 @@ export type SeoPage = {
 export const HOME: SeoPage = {
   path: "/",
   title: "제로티카(ZeroTiCA) | 침해평가로 기업 내부를 검증하는 보안",
-  description:
-  "제로티카(ZeroTiCA)는 기업 내부망의 네트워크 통신을 분석해 이상 징후와 침해 흔적을 찾고, 전문가가 실제 위협 여부를 검증해 조치 방향을 제시하는 침해평가 서비스입니다.",
+  description: SITE_DESCRIPTION,
   canonicalPath: "/",
   robots: INDEX_ROBOTS,
   indexable: true,
   ogTitle: "제로티카(ZeroTiCA) | 침해평가로 기업 내부를 검증하는 보안",
-  ogDescription: "내부망 통신을 분석해 보이지 않는 이상 징후를 찾고, 실제 위협 여부를 전문가가 검증합니다.",
   twitterTitle: "기업 내부를 검증하는 보안 | ZeroTiCA",
 };
 
 export const NOT_FOUND: SeoPage = {
   path: "*",
   title: "페이지를 찾을 수 없습니다 | ZeroTiCA",
-  description: "요청하신 페이지를 찾을 수 없습니다.",
+  description: SITE_DESCRIPTION,
   canonicalPath: "/",
   robots: NOINDEX_ROBOTS,
   indexable: false,
@@ -44,8 +46,7 @@ export const PAGES: SeoPage[] = [
   {
     path: "/perspectives",
     title: "침해 징후를 확인하는 8가지 보안 검증 관점 | ZeroTiCA",
-    description:
-      "ZeroTiCA는 기업 내부망의 네트워크 통신에서 웹셸, C2 통신, 측면이동, 보안통제 우회, 비정상 데이터 이동 등 침해 징후를 8가지 관점으로 분석하고 전문가가 실제 침해 가능성을 검증합니다.",
+    description: SITE_DESCRIPTION,
     canonicalPath: "/perspectives",
     robots: INDEX_ROBOTS,
     indexable: true,
@@ -53,8 +54,7 @@ export const PAGES: SeoPage[] = [
   {
     path: "/legal/privacy",
     title: "개인정보 처리방침 | ZeroTiCA",
-    description:
-      "(주)나루씨큐리티 제로티카 서비스의 개인정보 수집 항목, 이용 목적, 문의 방법을 안내합니다.",
+    description: SITE_DESCRIPTION,
     canonicalPath: "/legal/privacy",
     robots: INDEX_ROBOTS,
     indexable: true,
@@ -62,7 +62,7 @@ export const PAGES: SeoPage[] = [
   {
     path: "/demo/task",
     title: "이슈 관리 데모 | ZeroTiCA",
-    description: "제로티카 고객 포털의 이슈 관리 화면 데모입니다.",
+    description: SITE_DESCRIPTION,
     canonicalPath: "/demo/task",
     robots: NOINDEX_ROBOTS,
     indexable: false,
@@ -70,7 +70,7 @@ export const PAGES: SeoPage[] = [
   {
     path: "/demo/event",
     title: "이벤트 데모 | ZeroTiCA",
-    description: "제로티카 고객 포털의 이벤트·보고서 화면 데모입니다.",
+    description: SITE_DESCRIPTION,
     canonicalPath: "/demo/event",
     robots: NOINDEX_ROBOTS,
     indexable: false,
@@ -78,7 +78,7 @@ export const PAGES: SeoPage[] = [
   {
     path: "/demo/report",
     title: "보고서 데모 | ZeroTiCA",
-    description: "제로티카 고객 포털의 침해 평가 보고서 데모입니다.",
+    description: SITE_DESCRIPTION,
     canonicalPath: "/demo/report",
     robots: NOINDEX_ROBOTS,
     indexable: false,
