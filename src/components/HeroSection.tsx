@@ -20,16 +20,13 @@ const KEYHOLE_DIAMETER_AT_HALF = 40;
  */
 const EXPAND_MID = 0.58;
 const EXPAND_END = 0.7;
-/** 2번 문구 시작/종료 (스크롤 progress) — 시작은 풀커버보다 살짝 앞 */
+/** 2번 문구 시작/종료 (스크롤 progress) */
 const PHRASE2_START = 0.64;
-const PHRASE2_END = 0.84;
-/**
- * 2번 문구 localT가 이 값에 닿을 때 섹션2 원 합류 시작.
- * (페이드아웃이 거의 끝난 직후 — PHRASE_PEAK 이후 opacity≈0 근처)
- */
-const CIRCLE_AT_PHRASE2 = 0.9;
+const PHRASE2_END = 0.92;
+/** 섹션2 원 합류 시작 (스크롤 progress) — 키홀 전환 타이밍 고정 */
+const CIRCLE_MERGE_START_P = 0.82;
 /** 1번 문구 시작/종료 시점의 화면 채움 비율(vmin 대비 키홀 지름) */
-const PHRASE1_FILL_START = 0.90;
+const PHRASE1_FILL_START = 0.65;
 const PHRASE1_FILL_END = 1.50;
 /** EXPAND_MID 에서의 목표 화면 채움 (1 = 짧은 변과 동일 지름) */
 const FILL_AT_MID = 1.05;
@@ -437,10 +434,10 @@ export function HeroSection() {
          *    문구1이 문구2와 겹쳐 다시 보임
          *    → 각 문구 localT는 0→1 단방향만. 끝나면 1로 고정(완전 투명)
          */
-        const P1_FILL0 = 0.92;
+        const P1_FILL0 = 0.68;
         const P1_FILL1 = 1.32;
         const P2_FILL0 = 1.4; // 문구1 완전 종료 후 간격
-        const P2_FILL1 = 1.78;
+        const P2_FILL1 = 1.88;
 
         let phrase1T = 0;
         let phrase2T = 0;
@@ -551,8 +548,7 @@ export function HeroSection() {
         circleRight.style.transform = "";
         resetSection2();
       } else {
-        const circleStartP =
-          PHRASE2_START + CIRCLE_AT_PHRASE2 * (PHRASE2_END - PHRASE2_START);
+        const circleStartP = CIRCLE_MERGE_START_P;
         const circleT =
           p <= circleStartP
             ? 0
