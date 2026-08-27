@@ -67,8 +67,8 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
           name,
           email,
           phone,
-          service: "도입 문의",
           message,
+          privacyAgreed: true,
         }),
       });
 

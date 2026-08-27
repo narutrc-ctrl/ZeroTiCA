@@ -1,5 +1,6 @@
 node_modules
 dist
+dist-lambda
 .DS_Store
 *.local
 .env

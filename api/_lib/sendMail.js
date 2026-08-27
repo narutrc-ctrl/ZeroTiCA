@@ -14,14 +14,14 @@ export function getMailEnv(env = process.env) {
     user: env.EMAIL_HOST_USER || "",
     pass: env.EMAIL_HOST_PASSWORD || "",
     from: env.DEFAULT_FROM_EMAIL || env.EMAIL_HOST_USER || "",
-    to: env.CONTACT_INQUIRY_TO || "mrlee@narusec.com",
+    to: String(env.CONTACT_INQUIRY_TO || "").trim(),
   };
 }
 
 /**
  * @param {unknown} body
  * @returns {{ ok: true, data: {
- *   company: string, name: string, email: string, phone: string, service: string, message: string
+ *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: true
  * }} | { ok: false, error: string, details?: Record<string, string> }}
  */
 export function validateInquiry(body) {
@@ -37,7 +37,6 @@ export function validateInquiry(body) {
   const name = String(raw.name ?? "").trim();
   const email = String(raw.email ?? "").trim();
   const phone = String(raw.phone ?? "").trim();
-  const service = String(raw.service ?? "").trim();
   const message = String(raw.message ?? "").trim();
 
   if (!company || company.length > 200) details.company = "회사명을 확인해 주세요.";
@@ -46,19 +45,24 @@ export function validateInquiry(body) {
     details.email = "이메일을 확인해 주세요.";
   }
   if (!phone || phone.length > 50) details.phone = "연락처를 확인해 주세요.";
-  if (!service || service.length > 100) details.service = "문의 유형을 선택해 주세요.";
   if (!message || message.length > 5000) details.message = "문의 내용을 확인해 주세요.";
+  if (raw.privacyAgreed !== true) {
+    details.privacyAgreed = "개인정보 수집 및 이용에 동의해 주세요.";
+  }
 
   if (Object.keys(details).length > 0) {
     return { ok: false, error: "입력값을 확인해 주세요.", details };
   }
 
-  return { ok: true, data: { company, name, email, phone, service, message } };
+  return {
+    ok: true,
+    data: { company, name, email, phone, message, privacyAgreed: true },
+  };
 }
 
 /**
  * @param {{
- *   company: string, name: string, email: string, phone: string, service: string, message: string
+ *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: true
  * }} data
  * @param {NodeJS.ProcessEnv | Record<string, string | undefined>} env
  */
@@ -87,8 +91,7 @@ export async function sendContactInquiry(data, env = process.env) {
     `회사명: ${data.company}`,
     `담당자: ${data.name}`,
     `이메일: ${data.email}`,
-    `연락처: ${data.phone || "-"}`,
-    `문의 유형: ${data.service || "-"}`,
+    `연락처: ${data.phone}`,
     "",
     "문의 내용:",
     data.message,

@@ -61,7 +61,10 @@ function contactApiPlugin(env: Record<string, string>): Plugin {
           res.setHeader("Content-Type", "application/json");
           res.end(JSON.stringify({ ok: true, message: "문의가 접수되었습니다." }));
         } catch (err) {
-          console.error("[contact] local send failed:", err);
+          const name = err && typeof err === "object" && "name" in err ? String(err.name) : "Error";
+          const code =
+            err && typeof err === "object" && "code" in err ? String((err as { code?: unknown }).code) : "";
+          console.error("[contact] local send failed:", code ? `${name} (${code})` : name);
           res.statusCode = 502;
           res.setHeader("Content-Type", "application/json");
           res.end(JSON.stringify({ error: "메일 발송에 실패했습니다. 잠시 후 다시 시도해 주세요." }));
