@@ -7,6 +7,7 @@
     "dev": "vite --host=0.0.0.0 --port 5174",
     "build": "tsc -b && vite build && node scripts/build-hosting.mjs",
     "build:contact-lambda": "node scripts/build-contact-lambda.mjs",
+    "deploy:contact-aws": "npm run build:contact-lambda && python3 scripts/deploy-contact-aws.py",
     "test:contact-api": "node --test scripts/test-contact-api.mjs",
     "apply:cloudfront": "python3 scripts/apply-cloudfront-spa-router.py",
     "preview": "vite preview --port 5174"

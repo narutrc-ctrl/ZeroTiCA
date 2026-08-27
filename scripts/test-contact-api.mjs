@@ -33,17 +33,30 @@ test("validateInquiry accepts valid payload without service", () => {
   assert.equal("service" in result.data, false);
 });
 
-test("validateInquiry rejects empty phone", () => {
-  const result = validateInquiry({ ...validPayload, phone: "   " });
-  assert.equal(result.ok, false);
-  assert.ok(result.details?.phone);
+test("validateInquiry accepts optional fields when omitted", () => {
+  const result = validateInquiry({
+    email: "name@company.com",
+    message: "문의 내용입니다.",
+    privacyAgreed: true,
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.data.company, "");
+  assert.equal(result.data.name, "");
+  assert.equal(result.data.phone, "");
+  assert.equal(result.data.privacyAgreed, true);
 });
 
-test("validateInquiry rejects missing phone", () => {
+test("validateInquiry accepts empty phone", () => {
+  const result = validateInquiry({ ...validPayload, phone: "   " });
+  assert.equal(result.ok, true);
+  assert.equal(result.data.phone, "");
+});
+
+test("validateInquiry accepts missing phone", () => {
   const { phone: _omit, ...rest } = validPayload;
   const result = validateInquiry(rest);
-  assert.equal(result.ok, false);
-  assert.ok(result.details?.phone);
+  assert.equal(result.ok, true);
+  assert.equal(result.data.phone, "");
 });
 
 test("validateInquiry rejects privacyAgreed false / missing / non-boolean true", () => {
@@ -60,9 +73,10 @@ test("validateInquiry rejects privacyAgreed false / missing / non-boolean true",
 });
 
 test("validateInquiry rejects missing required fields and invalid email", () => {
-  assert.equal(validateInquiry({ ...validPayload, company: "" }).ok, false);
-  assert.equal(validateInquiry({ ...validPayload, name: "" }).ok, false);
+  assert.equal(validateInquiry({ ...validPayload, company: "" }).ok, true);
+  assert.equal(validateInquiry({ ...validPayload, name: "" }).ok, true);
   assert.equal(validateInquiry({ ...validPayload, message: "" }).ok, false);
+  assert.equal(validateInquiry({ ...validPayload, email: "" }).ok, false);
   assert.equal(validateInquiry({ ...validPayload, email: "not-an-email" }).ok, false);
 });
 
@@ -104,7 +118,7 @@ test("handler oversize body → 413", async () => {
 });
 
 test("handler validation error → 400 (no SMTP)", async () => {
-  const res = await handleContactEvent(postEvent({ ...validPayload, phone: "" }), {
+  const res = await handleContactEvent(postEvent({ ...validPayload, message: "" }), {
     sendContactInquiry: async () => {
       throw new Error("should not send");
     },
@@ -112,7 +126,7 @@ test("handler validation error → 400 (no SMTP)", async () => {
   assert.equal(res.statusCode, 400);
   const payload = JSON.parse(res.body);
   assert.equal(payload.error, "입력값을 확인해 주세요.");
-  assert.ok(payload.details?.phone);
+  assert.ok(payload.details?.message);
 });
 
 test("handler success → 200 with mocked sender", async () => {

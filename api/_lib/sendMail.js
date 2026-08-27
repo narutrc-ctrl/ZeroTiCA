@@ -21,7 +21,7 @@ export function getMailEnv(env = process.env) {
 /**
  * @param {unknown} body
  * @returns {{ ok: true, data: {
- *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: true
+ *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: boolean
  * }} | { ok: false, error: string, details?: Record<string, string> }}
  */
 export function validateInquiry(body) {
@@ -39,12 +39,12 @@ export function validateInquiry(body) {
   const phone = String(raw.phone ?? "").trim();
   const message = String(raw.message ?? "").trim();
 
-  if (!company || company.length > 200) details.company = "회사명을 확인해 주세요.";
-  if (!name || name.length > 100) details.name = "담당자명을 확인해 주세요.";
+  if (company.length > 200) details.company = "회사명을 확인해 주세요.";
+  if (name.length > 100) details.name = "담당자명을 확인해 주세요.";
   if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     details.email = "이메일을 확인해 주세요.";
   }
-  if (!phone || phone.length > 50) details.phone = "연락처를 확인해 주세요.";
+  if (phone.length > 50) details.phone = "연락처를 확인해 주세요.";
   if (!message || message.length > 5000) details.message = "문의 내용을 확인해 주세요.";
   if (raw.privacyAgreed !== true) {
     details.privacyAgreed = "개인정보 수집 및 이용에 동의해 주세요.";
@@ -56,13 +56,20 @@ export function validateInquiry(body) {
 
   return {
     ok: true,
-    data: { company, name, email, phone, message, privacyAgreed: true },
+    data: {
+      company,
+      name,
+      email,
+      phone,
+      message,
+      privacyAgreed: true,
+    },
   };
 }
 
 /**
  * @param {{
- *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: true
+ *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: boolean
  * }} data
  * @param {NodeJS.ProcessEnv | Record<string, string | undefined>} env
  */
@@ -84,14 +91,16 @@ export async function sendContactInquiry(data, env = process.env) {
     auth: { user: cfg.user, pass: cfg.pass },
   });
 
-  const subject = `[제로티카] 도입 문의 — ${data.company} / ${data.name}`;
+  const contactLabel = [data.company, data.name].filter(Boolean).join(" / ") || data.email;
+  const subject = `[제로티카] 도입 문의 — ${contactLabel}`;
   const text = [
     "제로티카 소개 사이트에서 도입 문의가 접수되었습니다.",
     "",
-    `회사명: ${data.company}`,
-    `담당자: ${data.name}`,
+    `회사명: ${data.company || "미입력"}`,
+    `담당자: ${data.name || "미입력"}`,
     `이메일: ${data.email}`,
-    `연락처: ${data.phone}`,
+    `연락처: ${data.phone || "미입력"}`,
+    `개인정보 동의: ${data.privacyAgreed ? "동의" : "미동의"}`,
     "",
     "문의 내용:",
     data.message,

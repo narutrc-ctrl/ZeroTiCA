@@ -6,6 +6,8 @@ dist-lambda
 .env
 .env.local
 .env.*.local
+.zerotica-contact-lambda.env
+**/zerotica-contact-lambda.env
 __pycache__/
 *.pyc
 

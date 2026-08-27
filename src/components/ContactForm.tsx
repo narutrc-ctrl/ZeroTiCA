@@ -104,12 +104,8 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <label className="block text-sm">
-        <span className="mb-1.5 flex items-center font-medium text-slate-700">
-          회사명
-          <RequiredMark />
-        </span>
+        <span className="mb-1.5 flex items-center font-medium text-slate-700">회사명</span>
         <input
-          required
           disabled={disabled}
           className={fieldClass}
           placeholder="회사명을 입력해주세요"
@@ -120,12 +116,8 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 flex items-center font-medium text-slate-700">
-          담당자명
-          <RequiredMark />
-        </span>
+        <span className="mb-1.5 flex items-center font-medium text-slate-700">담당자명</span>
         <input
-          required
           disabled={disabled}
           className={fieldClass}
           placeholder="이름을 입력해주세요"
@@ -153,12 +145,8 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 flex items-center font-medium text-slate-700">
-          연락처
-          <RequiredMark />
-        </span>
+        <span className="mb-1.5 flex items-center font-medium text-slate-700">연락처</span>
         <input
-          required
           disabled={disabled}
           className={fieldClass}
           placeholder="010-0000-0000"
@@ -189,26 +177,25 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
         </span>
       </label>
 
-      <div className="flex items-start justify-between gap-3 pt-1">
-        <label className="flex cursor-pointer items-start gap-2.5 text-sm text-slate-600">
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-800">
           <input
             type="checkbox"
             required
             disabled={disabled}
             checked={privacyAgreed}
             onChange={(e) => setPrivacyAgreed(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
           <span>
-            개인정보 수집 및 이용에 동의합니다.{" "}
-            <span className="text-slate-500">(필수)</span>
+            <span className="font-semibold">[필수]</span> 개인정보 수집·이용 동의
           </span>
         </label>
         <Link
           to="/legal/privacy"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+          className="shrink-0 rounded-md bg-[#f2f2f2] px-2 py-0.5 text-[10px] leading-tight text-zinc-700 transition-colors hover:bg-zinc-200"
         >
           자세히 보기
         </Link>
