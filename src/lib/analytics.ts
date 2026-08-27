@@ -55,6 +55,31 @@ export function trackCtaClick(input: TrackCtaClickInput): void {
   pushDataLayer(payload);
 }
 
+/* ── Home section_view ────────────────────────────────────── */
+
+export type HomeSectionId =
+  | "why_verification"
+  | "perspectives"
+  | "verification_process"
+  | "customer_value"
+  | "demo_experience"
+  | "services"
+  | "faq"
+  | "contact";
+
+export type SectionViewPayload = {
+  event: "section_view";
+  section_id: HomeSectionId;
+};
+
+export function trackSectionView(sectionId: HomeSectionId): void {
+  const payload: SectionViewPayload = {
+    event: "section_view",
+    section_id: sectionId,
+  };
+  pushDataLayer(payload);
+}
+
 /* ── Demo GA4 ─────────────────────────────────────────────── */
 
 export type DemoEntrySource = "header" | "direct" | "other";
