@@ -1,5 +1,7 @@
+import type { FaqQuestionId } from "@/lib/analytics";
+
 export type FaqItem = {
-  id: string;
+  id: FaqQuestionId;
   question: string;
   /** 문단 구분은 \\n\\n 사용 */
   answer: string;

@@ -148,6 +148,32 @@ export function trackVerificationNavigation(input: {
   pushDataLayer(payload);
 }
 
+/* ── Home FAQ ─────────────────────────────────────────────── */
+
+export type FaqQuestionId =
+  | "no-existing-security"
+  | "install-requirement"
+  | "data-source"
+  | "data-protection"
+  | "customer-prep"
+  | "insight-watch"
+  | "issue-flow"
+  | "no-breach-value"
+  | "ai-judgment";
+
+export type FaqOpenPayload = {
+  event: "faq_open";
+  question_id: FaqQuestionId;
+};
+
+export function trackFaqOpen(questionId: FaqQuestionId): void {
+  const payload: FaqOpenPayload = {
+    event: "faq_open",
+    question_id: questionId,
+  };
+  pushDataLayer(payload);
+}
+
 /* ── Demo GA4 ─────────────────────────────────────────────── */
 
 export type DemoEntrySource = "header" | "direct" | "other";

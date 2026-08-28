@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { faqItems, faqSection } from "@/data/faq";
+import { faqItems, faqSection, type FaqItem } from "@/data/faq";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { trackFaqOpen, type FaqQuestionId } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 function FaqParagraphs({ text }: { text: string }) {
@@ -32,7 +33,7 @@ function FaqAccordionItem({
   open,
   onToggle,
 }: {
-  id: string;
+  id: FaqQuestionId;
   question: string;
   answer: string;
   bullets?: string[];
@@ -96,7 +97,7 @@ function FaqAccordionItem({
 }
 
 export function FaqSection() {
-  const [openId, setOpenId] = useState<string | null>(faqItems[0]?.id ?? null);
+  const [openId, setOpenId] = useState<FaqQuestionId | null>(null);
   const faqJsonLd = useMemo(() => {
     const entities = faqItems.map((item) => ({
       "@type": "Question",
@@ -114,6 +115,14 @@ export function FaqSection() {
       mainEntity: entities,
     };
   }, []);
+
+  const handleToggle = (item: FaqItem) => {
+    const willOpen = openId !== item.id;
+    if (willOpen) {
+      trackFaqOpen(item.id);
+    }
+    setOpenId(willOpen ? item.id : null);
+  };
 
   return (
     <section id="faq" aria-labelledby="faq-heading" className="scroll-mt-20 border-b border-slate-200/80 bg-slate-50">
@@ -138,7 +147,7 @@ export function FaqSection() {
                 key={item.id}
                 {...item}
                 open={openId === item.id}
-                onToggle={() => setOpenId((prev) => (prev === item.id ? null : item.id))}
+                onToggle={() => handleToggle(item)}
               />
             ))}
           </div>
