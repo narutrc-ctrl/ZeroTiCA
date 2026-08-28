@@ -1,8 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { useHomeVerificationVisit } from "@/components/HomeVerificationVisitContext";
 import { getChapterStepDetail, simulationIntro, storyChapters } from "@/data/issue-story";
 import { SimulationStage } from "@/components/interactive-journey/SimulationStage";
 import { useIssueSimulation } from "@/hooks/useIssueSimulation";
+import {
+  previewVerificationGoNext,
+  previewVerificationGoPrev,
+  previewVerificationGoToChapter,
+  previewVerificationRestart,
+} from "@/lib/verification-analytics";
 import { cn } from "@/lib/cn";
 
 /** 원 4개 — 시작은 왼쪽 끝에 겹침, 펼침 완료 시 좌우 끝 기준으로 전체 왼쪽 시프트 */
@@ -185,6 +192,7 @@ function revealStyle(t: number) {
 export function InteractiveIssueJourneySection() {
   const sim = useIssueSimulation();
   const { phase, chapterIndex, isAtStart, isAtEnd, subProgress, analystStep, activeCase } = sim;
+  const { gateOpen, tryTrackStepForState, trackNavigation } = useHomeVerificationVisit();
   const chapter = storyChapters[chapterIndex] ?? storyChapters[0];
   const chapterDescription = getChapterStepDetail(phase, activeCase, analystStep);
   /** 검증 5/5 — 오른쪽 패널 안내 박스 + 뱃지 */
@@ -199,6 +207,42 @@ export function InteractiveIssueJourneySection() {
   const [circleT, setCircleT] = useState(0);
   const [headerT, setHeaderT] = useState(0);
   const [panelT, setPanelT] = useState(0);
+
+  useEffect(() => {
+    if (!gateOpen) return;
+    tryTrackStepForState({ phase, analystStep, activeCase });
+  }, [gateOpen, phase, analystStep, activeCase, tryTrackStepForState]);
+
+  const handleNavNext = useCallback(() => {
+    const current = { phase, analystStep, activeCase };
+    const next = previewVerificationGoNext(current);
+    if (next) trackNavigation("next", current, next);
+    sim.goNext();
+  }, [phase, analystStep, activeCase, sim, trackNavigation]);
+
+  const handleNavPrev = useCallback(() => {
+    const current = { phase, analystStep, activeCase };
+    const prev = previewVerificationGoPrev(current);
+    if (prev) trackNavigation("previous", current, prev);
+    sim.goPrev();
+  }, [phase, analystStep, activeCase, sim, trackNavigation]);
+
+  const handleNavRestart = useCallback(() => {
+    const current = { phase, analystStep, activeCase };
+    const target = previewVerificationRestart();
+    trackNavigation("direct", current, target);
+    sim.restart();
+  }, [phase, analystStep, activeCase, sim, trackNavigation]);
+
+  const handleChapterSelect = useCallback(
+    (index: number) => {
+      const current = { phase, analystStep, activeCase };
+      const target = previewVerificationGoToChapter(index);
+      if (target) trackNavigation("direct", current, target);
+      sim.goToChapter(index);
+    },
+    [phase, analystStep, activeCase, sim, trackNavigation],
+  );
 
   // 단계+박스가 100% 나타난 뒤에만 자동 흐름 시작
   useEffect(() => {
@@ -314,7 +358,7 @@ export function InteractiveIssueJourneySection() {
         </div>
 
         <div className="sim-journey-sticky mt-10 sm:mt-14" style={revealStyle(panelT)}>
-          <JourneyStepTabs activeIndex={chapterIndex} onSelect={sim.goToChapter} />
+          <JourneyStepTabs activeIndex={chapterIndex} onSelect={handleChapterSelect} />
 
           <div className="sim-journey-panel mt-5 rounded-[28px] border border-slate-200/90 bg-white/90 p-4 shadow-[0_18px_50px_rgba(171,209,255,0.45)] backdrop-blur-sm sm:mt-6 sm:p-6 lg:p-7">
             <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
@@ -379,9 +423,9 @@ export function InteractiveIssueJourneySection() {
                     isAtEnd={isAtEnd}
                     showVerifyClosingNote={showVerifyClosingNote}
                     showThreatClosingNote={showThreatClosingNote}
-                    onPrev={sim.goPrev}
-                    onNext={sim.goNext}
-                    onRestart={sim.restart}
+                    onPrev={handleNavPrev}
+                    onNext={handleNavNext}
+                    onRestart={handleNavRestart}
                     showSubDots
                   />
                 </div>
@@ -410,9 +454,9 @@ export function InteractiveIssueJourneySection() {
                   isAtEnd={isAtEnd}
                   showVerifyClosingNote={showVerifyClosingNote}
                   showThreatClosingNote={showThreatClosingNote}
-                  onPrev={sim.goPrev}
-                  onNext={sim.goNext}
-                  onRestart={sim.restart}
+                  onPrev={handleNavPrev}
+                  onNext={handleNavNext}
+                  onRestart={handleNavRestart}
                 />
               </div>
             </div>

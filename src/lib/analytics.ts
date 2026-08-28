@@ -80,6 +80,74 @@ export function trackSectionView(sectionId: HomeSectionId): void {
   pushDataLayer(payload);
 }
 
+/* ── Home verification journey ────────────────────────────── */
+
+export type VerificationStepId =
+  | "observe"
+  | "select_01"
+  | "select_02"
+  | "select_03"
+  | "select_04"
+  | "verify_01"
+  | "verify_02"
+  | "verify_03"
+  | "verify_04"
+  | "verify_05"
+  | "action_01"
+  | "action_02"
+  | "action_03"
+  | "action_04"
+  | "action_05"
+  | "report";
+
+export type VerificationChapterId =
+  | "observe"
+  | "select"
+  | "verify"
+  | "customer_action"
+  | "report";
+
+export type VerificationNavigationAction = "next" | "previous" | "direct";
+
+export type VerificationStepViewPayload = {
+  event: "verification_step_view";
+  step_id: VerificationStepId;
+  chapter_id: VerificationChapterId;
+};
+
+export type VerificationNavigationPayload = {
+  event: "verification_navigation";
+  action: VerificationNavigationAction;
+  from_step_id: VerificationStepId;
+  to_step_id: VerificationStepId;
+};
+
+export function trackVerificationStepView(
+  stepId: VerificationStepId,
+  chapterId: VerificationChapterId,
+): void {
+  const payload: VerificationStepViewPayload = {
+    event: "verification_step_view",
+    step_id: stepId,
+    chapter_id: chapterId,
+  };
+  pushDataLayer(payload);
+}
+
+export function trackVerificationNavigation(input: {
+  action: VerificationNavigationAction;
+  from_step_id: VerificationStepId;
+  to_step_id: VerificationStepId;
+}): void {
+  const payload: VerificationNavigationPayload = {
+    event: "verification_navigation",
+    action: input.action,
+    from_step_id: input.from_step_id,
+    to_step_id: input.to_step_id,
+  };
+  pushDataLayer(payload);
+}
+
 /* ── Demo GA4 ─────────────────────────────────────────────── */
 
 export type DemoEntrySource = "header" | "direct" | "other";

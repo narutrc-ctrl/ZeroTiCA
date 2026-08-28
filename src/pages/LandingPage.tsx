@@ -4,6 +4,7 @@ import { ExperienceSection } from "@/components/ExperienceSection";
 // TODO: 함께하는 고객사 섹션 — 요청 시 주석 해제
 // import { TrustStrip } from "@/components/TrustStrip";
 import { HomeSectionViewTracker } from "@/components/HomeSectionViewTracker";
+import { HomeVerificationVisitProvider } from "@/components/HomeVerificationVisitContext";
 import { ServiceDecisionSection } from "@/components/ServiceDecisionSection";
 import { FaqSection } from "@/components/FaqSection";
 import { ProblemDifferentiatorSection } from "@/components/ProblemDifferentiatorSection";
@@ -12,27 +13,29 @@ import { HeroSection } from "@/components/HeroSection";
 
 export function LandingPage() {
   return (
-    <div className="bg-white">
-      <HomeSectionViewTracker />
-      <HeroSection />
+    <HomeVerificationVisitProvider>
+      <div className="bg-white">
+        <HomeSectionViewTracker />
+        <HeroSection />
 
-      <ProblemDifferentiatorSection />
+        <ProblemDifferentiatorSection />
 
-      <InteractiveIssueJourneySection />
+        <InteractiveIssueJourneySection />
 
-      <CustomerOutcomesSection />
+        <CustomerOutcomesSection />
 
-      <ExperienceSection />
+        <ExperienceSection />
 
-      {/* TODO: 함께하는 고객사 섹션 — 요청 시 주석 해제
+        {/* TODO: 함께하는 고객사 섹션 — 요청 시 주석 해제
       <TrustStrip />
       */}
 
-      <ServiceDecisionSection />
+        <ServiceDecisionSection />
 
-      <FaqSection />
+        <FaqSection />
 
-      <ContactCTA variant="banner" />
-    </div>
+        <ContactCTA variant="banner" />
+      </div>
+    </HomeVerificationVisitProvider>
   );
 }

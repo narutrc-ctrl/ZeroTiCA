@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useHomeVerificationVisit } from "@/components/HomeVerificationVisitContext";
 import { trackSectionView, type HomeSectionId } from "@/lib/analytics";
 import { getHeroSceneProgress, HERO_INTRO_TO_PROBLEM_PROGRESS } from "@/lib/scroll";
 
@@ -57,6 +58,7 @@ function isDesktopWhyVerificationActive(): boolean {
  */
 export function HomeSectionViewTracker() {
   const firedRef = useRef<Set<HomeSectionId>>(new Set());
+  const { notifyVerificationProcessSectionView } = useHomeVerificationVisit();
 
   useEffect(() => {
     const fired = firedRef.current;
@@ -82,6 +84,9 @@ export function HomeSectionViewTracker() {
         if (fired.has(sectionId)) return;
         fired.add(sectionId);
         trackSectionView(sectionId);
+        if (sectionId === "verification_process") {
+          notifyVerificationProcessSectionView();
+        }
         if (sectionId === "why_verification") {
           stopProblemIo();
           stopDesktopListen();
@@ -193,7 +198,7 @@ export function HomeSectionViewTracker() {
       sectionIo.disconnect();
       clearAllTimers();
     };
-  }, []);
+  }, [notifyVerificationProcessSectionView]);
 
   return null;
 }
