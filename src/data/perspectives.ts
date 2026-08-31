@@ -1,5 +1,7 @@
 /** 랜딩 「검증 관점」에서 이어지는 8가지 관점 설명 */
 
+import type { PerspectiveId } from "@/lib/analytics";
+
 export type PerspectiveBodyPart = {
   text: string;
   emphasis?: boolean;
@@ -17,7 +19,10 @@ export type PerspectiveDetail = {
 };
 
 export type PerspectiveItem = {
+  /** UI 표시·accordion·ARIA용 순서 번호 */
   num: string;
+  /** analytics용 semantic id (순서·카피 변경과 무관) */
+  id: PerspectiveId;
   title: string;
   bodyParts: PerspectiveBodyPart[];
   detail: PerspectiveDetail;
@@ -251,6 +256,7 @@ export const perspectivesPage = {
       items: [
         {
           num: "01",
+          id: "inbound",
           title: "인바운드 위협 평가",
           bodyParts: [
             { text: "웹셸·크리덴셜 스터핑·파라미터 변조 등 " },
@@ -260,6 +266,7 @@ export const perspectivesPage = {
         },
         {
           num: "02",
+          id: "outbound",
           title: "아웃바운드 백도어 평가",
           bodyParts: [
             { text: "해커가 지속 접근을 위해 심어놓은 백도어 채널이 지금도 " },
@@ -275,6 +282,7 @@ export const perspectivesPage = {
       items: [
         {
           num: "03",
+          id: "lateral",
           title: "측면이동 평가",
           bodyParts: [
             { text: "침투에 성공한 " },
@@ -284,6 +292,7 @@ export const perspectivesPage = {
         },
         {
           num: "04",
+          id: "central-asset",
           title: "중앙관리형 자산 평가",
           bodyParts: [
             { text: "인터넷 연결성이 높은 " },
@@ -299,6 +308,7 @@ export const perspectivesPage = {
       items: [
         {
           num: "05",
+          id: "intel",
           title: "위협 인텔리전스 평가",
           bodyParts: [
             { text: "실제 해킹 사고에 악용된 C2 서버·악성 도메인과 " },
@@ -308,6 +318,7 @@ export const perspectivesPage = {
         },
         {
           num: "06",
+          id: "evasion",
           title: "보안통제 우회 평가",
           bodyParts: [
             { text: "원격제어 소프트웨어·비인가 VPN 등 " },
@@ -323,6 +334,7 @@ export const perspectivesPage = {
       items: [
         {
           num: "07",
+          id: "data-move",
           title: "데이터 이동 평가",
           bodyParts: [
             { text: "장기 세션 내 데이터 누적, 통신 방향 역전 등 " },
@@ -332,6 +344,7 @@ export const perspectivesPage = {
         },
         {
           num: "08",
+          id: "network-change",
           title: "망 변화 평가",
           bodyParts: [
             { text: "네트워크 통신량의 급증, 프로토콜 분포의 역전, 평소 트래픽 패턴의 무너짐 등 " },

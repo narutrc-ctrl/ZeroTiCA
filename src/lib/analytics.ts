@@ -174,6 +174,31 @@ export function trackFaqOpen(questionId: FaqQuestionId): void {
   pushDataLayer(payload);
 }
 
+/* ── Perspectives page ────────────────────────────────────── */
+
+export type PerspectiveId =
+  | "inbound"
+  | "outbound"
+  | "lateral"
+  | "central-asset"
+  | "intel"
+  | "evasion"
+  | "data-move"
+  | "network-change";
+
+export type PerspectiveOpenPayload = {
+  event: "perspective_open";
+  perspective_id: PerspectiveId;
+};
+
+export function trackPerspectiveOpen(perspectiveId: PerspectiveId): void {
+  const payload: PerspectiveOpenPayload = {
+    event: "perspective_open",
+    perspective_id: perspectiveId,
+  };
+  pushDataLayer(payload);
+}
+
 /* ── Demo GA4 ─────────────────────────────────────────────── */
 
 export type DemoEntrySource = "header" | "direct" | "other";

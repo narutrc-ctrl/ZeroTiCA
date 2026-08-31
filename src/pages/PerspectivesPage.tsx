@@ -7,6 +7,7 @@ import {
   type PerspectiveDetail,
   type PerspectiveItem,
 } from "@/data/perspectives";
+import { trackPerspectiveOpen } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 function PerspectiveBody({ parts }: { parts: readonly PerspectiveBodyPart[] }) {
@@ -166,6 +167,14 @@ export function PerspectivesPage() {
     perspectivesPage;
   const [openNum, setOpenNum] = useState<string | null>(null);
 
+  const handleToggle = (item: PerspectiveItem) => {
+    const willOpen = openNum !== item.num;
+    if (willOpen) {
+      trackPerspectiveOpen(item.id);
+    }
+    setOpenNum(willOpen ? item.num : null);
+  };
+
   return (
     <div className="border-b border-slate-200/80 bg-[#f8f9fb]">
       <div className="zt-container-hero py-16 sm:py-20 lg:py-24">
@@ -197,7 +206,7 @@ export function PerspectivesPage() {
                     key={item.num}
                     item={item}
                     open={openNum === item.num}
-                    onToggle={() => setOpenNum((prev) => (prev === item.num ? null : item.num))}
+                    onToggle={() => handleToggle(item)}
                   />
                 ))}
               </ol>
