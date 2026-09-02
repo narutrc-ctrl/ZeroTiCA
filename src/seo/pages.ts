@@ -5,7 +5,7 @@ export const NOINDEX_ROBOTS = "noindex,follow";
 
 /** Shared meta / OG / Twitter description for all pages. */
 export const SITE_DESCRIPTION =
-  "나루씨큐리티의 제로티카(ZeroTiCA)는 내부망 네트워크 통신을 분석해 침해 징후를 검증하고 조치 방향을 제시합니다.";
+  "제로티카(ZeroTiCA)는 내부망 통신을 분석하고, 전문가가 침해 여부를 검증해 조치까지 이끄는 침해평가 서비스입니다.";
 
 export type SeoPage = {
   path: string;
