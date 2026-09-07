@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /api/contact",
+  "rawPath": "/api/contact",
+  "rawQueryString": "",
+  "headers": {
+    "content-type": "application/json",
+    "accept": "application/json"
+  },
+  "requestContext": {
+    "accountId": "000000000000",
+    "apiId": "fbuj6xkrab",
+    "domainName": "fbuj6xkrab.execute-api.ap-northeast-2.amazonaws.com",
+    "domainPrefix": "fbuj6xkrab",
+    "http": {
+      "method": "POST",
+      "path": "/api/contact",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "zerotica-contact-fixture"
+    },
+    "requestId": "live-send-fixture",
+    "routeKey": "POST /api/contact",
+    "stage": "$default",
+    "time": "01/Jan/2026:00:00:00 +0000",
+    "timeEpoch": 1767225600000
+  },
+  "body": "{\"company\":\"\",\"name\":\"test\",\"email\":\"REPLACE_WITH_TEST_EMAIL\",\"phone\":\"\",\"message\":\"ZeroTiCA inquiry API test\",\"privacyAgreed\":true}",
+  "isBase64Encoded": false
+}

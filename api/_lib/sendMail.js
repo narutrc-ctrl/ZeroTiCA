@@ -1,7 +1,27 @@
 import nodemailer from "nodemailer";
 
 /**
+ * @typedef {{
+ *   host: string,
+ *   port: number,
+ *   secure: boolean,
+ *   requireTLS: boolean,
+ *   user: string,
+ *   pass: string,
+ *   from: string,
+ *   to: string,
+ * }} MailConfig
+ */
+
+/**
+ * Local / Vite: map process.env (EMAIL_*, CONTACT_INQUIRY_TO) → MailConfig.
+ * Production Lambda should pass a MailConfig from SSM instead of env secrets.
+ *
+ * Defaults match company Daouoffice (backend_mrlee runa/settings/base.py):
+ * outbound.daouoffice.com:465, EMAIL_USE_SSL=True, EMAIL_USE_TLS=False.
+ *
  * @param {NodeJS.ProcessEnv | Record<string, string | undefined>} env
+ * @returns {MailConfig}
  */
 export function getMailEnv(env = process.env) {
   const useSsl = String(env.EMAIL_USE_SSL ?? "true").toLowerCase() === "true";
@@ -16,6 +36,28 @@ export function getMailEnv(env = process.env) {
     from: env.DEFAULT_FROM_EMAIL || env.EMAIL_HOST_USER || "",
     to: String(env.CONTACT_INQUIRY_TO || "").trim(),
   };
+}
+
+/**
+ * True when value is already a MailConfig (not an env map with EMAIL_* keys).
+ * @param {unknown} value
+ * @returns {value is MailConfig}
+ */
+export function isMailConfig(value) {
+  if (!value || typeof value !== "object") return false;
+  const o = /** @type {Record<string, unknown>} */ (value);
+  if ("EMAIL_HOST_USER" in o || "EMAIL_HOST_PASSWORD" in o || "CONTACT_INQUIRY_TO" in o) {
+    return false;
+  }
+  return typeof o.host === "string" && typeof o.user === "string" && typeof o.pass === "string";
+}
+
+/**
+ * @param {MailConfig | NodeJS.ProcessEnv | Record<string, string | undefined>} envOrConfig
+ * @returns {MailConfig}
+ */
+export function resolveMailConfig(envOrConfig = process.env) {
+  return isMailConfig(envOrConfig) ? envOrConfig : getMailEnv(envOrConfig);
 }
 
 /**
@@ -71,13 +113,13 @@ export function validateInquiry(body) {
  * @param {{
  *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: boolean
  * }} data
- * @param {NodeJS.ProcessEnv | Record<string, string | undefined>} env
+ * @param {MailConfig | NodeJS.ProcessEnv | Record<string, string | undefined>} envOrConfig
  */
-export async function sendContactInquiry(data, env = process.env) {
-  const cfg = getMailEnv(env);
+export async function sendContactInquiry(data, envOrConfig = process.env) {
+  const cfg = resolveMailConfig(envOrConfig);
 
   if (!cfg.to) {
-    throw new Error("CONTACT_INQUIRY_TO is not configured");
+    throw new Error("mail recipient is not configured");
   }
   if (!cfg.from || !cfg.user || !cfg.pass) {
     throw new Error("EMAIL settings incomplete");

@@ -1,4 +1,5 @@
 import { validateInquiry, sendContactInquiry } from "../../api/_lib/sendMail.js";
+import { loadSmtpConfigFromSsm } from "./ssmMailConfig.mjs";
 
 /** Inquiry JSON is small; 32KB leaves headroom over field max lengths. */
 export const MAX_BODY_BYTES = 32 * 1024;
@@ -48,6 +49,18 @@ function decodeBody(rawBody, isBase64) {
 }
 
 /**
+ * Production sender: SSM → MailConfig → shared sendContactInquiry.
+ * Secrets are never logged.
+ * @param {{
+ *   company: string, name: string, email: string, phone: string, message: string, privacyAgreed: boolean
+ * }} data
+ */
+async function sendContactInquiryFromSsm(data) {
+  const cfg = await loadSmtpConfigFromSsm();
+  return sendContactInquiry(data, cfg);
+}
+
+/**
  * API Gateway HTTP API (payload format 2.0) adapter.
  * Validation and SMTP stay in api/_lib/sendMail.js.
  *
@@ -59,7 +72,7 @@ function decodeBody(rawBody, isBase64) {
  */
 export async function handleContactEvent(
   event,
-  deps = { validateInquiry, sendContactInquiry },
+  deps = { validateInquiry, sendContactInquiry: sendContactInquiryFromSsm },
 ) {
   const method = event?.requestContext?.http?.method || event?.requestContext?.httpMethod || "";
   if (String(method).toUpperCase() !== "POST") {
@@ -82,7 +95,7 @@ export async function handleContactEvent(
   }
 
   const validate = deps.validateInquiry || validateInquiry;
-  const send = deps.sendContactInquiry || sendContactInquiry;
+  const send = deps.sendContactInquiry || sendContactInquiryFromSsm;
 
   const validation = validate(body);
   if (!validation.ok) {

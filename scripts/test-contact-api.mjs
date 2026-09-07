@@ -1,7 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validateInquiry, getMailEnv } from "../api/_lib/sendMail.js";
+import {
+  validateInquiry,
+  getMailEnv,
+  isMailConfig,
+  resolveMailConfig,
+} from "../api/_lib/sendMail.js";
 import { handleContactEvent, MAX_BODY_BYTES } from "../lambda/contact/handler.mjs";
+import {
+  clearSmtpConfigCache,
+  DAOUOOFFICE_TRANSPORT_DEFAULTS,
+  loadSmtpConfigFromSsm,
+  mailConfigFromSsmValues,
+  SSM_PARAM_NAMES,
+} from "../lambda/contact/ssmMailConfig.mjs";
 
 const validPayload = {
   company: "나루씨큐리티",
@@ -88,6 +100,129 @@ test("getMailEnv requires CONTACT_INQUIRY_TO (no personal fallback)", () => {
   assert.equal(cfg.to, "");
 });
 
+test("resolveMailConfig keeps MailConfig separate from env maps", () => {
+  const fromEnv = resolveMailConfig({
+    EMAIL_HOST: "smtp.example.com",
+    EMAIL_HOST_USER: "u",
+    EMAIL_HOST_PASSWORD: "p",
+    CONTACT_INQUIRY_TO: "to@example.com",
+  });
+  assert.equal(fromEnv.host, "smtp.example.com");
+  assert.equal(fromEnv.to, "to@example.com");
+
+  const direct = {
+    host: "outbound.daouoffice.com",
+    port: 465,
+    secure: true,
+    requireTLS: false,
+    user: "u",
+    pass: "p",
+    from: "u",
+    to: "to@example.com",
+  };
+  assert.equal(isMailConfig(direct), true);
+  assert.equal(isMailConfig({ EMAIL_HOST_USER: "u" }), false);
+  assert.equal(resolveMailConfig(direct), direct);
+});
+
+test("mailConfigFromSsmValues maps parameters with Daouoffice transport defaults", () => {
+  const cfg = mailConfigFromSsmValues({
+    [SSM_PARAM_NAMES.host]: "outbound.daouoffice.com",
+    [SSM_PARAM_NAMES.user]: "smtp-user@example.com",
+    [SSM_PARAM_NAMES.password]: "secret-value",
+    [SSM_PARAM_NAMES.to]: "inbox@example.com",
+  });
+  assert.equal(cfg.host, "outbound.daouoffice.com");
+  assert.equal(cfg.user, "smtp-user@example.com");
+  assert.equal(cfg.pass, "secret-value");
+  assert.equal(cfg.to, "inbox@example.com");
+  assert.equal(cfg.from, "smtp-user@example.com");
+  assert.equal(cfg.port, DAOUOOFFICE_TRANSPORT_DEFAULTS.port);
+  assert.equal(cfg.secure, DAOUOOFFICE_TRANSPORT_DEFAULTS.secure);
+  assert.equal(cfg.requireTLS, false);
+});
+
+test("loadSmtpConfigFromSsm uses GetParameter four times and caches", async () => {
+  clearSmtpConfigCache();
+  /** @type {Array<{ Name: string, WithDecryption?: boolean }>} */
+  const calls = [];
+  const store = {
+    [SSM_PARAM_NAMES.host]: "outbound.daouoffice.com",
+    [SSM_PARAM_NAMES.user]: "smtp-user@example.com",
+    [SSM_PARAM_NAMES.password]: "secret-value",
+    [SSM_PARAM_NAMES.to]: "inbox@example.com",
+  };
+  const getParameter = async (input) => {
+    calls.push(input);
+    return { Parameter: { Name: input.Name, Value: store[input.Name] } };
+  };
+
+  const first = await loadSmtpConfigFromSsm({ getParameter });
+  const second = await loadSmtpConfigFromSsm({ getParameter });
+  assert.equal(calls.length, 4);
+  assert.deepEqual(
+    calls.map((c) => c.Name),
+    [
+      SSM_PARAM_NAMES.host,
+      SSM_PARAM_NAMES.user,
+      SSM_PARAM_NAMES.password,
+      SSM_PARAM_NAMES.to,
+    ],
+  );
+  assert.equal(
+    calls.find((c) => c.Name === SSM_PARAM_NAMES.password)?.WithDecryption,
+    true,
+  );
+  assert.equal(
+    calls.find((c) => c.Name === SSM_PARAM_NAMES.host)?.WithDecryption,
+    false,
+  );
+  assert.equal(first.to, "inbox@example.com");
+  assert.equal(second.user, first.user);
+  assert.equal(first.requireTLS, false);
+  clearSmtpConfigCache();
+});
+
+test("loadSmtpConfigFromSsm fails closed without exposing secret values", async () => {
+  clearSmtpConfigCache();
+  await assert.rejects(
+    () =>
+      loadSmtpConfigFromSsm({
+        getParameter: async (input) => {
+          if (input.Name === SSM_PARAM_NAMES.password) {
+            throw new Error("AccessDeniedException secret-value-must-not-leak");
+          }
+          return { Parameter: { Name: input.Name, Value: "x" } };
+        },
+      }),
+    (err) => {
+      assert.match(String(err.message), /SSM parameter missing or inaccessible/);
+      assert.equal(String(err.message).includes("secret-value"), false);
+      return true;
+    },
+  );
+  clearSmtpConfigCache();
+});
+
+test("sendContactInquiry keeps replyTo as inquirer email", async () => {
+  const { sendContactInquiry } = await import("../api/_lib/sendMail.js");
+  // Smoke the contract via resolveMailConfig + known sendMail fields (no live SMTP).
+  const cfg = mailConfigFromSsmValues({
+    [SSM_PARAM_NAMES.host]: "outbound.daouoffice.com",
+    [SSM_PARAM_NAMES.user]: "smtp-user@example.com",
+    [SSM_PARAM_NAMES.password]: "secret-value",
+    [SSM_PARAM_NAMES.to]: "inbox@example.com",
+  });
+  assert.equal(cfg.port, 465);
+  assert.equal(cfg.secure, true);
+  // replyTo is set inside sendContactInquiry; assert source contract via function source shape
+  const src = await import("node:fs").then((fs) =>
+    fs.readFileSync(new URL("../api/_lib/sendMail.js", import.meta.url), "utf8"),
+  );
+  assert.match(src, /replyTo:\s*data\.email/);
+  assert.equal(typeof sendContactInquiry, "function");
+});
+
 test("handler GET → 405", async () => {
   const res = await handleContactEvent(postEvent(validPayload, { method: "GET" }), {
     sendContactInquiry: async () => {
@@ -163,4 +298,22 @@ test("handler accepts base64-encoded body", async () => {
     sendContactInquiry: async () => {},
   });
   assert.equal(res.statusCode, 200);
+});
+
+test("fixture validation event is API Gateway HTTP API v2 shaped", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { fileURLToPath } = await import("node:url");
+  const { dirname, join } = await import("node:path");
+  const dir = dirname(fileURLToPath(import.meta.url));
+  const fixture = JSON.parse(
+    readFileSync(join(dir, "../lambda/contact/fixtures/apigw-v2-validation.json"), "utf8"),
+  );
+  assert.equal(fixture.version, "2.0");
+  assert.equal(fixture.requestContext.http.method, "POST");
+  const res = await handleContactEvent(fixture, {
+    sendContactInquiry: async () => {
+      throw new Error("should not send");
+    },
+  });
+  assert.equal(res.statusCode, 400);
 });

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Publish the ZeroTiCA SPA router CloudFront Function and attach it to the distribution.
 
+SPA/SEO deep-link routing only. Not used for contact inquiry API wiring.
+Contact API path: Amplify Hosting rewrite → existing HTTP API (see deploy-contact-aws.py).
+
 Generate infra/cloudfront/spa-router.js first with: npm run build
 
 CloudFront API is us-east-1. Requires credentials with cloudfront:Get*, cloudfront:CreateFunction,

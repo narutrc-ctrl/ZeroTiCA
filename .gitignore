@@ -10,4 +10,5 @@ dist-lambda
 **/zerotica-contact-lambda.env
 __pycache__/
 *.pyc
-
+/aws/
+/awscliv2.zip
