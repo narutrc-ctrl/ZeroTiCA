@@ -1,6 +1,7 @@
 import { Download, Mail, Phone } from "lucide-react";
 import { useContactModal } from "@/components/ContactModal";
 import { contactBanner, site } from "@/data/content";
+import { CTA, trackCtaClick } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -36,7 +37,10 @@ export function ContactCTA({ variant = "primary", className }: Props) {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-9 sm:gap-4">
             <button
               type="button"
-              onClick={openContactModal}
+              onClick={() => {
+                trackCtaClick(CTA.inquiryContact);
+                openContactModal();
+              }}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-[15px] font-semibold text-[#3b82f6] transition-colors hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#3b82f6] sm:px-8 sm:py-3.5 sm:text-base"
             >
               도입 문의하기
@@ -70,7 +74,14 @@ export function ContactCTA({ variant = "primary", className }: Props) {
   }
 
   return (
-    <button type="button" onClick={openContactModal} className={cn("zt-btn-primary", className)}>
+    <button
+      type="button"
+      onClick={() => {
+        trackCtaClick(CTA.inquiryHeader);
+        openContactModal();
+      }}
+      className={cn("zt-btn-primary", className)}
+    >
       도입 문의
     </button>
   );

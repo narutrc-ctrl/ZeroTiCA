@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { TourStep } from "@/data/demo-tour";
 import { cn } from "@/lib/cn";
+import { CTA, trackCtaClick } from "@/lib/analytics";
 import { useContactModal } from "@/components/ContactModal";
 
 type Rect = { top: number; left: number; width: number; height: number };
@@ -154,6 +155,7 @@ export function TutorialOverlay({ steps, active, index, onIndexChange, onClose, 
                 type="button"
                 className="zt-btn-ghost px-3 py-2 text-xs"
                 onClick={() => {
+                  trackCtaClick(CTA.inquiryTutorial);
                   onComplete?.();
                   openContactModal();
                 }}

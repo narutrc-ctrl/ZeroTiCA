@@ -253,6 +253,7 @@ export function Layout() {
                 className="zt-btn-primary mt-2 w-full text-sm sm:hidden"
                 onClick={() => {
                   setOpen(false);
+                  trackCtaClick(CTA.inquiryHeader);
                   openContactModal();
                 }}
               >

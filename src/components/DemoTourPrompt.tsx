@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
 import { fullDemoTour } from "@/data/demo-tour";
-import { beginFullGuideAndTrackFirstStep, trackDemoGuideAction } from "@/lib/analytics";
+import { beginFullGuideAndTrackFirstStep, CTA, trackCtaClick, trackDemoGuideAction } from "@/lib/analytics";
 import { useContactModal } from "@/components/ContactModal";
 const STORAGE_KEY = "zerotica-demo-prompt-dismissed";
 
@@ -83,6 +83,7 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
             type="button"
             className="zt-btn-primary w-full"
             onClick={() => {
+              trackCtaClick(CTA.inquiryDemoComplete);
               onClose();
               openContactModal();
             }}

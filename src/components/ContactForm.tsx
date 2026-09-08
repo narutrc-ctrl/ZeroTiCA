@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { trackGenerateLead, trackInquiryFormStart } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 type SubmitState = "idle" | "sending" | "success" | "error";
@@ -45,16 +46,25 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [status, setStatus] = useState<SubmitState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const formStartedRef = useRef(false);
+  const submitInFlightRef = useRef(false);
+
+  const handleFormChange = () => {
+    if (formStartedRef.current) return;
+    formStartedRef.current = true;
+    trackInquiryFormStart();
+  };
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (status === "sending") return;
+    if (submitInFlightRef.current || status === "sending") return;
     if (!privacyAgreed) {
       setStatus("error");
       setErrorMessage("개인정보 수집 및 이용에 동의해 주세요.");
       return;
     }
 
+    submitInFlightRef.current = true;
     setStatus("sending");
     setErrorMessage("");
 
@@ -72,19 +82,21 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
         }),
       });
 
-      let payload: { error?: string; message?: string } = {};
+      let payload: { ok?: boolean; error?: string; message?: string } = {};
       try {
-        payload = (await res.json()) as { error?: string; message?: string };
+        payload = (await res.json()) as { ok?: boolean; error?: string; message?: string };
       } catch {
         /* non-JSON body */
       }
 
-      if (!res.ok) {
+      if (!res.ok || payload.ok !== true) {
         setStatus("error");
         setErrorMessage(payload.error || "문의 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        submitInFlightRef.current = false;
         return;
       }
 
+      trackGenerateLead();
       setStatus("success");
       setCompany("");
       setName("");
@@ -96,13 +108,14 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
     } catch {
       setStatus("error");
       setErrorMessage("네트워크 오류가 발생했습니다. 연결을 확인해 주세요.");
+      submitInFlightRef.current = false;
     }
   };
 
   const disabled = status === "sending";
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} onChange={handleFormChange} className="space-y-5">
       <label className="block text-sm">
         <span className="mb-1.5 flex items-center font-medium text-slate-700">회사명</span>
         <input

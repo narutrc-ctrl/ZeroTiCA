@@ -38,6 +38,26 @@ export const CTA = {
     cta_location: "header",
     cta_text: "데모 체험",
   },
+  inquiryHeader: {
+    cta_name: "inquiry",
+    cta_location: "header",
+    cta_text: "도입 문의",
+  },
+  inquiryContact: {
+    cta_name: "inquiry",
+    cta_location: "contact",
+    cta_text: "도입 문의하기",
+  },
+  inquiryDemoComplete: {
+    cta_name: "inquiry",
+    cta_location: "demo_complete",
+    cta_text: "도입 문의하기",
+  },
+  inquiryTutorial: {
+    cta_name: "inquiry",
+    cta_location: "tutorial",
+    cta_text: "도입 문의",
+  },
 } as const satisfies Record<string, TrackCtaClickInput>;
 
 export function pushDataLayer(payload: Record<string, unknown>): void {
@@ -53,6 +73,16 @@ export function trackCtaClick(input: TrackCtaClickInput): void {
     cta_text: input.cta_text,
   };
   pushDataLayer(payload);
+}
+
+/** 문의 폼 최초 실제 변경. 값·필드명은 보내지 않는다. */
+export function trackInquiryFormStart(): void {
+  pushDataLayer({ event: "inquiry_form_start" });
+}
+
+/** 메일 발송 성공(HTTP 200 + body.ok) 확정 후에만 호출한다. */
+export function trackGenerateLead(): void {
+  pushDataLayer({ event: "generate_lead" });
 }
 
 /* ── Home section_view ────────────────────────────────────── */
