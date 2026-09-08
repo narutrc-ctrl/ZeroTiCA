@@ -5,7 +5,7 @@ Infrastructure contract (customer account):
   - Amplify Hosting rewrite /api/contact → API Gateway (manual Console)
   - Existing HTTP API only (no CreateApi): fbuj6xkrab
   - Lambda: zerotica-contact (Node.js 22, nodemailer)
-  - Role: zerotica-contact-lambda-role + PermissionsBoundary
+  - Role: Zerotica-contact-lambda-role + PermissionsBoundary
   - SMTP secrets: SSM /zerotica-contact/* (not Lambda environment)
 
 Does NOT:
@@ -44,9 +44,9 @@ AWS_REGION = "ap-northeast-2"
 ACCOUNT_HINT = "093816283595"
 
 LAMBDA_FUNCTION_NAME = "zerotica-contact"
-LAMBDA_ROLE_NAME = "zerotica-contact-lambda-role"
+LAMBDA_ROLE_NAME = "Zerotica-contact-lambda-role"
 PERMISSIONS_BOUNDARY_ARN = (
-    f"arn:aws:iam::{ACCOUNT_HINT}:policy/zerotica-contact-boundary"
+    f"arn:aws:iam::{ACCOUNT_HINT}:policy/Zerotica-contact-boundary"
 )
 BASIC_EXECUTION_POLICY_ARN = (
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
