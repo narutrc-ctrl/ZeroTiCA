@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { X } from "lucide-react";
-import { ContactForm } from "@/components/ContactForm";
+import { ContactForm, type ContactModalView } from "@/components/ContactForm";
 
 type ContactModalContextValue = {
   open: boolean;
@@ -54,6 +54,8 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
 }
 
 function ContactModalDialog({ onClose }: { onClose: () => void }) {
+  const [view, setView] = useState<ContactModalView>("form");
+
   return (
     <div
       className="contact-modal-backdrop fixed inset-0 z-[100] flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4"
@@ -64,16 +66,16 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-modal-title"
-        className="contact-modal-dialog flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
+        className="contact-modal-dialog flex w-full max-w-lg shrink-0 flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-start justify-between gap-4 px-5 pb-1 pt-5 sm:px-7 sm:pt-7">
           <div className="min-w-0 pr-2">
             <h2
               id="contact-modal-title"
-              className="text-[22px] font-extrabold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:text-2xl"
+              className="min-h-[1.75rem] text-[22px] font-extrabold leading-snug tracking-tight text-zinc-900 [word-break:keep-all] sm:min-h-8 sm:text-2xl"
             >
-              ZeroTiCA 도입 문의
+              {view === "privacy" ? "개인정보 수집·이용 안내" : "ZeroTiCA 도입 문의"}
             </h2>
           </div>
           <button
@@ -86,8 +88,13 @@ function ContactModalDialog({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:pb-7">
-          <ContactForm onSubmitted={onClose} />
+        <div className="overflow-hidden px-5 py-5 sm:px-7 sm:pb-7">
+          <ContactForm
+            onSubmitted={onClose}
+            view={view}
+            onShowPrivacy={() => setView("privacy")}
+            onContinueInquiry={() => setView("form")}
+          />
         </div>
       </div>
     </div>

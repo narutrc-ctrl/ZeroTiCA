@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { trackGenerateLead, trackInquiryFormStart } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
@@ -10,7 +10,7 @@ const fieldClass =
 
 function RequiredMark() {
   return (
-    <span className="ml-0.5 text-blue-500" aria-hidden>
+    <span className="ml-0.5 text-red-500" aria-hidden>
       *
     </span>
   );
@@ -37,7 +37,73 @@ function formatPhoneNumber(raw: string): string {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 
-export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
+export type ContactModalView = "form" | "privacy";
+
+function PrivacyNoticeBody({ onContinue }: { onContinue: () => void }) {
+  return (
+    <div className="flex h-full min-h-0 flex-col text-sm leading-relaxed text-slate-700">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto">
+        <div>
+          <h3 className="font-semibold text-zinc-800">수집·이용 목적</h3>
+          <p className="mt-1.5">ZeroTiCA 도입 문의 접수, 상담 및 회신</p>
+        </div>
+        <div>
+          <h3 className="font-semibold text-zinc-800">수집 항목</h3>
+          <ul className="mt-1.5 list-disc space-y-1 pl-5">
+            <li>필수: 업무 이메일, 문의 내용</li>
+            <li>선택: 회사명, 담당자명, 연락처</li>
+          </ul>
+          <p className="mt-2">선택 항목은 입력하지 않아도 문의할 수 있습니다.</p>
+        </div>
+        <div>
+          <h3 className="font-semibold text-zinc-800">보유·이용 기간</h3>
+          <p className="mt-1.5">상담 및 회신 완료일로부터 6개월</p>
+        </div>
+        <div>
+          <h3 className="font-semibold text-zinc-800">동의 거부 안내</h3>
+          <p className="mt-1.5">개인정보 수집·이용에 동의하지 않을 수 있습니다.</p>
+          <p className="mt-1.5">
+            다만, 필수 항목에 동의하지 않으면&nbsp;
+            <span className="font-semibold text-red-500">온라인 문의 접수가 제한됩니다.</span>
+          </p>
+        </div>
+      </div>
+      <div className="mt-auto shrink-0 pt-5">
+        <button
+          type="button"
+          onClick={onContinue}
+          className="w-full rounded-full border border-slate-300 bg-white py-3.5 text-[15px] font-semibold text-zinc-700 transition-colors hover:bg-slate-50"
+        >
+          ← 도입 문의 계속하기
+        </button>
+      </div>
+      <p className="mt-4 shrink-0 border-t border-slate-200 pt-4 text-xs">
+        자세한 내용은{" "}
+        <Link
+          to="/legal/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          개인정보처리방침
+        </Link>
+        에서 확인할 수 있습니다.
+      </p>
+    </div>
+  );
+}
+
+export function ContactForm({
+  onSubmitted,
+  view = "form",
+  onShowPrivacy,
+  onContinueInquiry,
+}: {
+  onSubmitted?: () => void;
+  view?: ContactModalView;
+  onShowPrivacy?: () => void;
+  onContinueInquiry?: () => void;
+}) {
   const [company, setCompany] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,6 +114,15 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
   const [errorMessage, setErrorMessage] = useState("");
   const formStartedRef = useRef(false);
   const submitInFlightRef = useRef(false);
+  const noticeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousViewRef = useRef(view);
+
+  useEffect(() => {
+    if (previousViewRef.current === "privacy" && view === "form") {
+      noticeButtonRef.current?.focus();
+    }
+    previousViewRef.current = view;
+  }, [view]);
 
   const handleFormChange = () => {
     if (formStartedRef.current) return;
@@ -114,8 +189,16 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
 
   const disabled = status === "sending";
 
+  const showingPrivacy = view === "privacy";
+
   return (
-    <form onSubmit={onSubmit} onChange={handleFormChange} className="space-y-5">
+    <div className="relative">
+    <form
+      onSubmit={onSubmit}
+      onChange={handleFormChange}
+      className={cn("space-y-5", showingPrivacy && "invisible pointer-events-none")}
+      aria-hidden={showingPrivacy}
+    >
       <label className="block text-sm">
         <span className="mb-1.5 flex items-center font-medium text-slate-700">회사명</span>
         <input
@@ -180,7 +263,7 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
           required
           rows={5}
           disabled={disabled}
-          className={cn(fieldClass, "min-h-[120px] resize-y")}
+          className={cn(fieldClass, "h-[120px] resize-none")}
           placeholder="현재 고민하고 있는 보안 문제나 궁금한 점을 자유롭게 남겨주세요."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -201,19 +284,19 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
             className="h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
           <span>
-            <span className="font-semibold">[필수]</span> 개인정보 수집·이용 동의
+            <span className="font-semibold text-red-500">[필수]</span> 개인정보 수집·이용 동의
           </span>
         </label>
-        <Link
-          to="/legal/privacy"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          ref={noticeButtonRef}
+          type="button"
+          disabled={disabled}
+          onClick={() => onShowPrivacy?.()}
           className="shrink-0 rounded-md bg-[#f2f2f2] px-2 py-0.5 text-[10px] leading-tight text-zinc-700 transition-colors hover:bg-zinc-200"
         >
           자세히 보기
-        </Link>
+        </button>
       </div>
-
       <button
         type="submit"
         disabled={disabled}
@@ -229,5 +312,11 @@ export function ContactForm({ onSubmitted }: { onSubmitted?: () => void }) {
       ) : null}
       {status === "error" ? <p className="text-center text-sm text-red-600">{errorMessage}</p> : null}
     </form>
+    {showingPrivacy ? (
+      <div className="absolute inset-0 flex flex-col overflow-hidden">
+        <PrivacyNoticeBody onContinue={() => onContinueInquiry?.()} />
+      </div>
+    ) : null}
+    </div>
   );
 }
