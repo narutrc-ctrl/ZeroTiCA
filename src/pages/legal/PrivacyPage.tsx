@@ -81,19 +81,6 @@ function DataTable({
   );
 }
 
-function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="break-all text-blue-600 hover:underline"
-    >
-      {children}
-    </a>
-  );
-}
-
 export function PrivacyPage() {
   return (
     <div className="zt-container zt-section max-w-3xl">
@@ -462,43 +449,6 @@ export function PrivacyPage() {
             "주소: 서울특별시 송파구 중대로 97, 6층",
           ]}
         />
-        <Subhead>외부 개인정보 침해 상담 및 피해구제 기관</Subhead>
-        <p>
-          정보주체는 개인정보 침해와 관련한 상담 또는 피해구제를 위해 아래 기관에 문의할 수
-          있습니다.
-        </p>
-        <ul className="list-disc space-y-3 pl-5">
-          <li>
-            개인정보분쟁조정위원회
-            <ul className="mt-1 list-disc space-y-1 pl-5">
-              <li>전화: 1833-6972</li>
-              <li>
-                홈페이지:{" "}
-                <ExternalLink href="https://www.kopico.go.kr">https://www.kopico.go.kr</ExternalLink>
-              </li>
-            </ul>
-          </li>
-          <li>
-            개인정보침해신고센터
-            <ul className="mt-1 list-disc space-y-1 pl-5">
-              <li>전화: 국번 없이 118</li>
-              <li>
-                홈페이지:{" "}
-                <ExternalLink href="https://privacy.kisa.or.kr">https://privacy.kisa.or.kr</ExternalLink>
-              </li>
-            </ul>
-          </li>
-          <li>
-            경찰청 사이버범죄 신고시스템
-            <ul className="mt-1 list-disc space-y-1 pl-5">
-              <li>전화: 국번 없이 182</li>
-              <li>
-                홈페이지:{" "}
-                <ExternalLink href="https://ecrm.police.go.kr">https://ecrm.police.go.kr</ExternalLink>
-              </li>
-            </ul>
-          </li>
-        </ul>
       </Section>
 
       {/*
