@@ -439,12 +439,12 @@ export function PrivacyPage() {
           개인정보 보호책임자 및 담당부서를 운영합니다.
         </p>
         <Subhead>개인정보 보호책임자</Subhead>
-        <BulletList items={["성명: 박영준", "직책: 팀장"]} />
+        <BulletList items={["성명: ", "직책: "]} />
         <Subhead>개인정보 보호 담당부서</Subhead>
         <BulletList
           items={[
-            "부서명: 위협분석팀",
-            "이메일: zerotica@narusec.com",
+            "부서명: ",
+            "이메일: ",
             "전화번호: 02-522-7912",
             "주소: 서울특별시 송파구 중대로 97, 6층",
           ]}
