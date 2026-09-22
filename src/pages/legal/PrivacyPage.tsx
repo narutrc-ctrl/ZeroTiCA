@@ -439,12 +439,12 @@ export function PrivacyPage() {
           개인정보 보호책임자 및 담당부서를 운영합니다.
         </p>
         <Subhead>개인정보 보호책임자</Subhead>
-        <BulletList items={["성명: ", "직책: "]} />
+        <BulletList items={["성명: 신인섭", "직책: 실장"]} />
         <Subhead>개인정보 보호 담당부서</Subhead>
         <BulletList
           items={[
-            "부서명: ",
-            "이메일: ",
+            "부서명: 전략기획실",
+            "이메일: isshin@narusec.com",
             "전화번호: 02-522-7912",
             "주소: 서울특별시 송파구 중대로 97, 6층",
           ]}
