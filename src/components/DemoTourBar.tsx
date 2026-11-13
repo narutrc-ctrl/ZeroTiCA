@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
 import { tourPhases } from "@/data/content";
 import { fullDemoTour } from "@/data/demo-tour";
@@ -48,9 +48,10 @@ export function DemoTourBar() {
           >
             <PlayCircle className="h-4 w-4" /> 가이드 시작
           </button>
-          <Link to="/#experience" className="zt-btn-ghost px-3 py-1.5 text-xs">
+          {/* Astro MPA: 데모 섬 밖으로 나가므로 <a> (Router Link는 /demo만 담당) */}
+          <a href="/#experience" className="zt-btn-ghost px-3 py-1.5 text-xs">
             소개로 돌아가기
-          </Link>
+          </a>
         </div>
       </div>
     </div>

@@ -13,7 +13,8 @@ Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
 | 2 공통 껍데기 | 완료 | SiteShell(헤더/푸터/문의 모달) |
 | 3 정적 페이지 | 완료 | privacy / perspectives / contact |
 | 4 홈 | 완료(1차) | LandingPage SSR island — 이후 섹션 분해 가능 |
-| 5~6 | 대기 | — |
+| 5 데모 | 완료 | DemoIsland(client:only) + noindex task/event/report |
+| 6 | 대기 | CF·sitemap·레거시 정리 |
 
 ## Phase 0 — 기준 (고정)
 

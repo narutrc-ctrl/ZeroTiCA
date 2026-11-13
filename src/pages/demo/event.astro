@@ -1,0 +1,20 @@
+---
+import DemoLayout from "@/layouts/DemoLayout.astro";
+import { DemoIsland } from "@/components/DemoIsland";
+import { SITE_DESCRIPTION, NOINDEX_ROBOTS } from "@/seo/pages";
+
+const title = "이벤트 데모 | ZeroTiCA";
+---
+
+<DemoLayout
+  title={title}
+  description={SITE_DESCRIPTION}
+  canonicalPath="/demo/event"
+  robots={NOINDEX_ROBOTS}
+>
+  <DemoIsland client:only="react">
+    <div class="flex h-screen items-center justify-center bg-white text-sm text-slate-500">
+      데모 화면을 불러오는 중…
+    </div>
+  </DemoIsland>
+</DemoLayout>

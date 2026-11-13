@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PlayCircle, X } from "lucide-react";
 import { fullDemoTour } from "@/data/demo-tour";
 import { beginFullGuideAndTrackFirstStep, CTA, trackCtaClick, trackDemoGuideAction } from "@/lib/analytics";
@@ -100,8 +100,8 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
           >
             데모 계속 탐색
           </button>
-          <Link
-            to="/"
+          <a
+            href="/"
             className="w-full text-center text-sm text-slate-500 hover:text-slate-700"
             onClick={() => {
               trackDemoGuideAction("back_to_intro");
@@ -109,7 +109,7 @@ export function TourCompleteModal({ onClose }: { onClose: () => void }) {
             }}
           >
             소개 페이지로
-          </Link>
+          </a>
         </div>
       </div>
     </div>

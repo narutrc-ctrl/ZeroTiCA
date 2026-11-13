@@ -1,0 +1,21 @@
+---
+import DemoLayout from "@/layouts/DemoLayout.astro";
+import { DemoIsland } from "@/components/DemoIsland";
+import { SITE_DESCRIPTION, NOINDEX_ROBOTS } from "@/seo/pages";
+
+/** /demo/report → /demo/event?tab=reports (클라이언트 Navigate). 정적 HTML도 유지해 CF allowlist와 맞춤. */
+const title = "보고서 데모 | ZeroTiCA";
+---
+
+<DemoLayout
+  title={title}
+  description={SITE_DESCRIPTION}
+  canonicalPath="/demo/report"
+  robots={NOINDEX_ROBOTS}
+>
+  <DemoIsland client:only="react">
+    <div class="flex h-screen items-center justify-center bg-white text-sm text-slate-500">
+      데모 화면을 불러오는 중…
+    </div>
+  </DemoIsland>
+</DemoLayout>
