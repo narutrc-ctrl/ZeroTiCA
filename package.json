@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "astro dev --host 0.0.0.0 --port 5174",
     "dev:spa": "vite --host=0.0.0.0 --port 5174",
-    "build": "astro build",
+    "build": "astro build && node scripts/strip-html-nulls.mjs",
     "build:spa": "tsc -b && vite build && node scripts/build-hosting.mjs",
     "preview": "astro preview --host 0.0.0.0 --port 5174",
     "preview:spa": "vite preview --port 5174",

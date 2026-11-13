@@ -13,6 +13,8 @@ export default defineConfig({
   build: {
     format: "file",
   },
+  // Astro 기본 HTML 압축이 한글 중간에 \0을 넣는 경우가 있어 비활성화
+  compressHTML: false,
   trailingSlash: "never",
   integrations: [
     react(),

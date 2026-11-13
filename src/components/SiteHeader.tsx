@@ -23,7 +23,7 @@ export function SiteHeader({ currentPath }: Props) {
   const [open, setOpen] = useState(false);
   const [headerHidden, setHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
-  const { openContactModal } = useContactModal();
+  const { open: contactOpen, openContactModal } = useContactModal();
 
   const path = currentPath.length > 1 && currentPath.endsWith("/") ? currentPath.slice(0, -1) : currentPath;
   const isHome = path === "/" || path === "";
@@ -39,6 +39,12 @@ export function SiteHeader({ currentPath }: Props) {
     window.location.assign("/");
   };
 
+  // 문의 모달이 열리면 body overflow hidden으로 스크롤이 흔들리며
+  // 모바일 헤더 hide-on-scroll이 잘못 발동할 수 있어 모달 중에는 헤더를 고정한다.
+  useEffect(() => {
+    if (contactOpen) setHeaderHidden(false);
+  }, [contactOpen]);
+
   useEffect(() => {
     const mobileMq = window.matchMedia("(max-width: 640px)");
     lastScrollY.current = window.scrollY;
@@ -48,7 +54,7 @@ export function SiteHeader({ currentPath }: Props) {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        if (!mobileMq.matches || open) {
+        if (!mobileMq.matches || open || contactOpen) {
           setHeaderHidden(false);
           lastScrollY.current = window.scrollY;
           return;
@@ -78,7 +84,7 @@ export function SiteHeader({ currentPath }: Props) {
       mobileMq.removeEventListener?.("change", onMqChange);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [open]);
+  }, [open, contactOpen]);
 
   return (
     <>
