@@ -1,0 +1,16 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { PerspectivesPage } from "@/views/PerspectivesPage";
+import { SITE_DESCRIPTION } from "@/seo/pages";
+
+const title = "침해 징후를 확인하는 8가지 보안 검증 관점 | ZeroTiCA";
+---
+
+<BaseLayout
+  title={title}
+  description={SITE_DESCRIPTION}
+  canonicalPath="/perspectives"
+>
+  {/* 아코디언 상태만 클라이언트 — 상세 텍스트는 SSR로 HTML에 포함 */}
+  <PerspectivesPage client:load />
+</BaseLayout>

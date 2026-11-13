@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { ReactNode } from "react";
 
 /**
@@ -467,9 +466,9 @@ export function PrivacyPage() {
         />
       </Section>
 
-      <Link to="/" className="zt-btn-ghost mt-10">
+      <a href="/" className="zt-btn-ghost mt-10">
         홈으로
-      </Link>
+      </a>
     </div>
   );
 }

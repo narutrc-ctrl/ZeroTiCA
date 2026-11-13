@@ -45,6 +45,21 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
     };
   }, [open, closeContactModal]);
 
+  /** /contact 또는 /?inquiry=1 북마크 호환 */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const path = window.location.pathname.replace(/\/$/, "") || "/";
+    const shouldOpen = path === "/contact" || params.get("inquiry") === "1";
+    if (!shouldOpen) return;
+    openContactModal();
+    if (params.get("inquiry") === "1") {
+      params.delete("inquiry");
+      const qs = params.toString();
+      const next = `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`;
+      window.history.replaceState(null, "", next);
+    }
+  }, [openContactModal]);
+
   return (
     <ContactModalContext.Provider value={{ open, openContactModal, closeContactModal }}>
       {children}

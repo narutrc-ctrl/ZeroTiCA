@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import {
   perspectivesPage,
@@ -228,8 +227,8 @@ export function PerspectivesPage() {
           </div>
         </section>
 
-        <Link
-          to="/#differentiator"
+        <a
+          href="/#differentiator"
           className={cn(
             "mt-12 inline-flex items-center gap-1.5 text-[14px] font-medium text-slate-500 underline-offset-4",
             "transition-colors hover:text-primary hover:underline sm:mt-16 sm:text-[15px]",
@@ -237,7 +236,7 @@ export function PerspectivesPage() {
         >
           <ArrowLeft className="h-3.5 w-3.5 shrink-0" aria-hidden />
           {backLabel}
-        </Link>
+        </a>
       </div>
     </div>
   );

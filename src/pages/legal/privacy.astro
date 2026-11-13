@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { PrivacyPage } from "@/views/legal/PrivacyPage";
+import { SITE_DESCRIPTION } from "@/seo/pages";
+
+const title = "개인정보 처리방침 | ZeroTiCA";
+---
+
+<BaseLayout
+  title={title}
+  description={SITE_DESCRIPTION}
+  canonicalPath="/legal/privacy"
+>
+  <PrivacyPage />
+</BaseLayout>
