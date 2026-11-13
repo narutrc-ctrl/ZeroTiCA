@@ -10,7 +10,8 @@ Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
 |-------|------|-----------|
 | 0 기준 고정 | 완료 | `docs/astro-migration.md` |
 | 1 뼈대 | 완료 | Astro 5 + BaseLayout + 임시 홈 HTML |
-| 2~6 | 대기 | — |
+| 2 공통 껍데기 | 완료 | SiteShell(헤더/푸터/문의 모달) |
+| 3~6 | 대기 | — |
 
 ## Phase 0 — 기준 (고정)
 

@@ -1,4 +1,3 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/cn";
 import { DEFAULT_LOCALE, isSupportedLocale } from "@/i18n/site-locales";
 import { jumpToTopInstant } from "@/lib/scroll";
@@ -9,15 +8,15 @@ function homePath(pathname: string) {
   return locale && locale !== DEFAULT_LOCALE ? `/${locale}` : "/";
 }
 
-export function BrandLogo({ className, linked = true }: { className?: string; linked?: boolean }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const home = homePath(location.pathname);
-  const onHome =
-    location.pathname === home ||
-    location.pathname === `${home}/` ||
-    (home === "/" && location.pathname === "/");
+function isOnHome(pathname: string, home: string) {
+  return (
+    pathname === home ||
+    pathname === `${home}/` ||
+    (home === "/" && pathname === "/")
+  );
+}
 
+export function BrandLogo({ className, linked = true }: { className?: string; linked?: boolean }) {
   const inner = (
     <img
       src="/ZeroTiCA-BI-02.svg"
@@ -32,26 +31,23 @@ export function BrandLogo({ className, linked = true }: { className?: string; li
   if (!linked) return inner;
 
   return (
-    <Link
-      to={home}
+    <a
+      href="/"
       className="inline-flex shrink-0 items-center"
       aria-label="맨 위로"
       onClick={(e) => {
+        const pathname = window.location.pathname;
+        const home = homePath(pathname);
+        if (!isOnHome(pathname, home)) return;
         e.preventDefault();
-        if (onHome) {
-          if (location.hash) {
-            navigate(home, { replace: true });
-          }
-          jumpToTopInstant();
-          return;
+        if (window.location.hash) {
+          window.history.replaceState(null, "", home);
         }
-        navigate(home);
-        // 라우트 전환 직후 즉시 상단
-        requestAnimationFrame(jumpToTopInstant);
+        jumpToTopInstant();
       }}
     >
       {inner}
-    </Link>
+    </a>
   );
 }
 

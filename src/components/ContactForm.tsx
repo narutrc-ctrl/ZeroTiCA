@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
 import { trackGenerateLead, trackInquiryFormStart } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
@@ -79,14 +78,14 @@ function PrivacyNoticeBody({ onContinue }: { onContinue: () => void }) {
       </div>
       <p className="mt-4 shrink-0 border-t border-slate-200 pt-4 text-xs">
         자세한 내용은{" "}
-        <Link
-          to="/legal/privacy"
+        <a
+          href="/legal/privacy"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 hover:underline"
         >
           개인정보처리방침
-        </Link>
+        </a>
         에서 확인할 수 있습니다.
       </p>
     </div>

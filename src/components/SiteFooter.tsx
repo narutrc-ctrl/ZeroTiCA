@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { site } from "@/data/content";
 
 function InfoRow({ label, value }: { label: string; value: string }) {
@@ -67,9 +66,9 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-2 text-[12px] sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-10 sm:gap-y-2 sm:text-[13px]">
-          <Link to="/legal/privacy" className="text-[#9ca3af] transition-colors hover:text-white">
+          <a href="/legal/privacy" className="text-[#9ca3af] transition-colors hover:text-white">
             개인정보 처리방침
-          </Link>
+          </a>
         </div>
 
         <p className="mt-8 text-center text-[12px] text-[#6b7280] sm:mt-9">
