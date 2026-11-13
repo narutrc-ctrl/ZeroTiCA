@@ -345,6 +345,7 @@ function ExperienceCta() {
       </span>
       <a
         href={paths.fullTour}
+        data-astro-prefetch="hover"
         className={cn(
           btnClass,
           "hidden transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:flex",

@@ -185,10 +185,7 @@ export function ReportViewerDialog({ open, onClose, title, period, initialPage =
         </div>
       </div>
 
-      <div
-        data-tour="report-preview"
-        className="flex min-h-0 flex-1 items-center justify-center gap-3 px-3 py-6 sm:gap-4 sm:px-4"
-      >
+      <div className="flex min-h-0 flex-1 items-center justify-center gap-3 px-3 py-6 sm:gap-4 sm:px-4">
         <button
           type="button"
           disabled={!canPrev}
@@ -202,7 +199,9 @@ export function ReportViewerDialog({ open, onClose, title, period, initialPage =
           <ChevronLeft className="h-6 w-6" />
         </button>
 
+        {/* 가이드 하이라이트: 좌우 화살표·여백 제외, A4 보고서 영역만 */}
         <div
+          data-tour="report-preview"
           className="relative w-full max-w-[210mm] origin-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-2xl"
           style={{ transform: `scale(${zoom / 100})` }}
         >

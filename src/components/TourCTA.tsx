@@ -12,6 +12,7 @@ export function TourCTA({ className, size = "default" }: Props) {
   return (
     <a
       href={paths.fullTour}
+      data-astro-prefetch="hover"
       className={cn("zt-btn-primary", size === "sm" && "px-4 py-2 text-xs", className)}
       onClick={() => markDemoEntrySource("other")}
     >

@@ -119,6 +119,7 @@ export function SiteHeader({ currentPath }: Props) {
             <div className="flex items-center gap-2">
               <a
                 href={paths.fullTour}
+                data-astro-prefetch="hover"
                 className="zt-btn-ghost hidden py-2.5 px-6 text-sm sm:inline-flex"
                 onClick={() => {
                   markDemoEntrySource("header");
@@ -165,6 +166,7 @@ export function SiteHeader({ currentPath }: Props) {
               </a>
               <a
                 href={paths.fullTour}
+                data-astro-prefetch="hover"
                 className="zt-btn-ghost mt-2 w-full justify-center text-sm sm:hidden"
                 onClick={() => {
                   setOpen(false);

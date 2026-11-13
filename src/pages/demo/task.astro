@@ -4,6 +4,7 @@ import { DemoIsland } from "@/components/DemoIsland";
 import { SITE_DESCRIPTION, NOINDEX_ROBOTS } from "@/seo/pages";
 
 const title = "이슈 관리 데모 | ZeroTiCA";
+const islandUrl = `${Astro.url.pathname.replace(/\/$/, "") || "/"}${Astro.url.search}`;
 ---
 
 <DemoLayout
@@ -12,9 +13,5 @@ const title = "이슈 관리 데모 | ZeroTiCA";
   canonicalPath="/demo/task"
   robots={NOINDEX_ROBOTS}
 >
-  <DemoIsland client:only="react">
-    <div class="flex h-screen items-center justify-center bg-white text-sm text-slate-500">
-      데모 화면을 불러오는 중…
-    </div>
-  </DemoIsland>
+  <DemoIsland client:load url={islandUrl} />
 </DemoLayout>
