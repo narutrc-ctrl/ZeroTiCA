@@ -2,17 +2,17 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ContactModalProvider } from "@/components/ContactModal";
 import { Layout } from "@/components/Layout";
-import { LandingPage } from "@/pages/LandingPage";
-import { ContactPage } from "@/pages/ContactPage";
-import { PrivacyPage } from "@/pages/legal/PrivacyPage";
-import { PerspectivesPage } from "@/pages/PerspectivesPage";
-import { NotFoundPage } from "@/pages/NotFoundPage";
+import { LandingPage } from "@/views/LandingPage";
+import { ContactPage } from "@/views/ContactPage";
+import { PrivacyPage } from "@/views/legal/PrivacyPage";
+import { PerspectivesPage } from "@/views/PerspectivesPage";
+import { NotFoundPage } from "@/views/NotFoundPage";
 
 const DemoTaskPage = lazy(() =>
-  import("@/pages/DemoTaskPage").then((m) => ({ default: m.DemoTaskPage })),
+  import("@/views/DemoTaskPage").then((m) => ({ default: m.DemoTaskPage })),
 );
 const DemoEventPage = lazy(() =>
-  import("@/pages/DemoEventPage").then((m) => ({ default: m.DemoEventPage })),
+  import("@/views/DemoEventPage").then((m) => ({ default: m.DemoEventPage })),
 );
 
 function DemoFallback() {

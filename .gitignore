@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-lambda
+.astro
 .DS_Store
 *.local
 .env

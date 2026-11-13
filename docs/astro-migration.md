@@ -1,7 +1,16 @@
 # ZeroTiCA Astro 이전
 
 브랜치: `astro-ssg`  
-목적: CSR SPA → Astro SSG + React islands (검색/LLM이 본문 HTML을 읽도록)
+목적: CSR SPA → Astro SSG + React islands (검색/LLM이 본문 HTML을 읽도록)  
+Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
+
+## 진행 상태
+
+| Phase | 상태 | 커밋 메모 |
+|-------|------|-----------|
+| 0 기준 고정 | 완료 | `docs/astro-migration.md` |
+| 1 뼈대 | 완료 | Astro 5 + BaseLayout + 임시 홈 HTML |
+| 2~6 | 대기 | — |
 
 ## Phase 0 — 기준 (고정)
 
