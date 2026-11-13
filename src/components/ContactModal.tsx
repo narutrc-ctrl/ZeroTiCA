@@ -50,15 +50,78 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeContactModal();
+
+    // body overflow:hidden 은 스크롤바를 없애 레이아웃 폭이 바뀌고,
+    // sticky 히어로(열쇠구멍~보안운영)가 재계산되며 밀림/흰 화면이 난다.
+    // 스크롤바는 유지한 채 입력만 막아 배경 스크롤을 잠근다.
+    const isInDialog = (target: EventTarget | null) =>
+      target instanceof Element && Boolean(target.closest(".contact-modal-dialog"));
+
+    const canScrollInside = (start: Element, deltaY: number) => {
+      let node: Element | null = start;
+      while (node && node !== document.documentElement) {
+        if (node instanceof HTMLElement) {
+          const { overflowY } = getComputedStyle(node);
+          if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") {
+            const { scrollTop, scrollHeight, clientHeight } = node;
+            if (scrollHeight > clientHeight + 1) {
+              if (deltaY < 0 && scrollTop > 0) return true;
+              if (deltaY > 0 && scrollTop + clientHeight < scrollHeight - 1) return true;
+            }
+          }
+        }
+        node = node.parentElement;
+      }
+      return false;
     };
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    const onWheel = (e: WheelEvent) => {
+      if (isInDialog(e.target) && canScrollInside(e.target as Element, e.deltaY)) return;
+      e.preventDefault();
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isInDialog(e.target)) return;
+      e.preventDefault();
+    };
+
+    const scrollKeys = new Set([
+      "ArrowUp",
+      "ArrowDown",
+      "PageUp",
+      "PageDown",
+      "Home",
+      "End",
+      " ",
+      "Spacebar",
+    ]);
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeContactModal();
+        return;
+      }
+      if (!scrollKeys.has(e.key)) return;
+      const target = e.target;
+      if (target instanceof HTMLElement) {
+        const tag = target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable) {
+          return;
+        }
+        const delta =
+          e.key === "ArrowUp" || e.key === "PageUp" || e.key === "Home" ? -1 : 1;
+        if (isInDialog(target) && canScrollInside(target, delta)) return;
+      }
+      e.preventDefault();
+    };
+
+    document.addEventListener("wheel", onWheel, { passive: false });
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      document.removeEventListener("wheel", onWheel);
+      document.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, closeContactModal]);
 
