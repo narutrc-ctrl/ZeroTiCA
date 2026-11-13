@@ -17,12 +17,18 @@ type ContactModalContextValue = {
 
 const ContactModalContext = createContext<ContactModalContextValue | null>(null);
 
+const OPEN_EVENT = "zerotica:open-contact";
+const CLOSE_EVENT = "zerotica:close-contact";
+
+/** Astro island 경계에서도 동작 — Provider가 있으면 Context, 없으면 window 이벤트 */
 export function useContactModal() {
   const ctx = useContext(ContactModalContext);
-  if (!ctx) {
-    throw new Error("useContactModal must be used within ContactModalProvider");
-  }
-  return ctx;
+  if (ctx) return ctx;
+  return {
+    open: false,
+    openContactModal: () => window.dispatchEvent(new Event(OPEN_EVENT)),
+    closeContactModal: () => window.dispatchEvent(new Event(CLOSE_EVENT)),
+  };
 }
 
 export function ContactModalProvider({ children }: { children: ReactNode }) {
@@ -30,6 +36,17 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
 
   const openContactModal = useCallback(() => setOpen(true), []);
   const closeContactModal = useCallback(() => setOpen(false), []);
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    const onClose = () => setOpen(false);
+    window.addEventListener(OPEN_EVENT, onOpen);
+    window.addEventListener(CLOSE_EVENT, onClose);
+    return () => {
+      window.removeEventListener(OPEN_EVENT, onOpen);
+      window.removeEventListener(CLOSE_EVENT, onClose);
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;

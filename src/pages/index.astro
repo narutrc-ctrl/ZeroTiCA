@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { LandingPage } from "@/views/LandingPage";
 import { HOME, SITE_DESCRIPTION } from "@/seo/pages";
 ---
 
@@ -11,17 +12,10 @@ import { HOME, SITE_DESCRIPTION } from "@/seo/pages";
   ogTitle={HOME.ogTitle}
   twitterTitle={HOME.twitterTitle}
 >
-  <main class="mx-auto flex max-w-3xl flex-col justify-center gap-6 px-6 py-16">
-    <p class="text-sm font-medium text-primary">ZeroTiCA · Astro Phase 2</p>
-    <h1 class="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-      {HOME.title}
-    </h1>
-    <p class="text-lg leading-relaxed text-slate-600">
-      {SITE_DESCRIPTION}
-    </p>
-    <p class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-      헤더·푸터·도입 문의 모달이 연결되었습니다. Phase 3에서 privacy /
-      perspectives 본문을 옮깁니다.
-    </p>
-  </main>
+  <!--
+    1차: 홈 전체를 하나의 island로 SSR+hydrate.
+    본문 텍스트는 빌드 HTML에 포함되고, 문의 CTA는 window 이벤트로 SiteShell 모달과 연결됨.
+    이후 섹션별 바다/섬 분해는 유지보수 단계에서 진행.
+  -->
+  <LandingPage client:load />
 </BaseLayout>

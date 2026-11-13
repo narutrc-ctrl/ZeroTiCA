@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { YouTubeVideoModal } from "@/components/YouTubeVideoModal";
 import { CTA, trackCtaClick } from "@/lib/analytics";
 import { hero, keyholeBridge, paths, section2Gap } from "@/data/content";
@@ -644,13 +643,13 @@ export function HeroSection() {
               </h1>
 
               <div className="hero-focus-actions">
-                <Link
-                  to={paths.perspectives}
+                <a
+                  href={paths.perspectives}
                   className="hero-focus-btn hero-focus-btn-primary"
                   onClick={() => trackCtaClick(CTA.perspectivesHero)}
                 >
                   {hero.ctaFlow.label}
-                </Link>
+                </a>
                 <button
                   type="button"
                   className="hero-focus-btn hero-focus-btn-secondary"

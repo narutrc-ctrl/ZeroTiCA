@@ -8,7 +8,6 @@ import {
   type MutableRefObject,
   type ReactNode,
 } from "react";
-import { Link } from "react-router-dom";
 import { experienceSection, paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { markDemoEntrySource } from "@/lib/analytics";
@@ -344,8 +343,8 @@ function ExperienceCta() {
           →
         </span>
       </span>
-      <Link
-        to={paths.fullTour}
+      <a
+        href={paths.fullTour}
         className={cn(
           btnClass,
           "hidden transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:flex",
@@ -356,7 +355,7 @@ function ExperienceCta() {
         <span className="ml-1.5" aria-hidden>
           →
         </span>
-      </Link>
+      </a>
     </div>
   );
 }

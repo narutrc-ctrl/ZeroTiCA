@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { whatsDifferentSection, paths } from "@/data/content";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { CTA, trackCtaClick } from "@/lib/analytics";
@@ -104,14 +103,14 @@ export function ProblemDifferentiatorSection() {
 
         <RevealOnScroll delay={280} variant="fade-up">
           <div className="mt-20 flex justify-center sm:mt-24">
-            <Link
-              to={paths.perspectives}
+            <a
+              href={paths.perspectives}
               className="inline-flex items-center gap-2 text-[16px] font-medium text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#10141d] sm:text-[18px]"
               onClick={() => trackCtaClick(CTA.perspectivesSection)}
             >
               {ctaLabel}
               <span aria-hidden>→</span>
-            </Link>
+            </a>
           </div>
         </RevealOnScroll>
       </div>
