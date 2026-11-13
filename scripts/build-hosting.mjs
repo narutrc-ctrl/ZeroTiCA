@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /**
- * After Vite build, generate hosting artifacts from src/seo/pages.ts:
- * - dist/*.html with per-route title/description/canonical
- * - dist/sitemap.xml from indexable pages
- * - infra/cloudfront/spa-router.js allowlist
+ * [레거시 Vite SPA] After Vite build, stamp per-route SEO into dist/*.html.
+ * sitemap.xml + spa-router.js 는 이어서 scripts/sync-hosting.mjs 가 덮어쓴다
+ * (npm run build:spa). Astro 기본 배포는 npm run build 만 사용.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -206,9 +205,5 @@ for (const page of pages.PAGES) {
   htmlCount += 1;
 }
 
-const routerOut = writeSpaRouter(pages.SPA_PATHS);
-writeSitemap(pages.INDEXABLE_PAGES, pages.canonicalUrl);
-
-console.log(
-  `Hosting artifacts: ${htmlCount} HTML files, sitemap.xml (${pages.INDEXABLE_PAGES.length} URLs), ${path.relative(root, routerOut)}`,
-);
+// sitemap + spa-router 는 sync-hosting 이 pages.ts(리다이렉트·/contact 포함) 기준으로 생성
+console.log(`Hosting artifacts: ${htmlCount} HTML files (SEO stamped). Run sync-hosting for sitemap/router.`);

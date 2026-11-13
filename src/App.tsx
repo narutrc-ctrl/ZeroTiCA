@@ -30,9 +30,6 @@ function marketingRoutes() {
       <Route path="contact" element={<ContactPage />} />
       <Route path="legal/privacy" element={<PrivacyPage />} />
       <Route path="perspectives" element={<PerspectivesPage />} />
-      <Route path="services" element={<Navigate to="/#choose" replace />} />
-      <Route path="process" element={<Navigate to="/#journey" replace />} />
-      <Route path="screens" element={<Navigate to="/#experience" replace />} />
       <Route
         path="demo/task"
         element={

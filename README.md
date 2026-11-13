@@ -18,12 +18,12 @@ npm run dev
 | 경로 | 설명 |
 |------|------|
 | `/` | 인트로·통계·가치 제안·클로징 |
-| `/services` | Insight / Watch 서비스 소개 |
-| `/process` | 수집 → 탐지 → 검증 → 조치 → 보고 흐름 |
-| `/screens` | 서비스 화면 예시·근거 자료·미리보기 |
+| `/perspectives` | 검증 관점 |
+| `/legal/privacy` | 개인정보 처리방침 |
 | `/demo/task` | 이슈 관리 데모 + 가이드 투어 |
 | `/demo/event` | 단계별 요약 데모 |
 | `/demo/event?tab=reports` | 침해 평가 보고서 데모 |
+| `/contact` | 도입 문의(모달 호환 라우트, noindex) |
 
 데모 데이터는 실제 고객사 5월 이슈·보고서 **유형**을 참고했으나, 회사명·IP·관리코드는 `DEMO-2026-05-xxx` 등 **가상값으로 치환**되어 있습니다 (`src/data/demo-runa-data.ts`).
 

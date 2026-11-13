@@ -1,0 +1,33 @@
+---
+/**
+ * 레거시 URL → 홈 앵커 / 데모 탭 등.
+ * CF spa-router 301과 동일 목적지를 로컬 preview·정적 HTML에서도 제공한다.
+ */
+type Props = {
+  to: string;
+  title?: string;
+};
+
+const { to, title = "이동 중…" } = Astro.props;
+const safeTo = to.replace(/"/g, "");
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,follow" />
+    <title>{title}</title>
+    <meta http-equiv="refresh" content={`0;url=${safeTo}`} />
+    <link rel="canonical" href="https://zerotica.narusec.com/" />
+    <script is:inline define:vars={{ safeTo }}>
+      location.replace(safeTo);
+    </script>
+  </head>
+  <body>
+    <p>
+      <a href={safeTo}>계속 이동</a>
+    </p>
+  </body>
+</html>

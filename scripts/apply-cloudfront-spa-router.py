@@ -5,6 +5,7 @@ SPA/SEO deep-link routing only. Not used for contact inquiry API wiring.
 Contact API path: Amplify Hosting rewrite → existing HTTP API (see deploy-contact-aws.py).
 
 Generate infra/cloudfront/spa-router.js first with: npm run build
+(or npm run sync:hosting after pages.ts changes)
 
 CloudFront API is us-east-1. Requires credentials with cloudfront:Get*, cloudfront:CreateFunction,
 cloudfront:UpdateFunction, cloudfront:PublishFunction, cloudfront:UpdateDistribution.

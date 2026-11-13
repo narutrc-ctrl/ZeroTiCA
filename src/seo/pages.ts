@@ -60,6 +60,14 @@ export const PAGES: SeoPage[] = [
     indexable: true,
   },
   {
+    path: "/contact",
+    title: "도입 문의 | ZeroTiCA",
+    description: SITE_DESCRIPTION,
+    canonicalPath: "/contact",
+    robots: NOINDEX_ROBOTS,
+    indexable: false,
+  },
+  {
     path: "/demo/task",
     title: "이슈 관리 데모 | ZeroTiCA",
     description: SITE_DESCRIPTION,
@@ -85,7 +93,18 @@ export const PAGES: SeoPage[] = [
   },
 ];
 
-export const SPA_PATHS = PAGES.filter((page) => page.path !== "/").map((page) => page.path);
+/**
+ * CF / 정적 호환 리다이렉트 (Location 경로. `#`·`?` 포함 가능).
+ * /demo/report 는 HTML·클라에서도 동일 목적지로 보낸다.
+ */
+export const COMPAT_REDIRECTS: Record<string, string> = {
+  "/demo/report": "/demo/event?tab=reports",
+};
+
+/** CF allowlist — 200으로 `{path}.html` 서빙. 리다이렉트 전용 경로는 제외. */
+export const SPA_PATHS = PAGES.filter(
+  (page) => page.path !== "/" && !(page.path in COMPAT_REDIRECTS),
+).map((page) => page.path);
 
 export const INDEXABLE_PAGES = PAGES.filter((page) => page.indexable);
 

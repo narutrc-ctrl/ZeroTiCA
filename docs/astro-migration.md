@@ -13,8 +13,8 @@ Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
 | 2 공통 껍데기 | 완료 | SiteShell(헤더/푸터/문의 모달) |
 | 3 정적 페이지 | 완료 | privacy / perspectives / contact |
 | 4 홈 | 완료(1차) | LandingPage SSR island — 이후 섹션 분해 가능 |
-| 5 데모 | 완료 | DemoIsland(client:only) + noindex task/event/report |
-| 6 | 대기 | CF·sitemap·레거시 정리 |
+| 5 데모 | 완료 | DemoIsland(client:load SSR) + noindex task/event/report |
+| 6 CF·sitemap·레거시 | 완료 | sitemap·CF allowlist(/contact)·호환 리다이렉트·Vite SPA 보조화 |
 
 ## Phase 0 — 기준 (고정)
 
@@ -49,8 +49,7 @@ Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
 
 | Path | 비고 |
 |------|------|
-| `/contact` | 모달 오픈 후 `/`로 이동. **현재 CF SPA allowlist에 없음 → 이전 중 200 라우트로 포함** |
-| `/services`, `/process`, `/screens` | 기존처럼 홈 앵커로 리다이렉트 |
+| `/contact` | 모달 오픈 후 `/`로 이동. CF allowlist에 포함(Function 갱신 시) |
 
 ### 빌드 출력 형식 (CloudFront 정합)
 
@@ -75,6 +74,15 @@ Node: **22+** (`.nvmrc`) — Astro 5 / 통합 패키지 기준
 5. 데모 (큰 React 섬, noindex)
 6. CF router / sitemap / Vite SPA 레거시 정리
 7. GSC·네이버 sitemap 재제출 (운영)
+
+### Phase 6 — CF·sitemap·레거시 (요약)
+
+- `npm run build` → Astro HTML + `strip-html-nulls` + `sync-hosting` (`dist/sitemap.xml`, `infra/cloudfront/spa-router.js`)
+- CF allowlist: `/contact` 포함. `/demo/report` → `/demo/event?tab=reports` 301
+- 로컬/정적: `demo/report.astro` CompatRedirect
+
+- Vite SPA (`dev:spa` / `build:spa`) 는 **비상·레거시** 경로. 기본 배포는 Astro `build`
+- 운영 배포 후: `npm run apply:cloudfront` 로 Function 갱신, GSC·네이버 sitemap 재제출은 Phase 7
 
 ### Phase 완료 시
 

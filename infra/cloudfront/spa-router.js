@@ -1,6 +1,7 @@
-// Generated from src/seo/pages.ts — run: node scripts/build-hosting.mjs
+// Generated from src/seo/pages.ts — run: npm run build (scripts/sync-hosting.ts)
 // CloudFront Function (viewer-request)
-// Known SPA routes -> {path}.html with HTTP 200
+// Known routes -> {path}.html with HTTP 200
+// Compat redirects (legacy paths, /demo/report) -> 301
 // Trailing slash on known routes -> 301 to slashless URL
 // Unknown extensionless URLs -> 404 (avoid Soft 404)
 
@@ -28,13 +29,20 @@ function toQueryString(qs) {
   return parts.length ? '?' + parts.join('&') : '';
 }
 
-function redirect301(request, path) {
+function redirect301(request, targetPath) {
   var host = request.headers.host.value;
+  var location;
+  // 고정 목적지( ? / # 포함)는 요청 쿼리를 붙이지 않는다
+  if (targetPath.indexOf('?') !== -1 || targetPath.indexOf('#') !== -1) {
+    location = 'https://' + host + targetPath;
+  } else {
+    location = 'https://' + host + targetPath + toQueryString(request.querystring);
+  }
   return {
     statusCode: 301,
     statusDescription: 'Moved Permanently',
     headers: {
-      location: { value: 'https://' + host + path + toQueryString(request.querystring) }
+      location: { value: location }
     }
   };
 }
@@ -43,11 +51,14 @@ function handler(event) {
   var request = event.request;
   var uri = request.uri;
   var SPA = {
+    '/contact': true,
     '/demo/event': true,
-    '/demo/report': true,
     '/demo/task': true,
     '/legal/privacy': true,
     '/perspectives': true
+  };
+  var REDIRECTS = {
+    '/demo/report': '/demo/event?tab=reports'
   };
 
   if (uri === '/') {
@@ -57,6 +68,9 @@ function handler(event) {
   if (hasFileExtension(uri)) {
     if (uri.length > 5 && uri.substring(uri.length - 5) === '.html') {
       var pretty = uri.substring(0, uri.length - 5);
+      if (REDIRECTS[pretty]) {
+        return redirect301(request, REDIRECTS[pretty]);
+      }
       if (SPA[pretty]) {
         return redirect301(request, pretty);
       }
@@ -66,6 +80,10 @@ function handler(event) {
 
   var hadSlash = uri.length > 1 && uri.charAt(uri.length - 1) === '/';
   var normalized = hadSlash ? uri.substring(0, uri.length - 1) : uri;
+
+  if (REDIRECTS[normalized]) {
+    return redirect301(request, REDIRECTS[normalized]);
+  }
 
   if (SPA[normalized]) {
     if (hadSlash) {
